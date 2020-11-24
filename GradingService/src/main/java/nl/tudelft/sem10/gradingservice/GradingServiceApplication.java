@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GradingServiceApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(GradingServiceApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(GradingServiceApplication.class, args);
+    }
 
 }
