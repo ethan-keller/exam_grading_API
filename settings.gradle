@@ -1,1 +1,6 @@
-rootProject.name = 'template'
+rootProject.name = 'ExamGrading'
+
+include 'UserService'
+include 'GradingService'
+include 'CourseService'
+include 'AuthenticationService'
