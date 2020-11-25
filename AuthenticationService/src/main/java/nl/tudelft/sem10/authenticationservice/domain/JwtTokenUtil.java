@@ -3,12 +3,10 @@ package nl.tudelft.sem10.authenticationservice.domain;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -20,13 +18,14 @@ import org.springframework.stereotype.Component;
 public class JwtTokenUtil implements Serializable {
 
     /**
-     * Time of validity for a token (set to 1 day = 24 hours)
+     * Time of validity for a token (set to 1 day = 24 hours).
      */
-    public static final long JWT_VALIDITY = 24 * 60 * 60;
+    private static final long JWT_VALIDITY = 24 * 60 * 60;
     private static final long serialVersionUID = -1433881298817633516L;
 
+    // use of transient for PMD
     @Value("${jwt.secret}")
-    private String secret;
+    private transient String secret;
 
     /**
      * Get the user's netId from the token.

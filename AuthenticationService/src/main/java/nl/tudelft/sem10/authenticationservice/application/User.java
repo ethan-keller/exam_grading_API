@@ -1,7 +1,6 @@
 package nl.tudelft.sem10.authenticationservice.application;
 
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,16 +14,20 @@ import javax.persistence.Table;
 @Table(name = "User")
 public class User {
 
+    public void setNetId(String netId) {
+        this.netId = netId;
+    }
+
     @Id
     @Column(name = "netid")
     private String netId;
 
+    // use of transient for PMD
     @Column(name = "password")
-    private String password;
-
+    private transient String password;
     @Column(name = "role")
     @OneToOne(targetEntity = Role.class)
-    private Role role;
+    private transient Role role;
 
 
     /**
@@ -62,8 +65,12 @@ public class User {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
         User user = (User) o;
         return getNetId().equals(user.getNetId());
     }

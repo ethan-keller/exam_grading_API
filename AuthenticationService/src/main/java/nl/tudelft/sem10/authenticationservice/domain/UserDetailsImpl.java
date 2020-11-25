@@ -3,21 +3,20 @@ package nl.tudelft.sem10.authenticationservice.domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import nl.tudelft.sem10.authenticationservice.application.Role;
 import nl.tudelft.sem10.authenticationservice.application.User;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Custom implementation for user details
+ * Custom implementation for user details.
  */
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = -4120834141761298149L;
-    private final User user;
+    // use of transient for PMD
+    private final transient User user;
 
     /**
      * Constructor.

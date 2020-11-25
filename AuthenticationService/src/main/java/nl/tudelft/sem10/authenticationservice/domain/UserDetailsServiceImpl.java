@@ -1,7 +1,6 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
 import nl.tudelft.sem10.authenticationservice.application.User;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +26,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // temporary fix
         User user = new User();
 
-        if (user == null) throw new UsernameNotFoundException("Could not find a user with netId: " + username);
+        if (user == null) {
+            throw new UsernameNotFoundException("Could not find a user with netId: " + username);
+        }
         return new UserDetailsImpl(user);
     }
 }

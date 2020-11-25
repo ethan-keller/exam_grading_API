@@ -3,7 +3,7 @@ package nl.tudelft.sem10.authenticationservice.domain;
 import java.io.Serializable;
 
 /**
- * Response that contains token for the requesting user
+ * Response that contains token for the requesting user.
  */
 public class JwtResponse implements Serializable {
 

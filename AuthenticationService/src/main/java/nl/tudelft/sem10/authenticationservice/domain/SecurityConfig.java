@@ -18,15 +18,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 // A LOT OF INFO FROM https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
 
 /**
- * General Spring Security configuration class
+ * General Spring Security configuration class.
  */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    // use of transient for PMD
     @Autowired
-    private JwtTokenFilter jwtTokenFilter;
+    private transient JwtTokenFilter jwtTokenFilter;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -54,14 +55,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userDetailsService());
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//
-//        return authProvider;
-//    }
+    //    @Bean
+    //    public DaoAuthenticationProvider authenticationProvider() {
+    //        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    //        authProvider.setUserDetailsService(userDetailsService());
+    //        authProvider.setPasswordEncoder(passwordEncoder());
+    //
+    //        return authProvider;
+    //    }
 
     /**
      * Gets the Spring Bean for the authentication manager.
@@ -75,10 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider(authenticationProvider());
-//    }
+    //    @Override
+    //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    //        auth.authenticationProvider(authenticationProvider());
+    //    }
 
     /**
      * Configures HTTP security.

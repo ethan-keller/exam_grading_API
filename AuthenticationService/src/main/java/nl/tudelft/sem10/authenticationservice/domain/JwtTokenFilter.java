@@ -1,14 +1,11 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
 import io.jsonwebtoken.ExpiredJwtException;
-
 import java.io.IOException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,10 +21,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
+    // use of transient for PMD
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private transient JwtTokenUtil jwtTokenUtil;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private transient UserDetailsService userDetailsService;
 
 
     /**
@@ -40,18 +38,33 @@ public class JwtTokenFilter extends OncePerRequestFilter {
      * @throws IOException      overridden from super class
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         final String requestTokenHeader = request.getHeader("Authorization");
-
-        String netId = null;
-        String token = null;
 
         // JWT token is prepended by "Bearer " so remove it to keep only the token
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            token = requestTokenHeader.substring(7);
+            String token = requestTokenHeader.substring(7);
             try {
-                netId = jwtTokenUtil.getNetIdFromToken(token);
+                String netId = jwtTokenUtil.getNetIdFromToken(token);
+
+                if (netId != null
+                        && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(netId);
+
+                    if (jwtTokenUtil.validateToken(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource()
+                                        .buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                }
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to retrieve JWT token");
             } catch (ExpiredJwtException e) {
@@ -61,18 +74,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             System.out.println("JWT token is not prepended by 'Bearer ' string");
         }
 
-        if (netId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(netId);
-
-            if (jwtTokenUtil.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-        }
         filterChain.doFilter(request, response);
     }
 }

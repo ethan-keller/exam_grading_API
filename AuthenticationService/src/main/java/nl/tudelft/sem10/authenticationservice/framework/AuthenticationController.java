@@ -3,7 +3,6 @@ package nl.tudelft.sem10.authenticationservice.framework;
 import nl.tudelft.sem10.authenticationservice.domain.JwtRequest;
 import nl.tudelft.sem10.authenticationservice.domain.JwtResponse;
 import nl.tudelft.sem10.authenticationservice.domain.JwtTokenUtil;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,14 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationController {
 
+    // use of transient for PMD
     @Autowired
-    private AuthenticationManager authenticationManager;
-
+    private transient AuthenticationManager authenticationManager;
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
+    private transient JwtTokenUtil jwtTokenUtil;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private transient UserDetailsService userDetailsService;
 
     /**
      * Authentication endpoint.
@@ -54,7 +52,8 @@ public class AuthenticationController {
      */
     private void authenticate(String netId, String password) throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(netId, password));
+            authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(netId, password));
         } catch (BadCredentialsException e) {
             throw new Exception("User credentials are incorrect");
         }
