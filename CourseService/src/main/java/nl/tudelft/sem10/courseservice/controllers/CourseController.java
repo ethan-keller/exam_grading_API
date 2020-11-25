@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CourseController {
 
     @Autowired
-    /*NOPMD*/CourseRepository courseRepository;
+    CourseRepository courseRepository; //NOPMD
 
     /**
      * TODO: Insert Javadoc here.
