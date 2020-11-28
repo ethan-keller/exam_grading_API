@@ -82,7 +82,7 @@ jacocoTestCoverageVerification() {
 
 checkstyle {
     toolVersion "8.37"
-    configFile = file("/Users/noyantoksoy/Documents/GitHub/op5-sem10/config/checkstyle/checkstyle.xml")
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
 pmd {
