@@ -28,6 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // use of transient for PMD
     @Autowired
     private transient JwtTokenFilter jwtTokenFilter;
+    @Autowired
+    private transient JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -54,16 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
-    //    @Bean
-    //    public DaoAuthenticationProvider authenticationProvider() {
-    //        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    //        authProvider.setUserDetailsService(userDetailsService());
-    //        authProvider.setPasswordEncoder(passwordEncoder());
-    //
-    //        return authProvider;
-    //    }
-
     /**
      * Gets the Spring Bean for the authentication manager.
      *
@@ -75,11 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManagerBean();
     }
-
-    //    @Override
-    //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    //        auth.authenticationProvider(authenticationProvider());
-    //    }
 
     /**
      * Configures HTTP security.
@@ -105,12 +93,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // set permissions
         http.authorizeRequests()
-                .antMatchers("/").hasAnyAuthority("STUDENT", "TEACHER")
+                //      .antMatchers("/").hasAnyAuthority("STUDENT", "TEACHER")
+                .antMatchers("/authenticate").permitAll()
                 .antMatchers("/student").hasAnyAuthority("STUDENT")
                 .antMatchers("/teacher").hasAnyAuthority("TEACHER")
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().accessDeniedPage("/403");
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
 
         // add JWT token filter
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

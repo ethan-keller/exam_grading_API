@@ -23,7 +23,7 @@ public class JwtTokenUtil implements Serializable {
     private static final long JWT_VALIDITY = 24 * 60 * 60;
     private static final long serialVersionUID = -1433881298817633516L;
 
-    // use of transient for PMD
+    // transient for PMD
     @Value("${jwt.secret}")
     private transient String secret;
 
@@ -72,7 +72,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     /**
-     * Get all claims (infromation) about a token.
+     * Get all claims (information) about a token.
      *
      * @param token token
      * @return all the claims (information) about the token
@@ -86,7 +86,7 @@ public class JwtTokenUtil implements Serializable {
      *
      * @param token       token
      * @param userDetails information about the user
-     * @return true if token is valid, false otherwise
+     * @return true if token and user match, false otherwise
      */
     public boolean validateToken(String token, UserDetails userDetails) {
         final String netId = getNetIdFromToken(token);
@@ -94,7 +94,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     /**
-     * Generates a token from the user informatiom.
+     * Generates a token from the user information.
      *
      * @param userDetails user information
      * @return string representation of the generated token
@@ -110,7 +110,7 @@ public class JwtTokenUtil implements Serializable {
      * @return string representation of the generated token
      */
     private String internalGenerateToken(String netId) {
-        return Jwts.builder().setClaims(new HashMap<String, Object>()).setSubject(netId)
+        return Jwts.builder().setClaims(new HashMap<>()).setSubject(netId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * JWT_VALIDITY))
                 .signWith(SignatureAlgorithm.HS512, secret)

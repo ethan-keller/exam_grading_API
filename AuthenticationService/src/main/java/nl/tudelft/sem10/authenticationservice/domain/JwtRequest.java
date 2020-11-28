@@ -3,12 +3,11 @@ package nl.tudelft.sem10.authenticationservice.domain;
 import java.io.Serializable;
 
 /**
- * Request that contains user information.
+ * Request template for token demand that contains user information.
  */
 public class JwtRequest implements Serializable {
 
     private static final long serialVersionUID = 6049127233484238473L;
-    // use of transient for PMD
     private transient String netId;
     private transient String password;
 

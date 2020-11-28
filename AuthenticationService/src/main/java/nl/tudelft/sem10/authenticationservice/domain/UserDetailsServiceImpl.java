@@ -22,9 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //TODO: communication with USER service to access user database
-        //User user = userRepository.getOne(username);
-        // temporary fix
-        User user = new User();
+        //RestService rest = new RestService();
+        //User user = rest.getUserFromUserService();
+
+        User user = new User("user", "pass");
 
         if (user == null) {
             throw new UsernameNotFoundException("Could not find a user with netId: " + username);

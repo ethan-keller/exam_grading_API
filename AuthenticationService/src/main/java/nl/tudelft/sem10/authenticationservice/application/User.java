@@ -1,34 +1,30 @@
 package nl.tudelft.sem10.authenticationservice.application;
 
+import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 /**
- * Entity class as database abstraction (Hibernate ORM).
+ * User entity class.
  */
-@Entity
-@Table(name = "User")
-public class User {
+public class User implements Serializable {
 
-    public void setNetId(String netId) {
+    private static final long serialVersionUID = 3118960921901542232L;
+    private final String netId;
+    private final String password;
+    private final Role role;
+
+    /**
+     * Constructor.
+     *
+     * @param netId    the netId of the user
+     * @param password the password of the user
+     */
+    public User(String netId, String password) {
         this.netId = netId;
+        this.password = password;
+        // TODO: add roletype as parameter after JSON parsing determines the roletype
+        this.role = new Role(RoleType.STUDENT);
     }
-
-    @Id
-    @Column(name = "netid")
-    private String netId;
-
-    // use of transient for PMD
-    @Column(name = "password")
-    private transient String password;
-    @Column(name = "role")
-    @OneToOne(targetEntity = Role.class)
-    private transient Role role;
-
 
     /**
      * Getter for the user's identifying netId.
@@ -75,6 +71,11 @@ public class User {
         return getNetId().equals(user.getNetId());
     }
 
+    /**
+     * Hash code generator.
+     *
+     * @return the hash value of this User instance
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getNetId(), getPassword(), getRole());

@@ -1,36 +1,55 @@
 package nl.tudelft.sem10.authenticationservice.application;
 
+import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "role")
-public class Role {
+/**
+ * Role entity class.
+ */
+public class Role implements Serializable {
 
-    @Column(name = "name")
-    private String name;
+    private static final long serialVersionUID = -5677307558797652498L;
+    private final RoleType type;
 
-    @Column(name = "type")
-    private RoleType type;
+    /**
+     * Constructor.
+     *
+     * @param type enum providing the type of the role
+     */
+    public Role(RoleType type) {
+        this.type = type;
+    }
 
+    /**
+     * Getter for the name of the role.
+     *
+     * @return name of the role
+     */
     public String getName() {
-        return name;
+        if (type == RoleType.STUDENT) {
+            return "STUDENT";
+        } else if (type == RoleType.TEACHER) {
+            return "TEACHER";
+        } else {
+            return "UNKNOWN";
+        }
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    /**
+     * Getter for the type of the role.
+     *
+     * @return enum role type
+     */
     public RoleType getType() {
         return type;
     }
 
-    public void setType(RoleType type) {
-        this.type = type;
-    }
-
+    /**
+     * Equals method which equates two roles of their types are equal.
+     *
+     * @param o other object to compare to
+     * @return true if equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -40,9 +59,14 @@ public class Role {
             return false;
         }
         Role role = (Role) o;
-        return getName().equals(role.getName());
+        return getType() == role.getType();
     }
 
+    /**
+     * Hash code generator.
+     *
+     * @return the hash value of this role instance
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getType());
