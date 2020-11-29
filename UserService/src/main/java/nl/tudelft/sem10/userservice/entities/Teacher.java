@@ -1,12 +1,13 @@
 package nl.tudelft.sem10.userservice.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.Id;
 
 @Entity
-@Table(name = "student")
 @SuppressWarnings("unused")
 public class Teacher extends User {
+  @Id
+  private int netId;
   
   /**
    * Regular constructor for teacher.
@@ -19,4 +20,7 @@ public class Teacher extends User {
     super(netId, password, 1);
   }
 
+  public Teacher() {
+    super(-1, "", -1);
+  }
 }
