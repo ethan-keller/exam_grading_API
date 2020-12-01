@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Course REST API.
@@ -14,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping(path = "/course")
 public class CourseController {
-
+    private static final String RESPONSE_TYPE = "application/json";
     @Autowired
     CourseRepository courseRepository; //NOPMD
 
@@ -23,7 +28,7 @@ public class CourseController {
      *
      * @return all courses.
      */
-    @GetMapping(path = "/courses", produces = "application/json")
+    @GetMapping(path = "/courses", produces = RESPONSE_TYPE)
     public ResponseEntity<Iterable<Course>> getAllCourses() {
         return new ResponseEntity<>(courseRepository.findAll(), HttpStatus.OK);
     }
@@ -34,7 +39,7 @@ public class CourseController {
      * @param courseId - long Course ID.
      * @return the course or a 404 error if no such course exists.
      */
-    @GetMapping(path = "/get", produces = "application/json")
+    @GetMapping(path = "/get", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> getCourse(@RequestParam long courseId) {
 
         // Get a course by ID or null if no such course exists
@@ -54,7 +59,7 @@ public class CourseController {
      * @param course - Course Course to add.
      * @return the added course or a 409 error if a course with the same ID already exists.
      */
-    @PostMapping(path = "/add", produces = "application/json")
+    @PostMapping(path = "/add", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> addCourse(@RequestBody Course course) {
 
         // Duplicate course
@@ -74,7 +79,7 @@ public class CourseController {
      * @param courseId - long Course ID.
      * @return the deleted course or a 204 error.
      */
-    @DeleteMapping(path = "/remove", produces = "application/json")
+    @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> removeCourse(@RequestParam long courseId) {
         Course course = courseRepository.findById(courseId).orElse(null);
 

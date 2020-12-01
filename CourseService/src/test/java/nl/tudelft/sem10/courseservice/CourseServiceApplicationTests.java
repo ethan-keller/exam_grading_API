@@ -2,7 +2,11 @@ package nl.tudelft.sem10.courseservice;
 
 import nl.tudelft.sem10.courseservice.controllers.CourseController;
 import nl.tudelft.sem10.courseservice.entities.Course;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -14,10 +18,10 @@ import org.springframework.http.ResponseEntity;
 @SpringBootTest(classes = CourseServiceApplication.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CourseServiceApplicationTests {
-    private final Course c0 = new Course(9999L, "TEST_COURSE", "CSE9999");
+    private final transient Course c0 = new Course(9999L, "TEST_COURSE", "CSE9999");
 
     @Autowired
-    private CourseController controller;
+    private transient CourseController controller;
 
     /**
      * Test if the controller is created.
