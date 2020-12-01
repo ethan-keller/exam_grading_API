@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.courseservice;
 
+import java.util.Iterator;
 import nl.tudelft.sem10.courseservice.controllers.CourseController;
 import nl.tudelft.sem10.courseservice.entities.Course;
 import org.junit.jupiter.api.Assertions;
@@ -82,10 +83,35 @@ class CourseServiceApplicationTests {
     }
 
     /**
-     * Test /course/remove/ response for an existing course.
+     * Test /course/courses/ response for an existing course.
      */
     @Test
     @Order(6)
+    public void testGetAll() {
+        // Note that only one entity (c0) should exist, as we inserted it in a previous test
+        ResponseEntity<Iterable<Course>> response = controller.getAllCourses();
+
+        Iterable<Course> iterable = response.getBody();
+
+        // Response has a body
+        Assertions.assertNotNull(iterable);
+
+        // This should not be null by contract
+        Iterator<Course> iterator = iterable.iterator();
+
+        // Course c0
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(c0, iterator.next());
+
+        // Only one element so there should not be a next one
+        Assertions.assertFalse(iterator.hasNext());
+    }
+
+    /**
+     * Test /course/remove/ response for an existing course.
+     */
+    @Test
+    @Order(7)
     public void testRemove() {
         // Note that this entity should exist, as we inserted it in a previous test
         ResponseEntity<Course> response = controller.removeCourse(c0.getId());
@@ -98,7 +124,7 @@ class CourseServiceApplicationTests {
      * Test /course/remove/ response for a non existent course.
      */
     @Test
-    @Order(7)
+    @Order(8)
     public void testRemoveNonExisting() {
         ResponseEntity<Course> response = controller.removeCourse(c0.getId());
 

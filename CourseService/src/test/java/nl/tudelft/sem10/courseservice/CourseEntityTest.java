@@ -25,6 +25,18 @@ public class CourseEntityTest {
     }
 
     /**
+     * Test {@link Course#setId(long)}.
+     */
+    @Test
+    public void testSetId() {
+        Course course = new Course(1L, courseName, courseCode);
+        course.setId(9);
+
+        // We assume the getter works as intended, as it is tested in a separate method.
+        Assertions.assertEquals(9, course.getId());
+    }
+
+    /**
      * Test {@link Course#getName()}.
      */
     @Test
@@ -33,11 +45,35 @@ public class CourseEntityTest {
     }
 
     /**
+     * Test {@link Course#setName(String)}.
+     */
+    @Test
+    public void testSetName() {
+        Course course = new Course(1L, courseName, courseCode);
+        course.setName("NewCourseName");
+
+        // We assume the getter works as intended, as it is tested in a separate method.
+        Assertions.assertEquals("NewCourseName", course.getName());
+    }
+
+    /**
      * Test {@link Course#getCode()}.
      */
     @Test
     public void testGetCode() {
         Assertions.assertEquals(courseCode, c0.getCode());
+    }
+
+    /**
+     * Test {@link Course#setCode(String)}.
+     */
+    @Test
+    public void testSetCode() {
+        Course course = new Course(1L, courseName, courseCode);
+        course.setCode("NewCourseCode");
+
+        // We assume the getter works as intended, as it is tested in a separate method.
+        Assertions.assertEquals("NewCourseCode", course.getCode());
     }
 
     /**
