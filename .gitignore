@@ -28,3 +28,6 @@ gradle-app.setting
 
 #IntelliJ
 .idea/
+
+### CUSTOM ###
+template-repo1/
