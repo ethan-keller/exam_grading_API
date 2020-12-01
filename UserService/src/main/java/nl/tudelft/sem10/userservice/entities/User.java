@@ -2,12 +2,18 @@ package nl.tudelft.sem10.userservice.entities;
 
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "user")
 @SuppressWarnings("unused")
-abstract class User {
+public class User {
 
-  @Column(name = "net_id")
-  private int netId;
+  @Id
+  @Column(name = "netId")
+  private String netId;
 
   @Column(name = "password")
   private String password;
@@ -22,13 +28,16 @@ abstract class User {
    * @param password password of the user not stored as plaintext
    * @param type type of the user, represented as an int
    */
-  public User(int netId, String password, int type) {
+  public User(String netId, String password, int type) {
     this.netId = netId;
     this.password = password;
     this.type = type;
   }
 
-  public int getNetId() {
+  public User() {
+  }
+
+  public String getNetId() {
     return netId;
   }
 
@@ -40,7 +49,7 @@ abstract class User {
     return type;
   }
 
-  public void setNetId(int netId) {
+  public void setNetId(String netId) {
     this.netId = netId;
   }
 
