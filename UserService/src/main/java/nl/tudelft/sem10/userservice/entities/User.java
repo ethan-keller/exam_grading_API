@@ -1,18 +1,15 @@
 package nl.tudelft.sem10.userservice.entities;
 
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @SuppressWarnings("unused")
 public class User {
 
   @Id
-  @Column(name = "netId")
+  @Column(name = "netid")
   private String netId;
 
   @Column(name = "password")
