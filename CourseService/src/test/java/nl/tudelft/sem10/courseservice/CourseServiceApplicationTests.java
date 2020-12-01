@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
+ * TODO: Fix pipeline issues (tests fail due to no database connection being present)
  * TODO: /course/courses (get all courses) endpoint testing.
  */
 @SpringBootTest(classes = CourseServiceApplication.class)

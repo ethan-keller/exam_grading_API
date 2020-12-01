@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("nl.tudelft.sem10.courseservice.repositories")
 public class CourseServiceApplication {
     private static final float MIN_JAVA_VER = 52F;
+
     /**
      * Application entry point.
      * This starts the Spring application.
