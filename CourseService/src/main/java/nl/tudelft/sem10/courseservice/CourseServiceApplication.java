@@ -14,6 +14,7 @@ public class CourseServiceApplication {
     /**
      * Application entry point.
      * This starts the Spring application.
+     *
      * @param args - String[] Command line arguments.
      */
     public static void main(String[] args) {

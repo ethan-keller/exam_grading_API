@@ -29,6 +29,7 @@ public class Course {
     public Course() {
         // Nothing
     }
+
     /**
      * Create a course object with given ID, name and course code.
      *
@@ -42,9 +43,9 @@ public class Course {
         this.code = code;
     }
 
-    // Getter setters
-
     /**
+     * Get the current course ID.
+     *
      * @return the course ID.
      */
     public long getId() {
@@ -52,6 +53,8 @@ public class Course {
     }
 
     /**
+     * Set a new course ID.
+     *
      * @param id - long New course ID.
      */
     public void setId(long id) {
@@ -59,6 +62,8 @@ public class Course {
     }
 
     /**
+     * Get the current course name.
+     *
      * @return the course name (may be null).
      */
     public String getName() {
@@ -66,6 +71,8 @@ public class Course {
     }
 
     /**
+     * Set a new course name.
+     *
      * @param name - String New course name.
      */
     public void setName(String name) {
@@ -73,6 +80,8 @@ public class Course {
     }
 
     /**
+     * Get the current course code.
+     *
      * @return the course code (may be null).
      */
     public String getCode() {
@@ -80,6 +89,8 @@ public class Course {
     }
 
     /**
+     * Set a new course code.
+     *
      * @param code - String New course code.
      */
     public void setCode(String code) {
@@ -107,6 +118,14 @@ public class Course {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Course[id=").append(id).append(", name=").append(name).append(", code=").append(code).append("]").toString();
+        return new StringBuilder()
+                .append("Course[id=")
+                .append(id)
+                .append(", name=")
+                .append(name)
+                .append(", code=")
+                .append(code)
+                .append("]")
+                .toString();
     }
 }

@@ -1,6 +1,5 @@
 package nl.tudelft.sem10.courseservice.controllers;
 
-import java.util.List;
 import nl.tudelft.sem10.courseservice.entities.Course;
 import nl.tudelft.sem10.courseservice.repositories.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ public class CourseController {
 
     /**
      * Get all available courses.
+     *
      * @return all courses.
      */
     @GetMapping(path = "/courses", produces = "application/json")
@@ -30,6 +30,7 @@ public class CourseController {
 
     /**
      * Get a course from the repository by ID.
+     *
      * @param courseId - long Course ID.
      * @return the course or a 404 error if no such course exists.
      */
@@ -40,11 +41,16 @@ public class CourseController {
         Course course = courseRepository.findById(courseId).orElse(null);
 
         // Return the course if it exists or a 404 error
-        return course == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(course, HttpStatus.OK);
+        if (course == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(course, HttpStatus.OK);
     }
 
     /**
      * Put a new course into the repository.
+     *
      * @param course - Course Course to add.
      * @return the added course or a 409 error if a course with the same ID already exists.
      */
@@ -64,6 +70,7 @@ public class CourseController {
 
     /**
      * Remove a course from the repository.
+     *
      * @param courseId - long Course ID.
      * @return the deleted course or a 204 error.
      */
