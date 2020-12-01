@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * A course object.
+ */
 @Entity
 @Table(name = "course")
 public class Course {
