@@ -20,42 +20,66 @@ public class Course {
     @Column(name = "course_code")
     private String code;
 
-    public void setId(long id) {
+    /**
+     * No-args constructor for internal use.
+     */
+    public Course() {
+        // Nothing
+    }
+    /**
+     * Create a course object with given ID, name and course code.
+     *
+     * @param id - long Course ID.
+     * @param name - String Course name.
+     * @param code - String Course code.
+     */
+    public Course(long id, String name, String code) {
         this.id = id;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public void setCode(String code) {
         this.code = code;
     }
 
-    public Course() {}
+    // Getter setters
 
+    /**
+     * @return the course ID.
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * @param id - long New course ID.
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the course name (may be null).
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name - String New course name.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the course code (may be null).
+     */
     public String getCode() {
         return code;
     }
 
     /**
-     *TODO: Insert javadoc here.
-     *
-     * @param id - long
-     * @param name - String
-     * @param code - String
+     * @param code - String New course code.
      */
-    public Course(long id, String name, String code) {
-        this.id = id;
-        this.name = name;
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -78,4 +102,8 @@ public class Course {
                 && Objects.equals(code, course.code);
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder().append("Course[id=").append(id).append(", name=").append(name).append(", code=").append(code).append("]").toString();
+    }
 }
