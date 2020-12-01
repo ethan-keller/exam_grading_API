@@ -20,19 +20,13 @@ public class CourseController {
     CourseRepository courseRepository; //NOPMD
 
     /**
-     * TODO: Insert Javadoc here.
+     * Get all available courses.
+     * @return all courses.
      */
-
-    @RequestMapping(method = RequestMethod.GET)
-    //@GetMapping("/courses")
+    @GetMapping(path = "/courses", produces = "application/json")
     @ResponseBody
-    public List<Course> getAllCourses() {
-        //public String getAllCourses() {
-        List<Course> courseList = courseRepository.findAll();
-        //Comparator<Course> comp = Comparator.comparing(Building::getBuildingName);
-        //buildingList.sort(comp);
-        //return "hello world";
-        return courseList;
+    public Iterable<Course> getAllCourses() {
+        return courseRepository.findAll();
     }
 
     /**
