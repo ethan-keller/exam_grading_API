@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * Course REST API.
  */
 @Controller
-@RequestMapping("/course")
+@RequestMapping(path = "/course")
 public class CourseController {
 
     @Autowired
@@ -24,9 +24,8 @@ public class CourseController {
      * @return all courses.
      */
     @GetMapping(path = "/courses", produces = "application/json")
-    @ResponseBody
-    public Iterable<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public ResponseEntity<Iterable<Course>> getAllCourses() {
+        return new ResponseEntity<>(courseRepository.findAll(), HttpStatus.OK);
     }
 
     /**
@@ -35,14 +34,13 @@ public class CourseController {
      * @return the course or a 404 error if no such course exists.
      */
     @GetMapping(path = "/get", produces = "application/json")
-    public ResponseEntity<String> getCourse(@RequestParam long courseId) {
+    public ResponseEntity<Course> getCourse(@RequestParam long courseId) {
 
         // Get a course by ID or null if no such course exists
         Course course = courseRepository.findById(courseId).orElse(null);
 
         // Return the course if it exists or a 404 error
-        // TODO: Return a JSON body
-        return course == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(course.toString(), HttpStatus.OK);
+        return course == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(course, HttpStatus.OK);
     }
 
     /**
@@ -51,7 +49,7 @@ public class CourseController {
      * @return the added course or a 226 error if a course with the same ID already exists.
      */
     @PostMapping(path = "/add", produces = "application/json")
-    public ResponseEntity<String> addCourse(@RequestBody Course course) {
+    public ResponseEntity<Course> addCourse(@RequestBody Course course) {
 
         // Get a course by ID or null if no such course exists
         Course target = courseRepository.findById(course.getId()).orElse(null);
@@ -61,8 +59,7 @@ public class CourseController {
             // Save the course
             courseRepository.save(course);
 
-            // TODO: Return a JSON body
-            return new ResponseEntity<>(course.toString(), HttpStatus.CREATED);
+            return new ResponseEntity<>(course, HttpStatus.CREATED);
         }
 
         // A course with the given ID already exists

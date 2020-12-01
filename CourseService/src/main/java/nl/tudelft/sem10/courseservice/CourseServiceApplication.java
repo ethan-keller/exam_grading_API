@@ -17,6 +17,12 @@ public class CourseServiceApplication {
      * @param args - String[] Command line arguments.
      */
     public static void main(String[] args) {
+        // Check system requirements
+        if (Float.parseFloat(System.getProperty("java.class.version")) < 52F) {
+            System.err.println("This application requires Java 8 or higher to function");
+            return;
+        }
+
         SpringApplication.run(CourseServiceApplication.class, args);
     }
 
