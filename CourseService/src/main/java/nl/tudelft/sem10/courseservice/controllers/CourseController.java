@@ -46,23 +46,40 @@ public class CourseController {
     /**
      * Put a new course into the repository.
      * @param course - Course Course to add.
-     * @return the added course or a 226 error if a course with the same ID already exists.
+     * @return the added course or a 409 error if a course with the same ID already exists.
      */
     @PostMapping(path = "/add", produces = "application/json")
     public ResponseEntity<Course> addCourse(@RequestBody Course course) {
 
-        // Get a course by ID or null if no such course exists
-        Course target = courseRepository.findById(course.getId()).orElse(null);
-
-        // No duplicate course
-        if (target == null) {
-            // Save the course
-            courseRepository.save(course);
-
-            return new ResponseEntity<>(course, HttpStatus.CREATED);
+        // Duplicate course
+        if (courseRepository.existsById(course.getId())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        // A course with the given ID already exists
-        return new ResponseEntity<>(HttpStatus.IM_USED);
+        // Save the course
+        courseRepository.save(course);
+
+        return new ResponseEntity<>(course, HttpStatus.CREATED);
+    }
+
+    /**
+     * Remove a course from the repository.
+     * @param courseId - long Course ID.
+     * @return the deleted course or a 204 error.
+     */
+    @DeleteMapping(path = "/remove", produces = "application/json")
+    public ResponseEntity<Course> removeCourse(@RequestParam long courseId) {
+        Course course = courseRepository.findById(courseId).orElse(null);
+
+        // No such course
+        if (course == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // Delete the course
+        courseRepository.deleteById(courseId);
+
+        // Return the deleted course
+        return new ResponseEntity<>(course, HttpStatus.OK);
     }
 }
