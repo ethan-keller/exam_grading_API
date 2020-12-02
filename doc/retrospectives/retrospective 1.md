@@ -22,14 +22,14 @@
 |                                                                                                                                    	| Test course controller endpoints          	| Gideon           	|                3 	|              5 	| Yes  	|                                                                                                                                                                                                                                                                                                                                                                                	|
 |                                                                                                                                    	| Test course entity                        	| Gideon           	|                2 	|              3 	| Yes  	|                                                                                                                                                                                                                                                                                                                                                                                	|
 
-##Main problems encountered:	
+## Main problems encountered:	
 - We made documents like database ER-models, doc for all API endpoints etc. a bit late which stalls the development				
 - We lost a bit of time while being unsure about Spring & Microservices				
 - The structure of the application was not quite clear until we came up with the databse schemas				
 - Figuring out how to connect a database to the application and setting up the database itself took quite some time				
 - The coordination of who should do what didn't go very smoothly				
 					
-##Adjustments for the next Sprint:
+## Adjustments for the next Sprint:
 - Prepare needed structural documents (graphs, doc of all API endpoints, ...) before implementing --> saves a lot of time				
 - Clear research if knowledge has to be sharpened				
 - Generalisation of the API				
