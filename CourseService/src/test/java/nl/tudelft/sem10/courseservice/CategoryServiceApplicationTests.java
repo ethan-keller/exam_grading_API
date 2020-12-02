@@ -3,7 +3,7 @@ package nl.tudelft.sem10.courseservice;
 import java.util.Iterator;
 import nl.tudelft.sem10.courseservice.controllers.CategoryController;
 import nl.tudelft.sem10.courseservice.entities.Category;
-import nl.tudelft.sem10.courseservice.entities.CategoryID;
+import nl.tudelft.sem10.courseservice.entities.CategoryId;
 import nl.tudelft.sem10.courseservice.repositories.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,13 +34,17 @@ class CategoryServiceApplicationTests {
      */
     @BeforeAll
     public void setup() throws ReflectiveOperationException {
-        // Create repository mock
-       CategoryRepository mock = Util.createMapBackedRepositoryMock(CategoryRepository.class, Category.class, CategoryID.class, category -> {
-           return new CategoryID(category.getCourse(), category.getName());
-       });
-
         // Inject mock into controller
-        Util.setField(controller, "categoryRepository", mock);
+        // Yes this is really ugly but at least PMD will not complain
+        Util.setField(controller,
+                "categoryRepository",
+                Util.repositoryMock(
+                        CategoryRepository.class,
+                        Category.class,
+                        CategoryId.class,
+                        category -> {
+                            return new CategoryId(category.getCourse(), category.getName());
+                        }));
     }
 
     /**
@@ -69,7 +73,8 @@ class CategoryServiceApplicationTests {
     @Test
     @Order(3)
     public void testAdd() {
-        // Note that we assume no such category exists, as the test will delete the test category too
+        // Note that we assume no such category exists,
+        // as the test will delete the test category too
         ResponseEntity<Category> response = controller.addCategory(c0);
 
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());

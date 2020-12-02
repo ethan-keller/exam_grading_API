@@ -1,23 +1,49 @@
 package nl.tudelft.sem10.courseservice;
 
 import nl.tudelft.sem10.courseservice.entities.Category;
-import nl.tudelft.sem10.courseservice.entities.CategoryID;
+import nl.tudelft.sem10.courseservice.entities.CategoryId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link CategoryID} objects.
+ * Tests for {@link CategoryId} objects.
  */
-public class CategoryIDTest {
+public class CategoryIdTest {
     private final transient String courseCode = "CSE9999";
     private final transient String categoryName = "MIDTERM";
-    private final transient CategoryID c0 = new CategoryID(courseCode, categoryName);
-    private final transient CategoryID c1 = new CategoryID(courseCode, categoryName);
-    private final transient CategoryID c2 = new CategoryID("CSE0000", categoryName);
+    private final transient CategoryId c0 = new CategoryId(courseCode, categoryName);
+    private final transient CategoryId c1 = new CategoryId(courseCode, categoryName);
+    private final transient CategoryId c2 = new CategoryId("CSE0000", categoryName);
     private final transient Category nullCategoryId = null;
 
     /**
-     * Test {@link CategoryID#hashCode()}.
+     * Test {@link CategoryId#getCourse()}.
+     * Note that this class does not need field accessors
+     * and that the fields cannot be transient because
+     * they need to be serializable.
+     * They just exist to keep PMD happy.
+     * This is why no implementation is expected.
+     */
+    @Test
+    public void testGetCourse() {
+        Assertions.assertThrows(UnsupportedOperationException.class, c0::getCourse);
+    }
+
+    /**
+     * Test {@link CategoryId#getName()}.
+     * Note that this class does not need field accessors
+     * and that the fields cannot be transient because
+     * they need to be serializable.
+     * They just exist to keep PMD happy.
+     * This is why no implementation is expected.
+     */
+    @Test
+    public void testGetName() {
+        Assertions.assertThrows(UnsupportedOperationException.class, c0::getName);
+    }
+
+    /**
+     * Test {@link CategoryId#hashCode()}.
      */
     @Test
     public void testHashCode() {
@@ -25,7 +51,7 @@ public class CategoryIDTest {
     }
 
     /**
-     * Test {@link CategoryID#equals(Object)}.
+     * Test {@link CategoryId#equals(Object)}.
      * This test compares the same instance.
      */
     @Test
@@ -34,7 +60,7 @@ public class CategoryIDTest {
     }
 
     /**
-     * Test {@link CategoryID#equals(Object)}.
+     * Test {@link CategoryId#equals(Object)}.
      * This test compares different but equal instances.
      */
     @Test
@@ -43,7 +69,7 @@ public class CategoryIDTest {
     }
 
     /**
-     * Test {@link CategoryID#equals(Object)}.
+     * Test {@link CategoryId#equals(Object)}.
      * This test compares different and non-equal instances.
      */
     @Test
@@ -52,7 +78,7 @@ public class CategoryIDTest {
     }
 
     /**
-     * Test {@link CategoryID#equals(Object)}.
+     * Test {@link CategoryId#equals(Object)}.
      * This test compares an instance to null.
      */
     @Test
@@ -62,7 +88,7 @@ public class CategoryIDTest {
     }
 
     /**
-     * Test {@link CategoryID#equals(Object)}.
+     * Test {@link CategoryId#equals(Object)}.
      * This test compares an instance to an object of a different type.
      */
     @Test
@@ -72,7 +98,7 @@ public class CategoryIDTest {
     }
 
     /**
-     * Test {@link CategoryID#toString()}.
+     * Test {@link CategoryId#toString()}.
      */
     @Test
     public void testToString() {

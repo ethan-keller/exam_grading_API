@@ -1,8 +1,7 @@
 package nl.tudelft.sem10.courseservice.controllers;
 
 import nl.tudelft.sem10.courseservice.entities.Category;
-import nl.tudelft.sem10.courseservice.entities.CategoryID;
-import nl.tudelft.sem10.courseservice.entities.Course;
+import nl.tudelft.sem10.courseservice.entities.CategoryId;
 import nl.tudelft.sem10.courseservice.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Course category REST API.
  */
 @Controller
-@RequestMapping(path = "/category")
+@RequestMapping(path = "/teacher/category")
 public class CategoryController {
     private static final String RESPONSE_TYPE = "application/json";
 
@@ -44,10 +43,13 @@ public class CategoryController {
      * @return the category or a 404 error if no such category exists.
      */
     @GetMapping(path = "/get", produces = RESPONSE_TYPE)
-    public ResponseEntity<Category> getCategory(@RequestParam String courseCode, @RequestParam String categoryName) {
+    public ResponseEntity<Category> getCategory(@RequestParam String courseCode,
+                                                @RequestParam String categoryName) {
 
         // Get a course category by course code and name or null if no such category exists
-        Category category = categoryRepository.findById(new CategoryID(courseCode, categoryName)).orElse(null);
+        Category category = categoryRepository
+                .findById(new CategoryId(courseCode, categoryName))
+                .orElse(null);
 
         // Return the category if it exists or a 404 error
         if (category == null) {
@@ -61,13 +63,15 @@ public class CategoryController {
      * Put a new course category into the repository.
      *
      * @param category - Category Course category to add.
-     * @return the added category or a 409 error if a category with the same course code and name already exists.
+     * @return the added category or a 409 error if a category
+     *         with the same course code and name already exists.
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
+        CategoryId id = new CategoryId(category.getCourse(), category.getName());
 
         // Duplicate category
-        if (categoryRepository.existsById(new CategoryID(category.getCourse(), category.getName()))) {
+        if (categoryRepository.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -85,8 +89,9 @@ public class CategoryController {
      * @return the deleted course or a 204 error.
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
-    public ResponseEntity<Category> removeCategory(@RequestParam String courseCode, @RequestParam String categoryName) {
-        CategoryID id = new CategoryID(courseCode, categoryName);
+    public ResponseEntity<Category> removeCategory(@RequestParam String courseCode,
+                                                   @RequestParam String categoryName) {
+        CategoryId id = new CategoryId(courseCode, categoryName);
         Category category = categoryRepository.findById(id).orElse(null);
 
         // No such category

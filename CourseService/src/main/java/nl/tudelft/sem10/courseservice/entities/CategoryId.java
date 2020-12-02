@@ -6,14 +6,15 @@ import java.util.Objects;
 /**
  * A composite key for {@link Category} objects used by the repository.
  */
-public class CategoryID implements Serializable {
+public class CategoryId implements Serializable {
+    private static final long serialVersionUID = 7238060586464531770L;
     private String course;
     private String name;
 
     /**
      * No-args constructor for internal use.
      */
-    public CategoryID() {
+    public CategoryId() {
         // Nothing
     }
 
@@ -23,9 +24,46 @@ public class CategoryID implements Serializable {
      * @param course - String Course code
      * @param name - String Category name.
      */
-    public CategoryID(String course, String name) {
+    public CategoryId(String course, String name) {
         this.course = course;
         this.name = name;
+    }
+
+    /**
+     * Get the course code.
+     *
+     * @return the course code.
+     */
+    public String getCourse() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Set the course code.
+     *
+     * @param course - String Course code.
+     */
+    public void setCourse(String course) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get the category name.
+     *
+     * @return the category name.
+     */
+    public String getName() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Set the category name.
+     *
+     * @param name - String category name.
+     * @return the category name.
+     */
+    public String setName(String name) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -35,10 +73,10 @@ public class CategoryID implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof CategoryID)) {
+        if (!(object instanceof CategoryId)) {
             return false;
         }
-        CategoryID other = (CategoryID) object;
+        CategoryId other = (CategoryId) object;
         return Objects.equals(course, other.course)
                 && Objects.equals(name, other.name);
     }

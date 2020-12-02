@@ -1,18 +1,18 @@
 package nl.tudelft.sem10.courseservice.entities;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
-import java.util.Objects;
 
 /**
  * A course category object.
  */
 @Entity
 @Table(name = "categories")
-@IdClass(CategoryID.class)
+@IdClass(CategoryId.class)
 public class Category {
 
     @Id

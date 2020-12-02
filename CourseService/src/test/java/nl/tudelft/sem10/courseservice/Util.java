@@ -1,10 +1,5 @@
 package nl.tudelft.sem10.courseservice;
 
-import nl.tudelft.sem10.courseservice.entities.Course;
-import nl.tudelft.sem10.courseservice.repositories.CourseRepository;
-import org.mockito.Mockito;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import org.mockito.Mockito;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * A utility class to help with test creation.
@@ -39,7 +36,10 @@ public class Util {
      * @param <V> - Identifier type.
      * @return the mocked repository.
      */
-    public static <T extends JpaRepository<U, V>, U, V> T createMapBackedRepositoryMock(Class<T> clazz, Class<U> type, Class<V> identifier, Function<U, V> idMapper) {
+    public static <T extends JpaRepository<U, V>, U, V> T repositoryMock(Class<T> clazz,
+                                                                         Class<U> type,
+                                                                         Class<V> identifier,
+                                                                         Function<U, V> idMapper) {
         Map<V, U> map = new HashMap<>();
         T mock = Mockito.mock(clazz);
 
@@ -83,9 +83,11 @@ public class Util {
      * @param instance - Object Instance to set a field for.
      * @param fieldName - String Field name.
      * @param value - Object Value to set.
-     * @throws ReflectiveOperationException
+     * @throws ReflectiveOperationException If something goes wrong.
      */
-    public static void setField(Object instance, String fieldName, Object value) throws ReflectiveOperationException {
+    public static void setField(Object instance,
+                                String fieldName,
+                                Object value) throws ReflectiveOperationException {
         Field field = instance.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(instance, value);

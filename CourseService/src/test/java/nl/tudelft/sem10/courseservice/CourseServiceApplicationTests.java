@@ -33,11 +33,15 @@ class CourseServiceApplicationTests {
      */
     @BeforeAll
     public void setup() throws ReflectiveOperationException {
-        // Create repository mock
-       CourseRepository mock = Util.createMapBackedRepositoryMock(CourseRepository.class, Course.class, String.class, Course::getCode);
-
         // Inject mock into controller
-        Util.setField(controller, "courseRepository", mock);
+        // Yes this is really ugly but at least PMD will not complain
+        Util.setField(controller,
+                "courseRepository",
+                Util.repositoryMock(
+                        CourseRepository.class,
+                        Course.class,
+                        String.class,
+                        Course::getCode));
     }
 
     /**
