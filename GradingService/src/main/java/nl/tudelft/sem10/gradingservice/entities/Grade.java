@@ -1,10 +1,7 @@
 package nl.tudelft.sem10.gradingservice.entities;
 
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "grade")
@@ -12,6 +9,7 @@ import javax.persistence.Table;
 public class Grade {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
