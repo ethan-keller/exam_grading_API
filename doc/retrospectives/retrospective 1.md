@@ -36,4 +36,5 @@
 - Generalisation of the API.	
 - The API document that we created needs to be complete in order for us to establish the connecction between micro-services correctly			
 - More and clearer communication.
-- The sprint iterations will be from wednesday to wednesday from now on.			
+- The sprint iterations will be from wednesday to wednesday from now on.		
+- The first two weeks were mostly spent on undestanding the application structure and determining the requirements, this sprint and onwards we will adjust our work speed to finish the application timely.	
