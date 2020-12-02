@@ -18,22 +18,32 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SuppressWarnings("unused")
 public class DataSourceConfig {
 
-  @Autowired
-  private transient Environment environment;
+    @Autowired
+    private transient Environment environment;
 
-  /**
-   * Set up the connection to the database.
-   */
-  @Bean
-  public DataSource dataSource() {
-    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName(Objects
-            .requireNonNull(environment.getProperty("jdbc.driverClassName")));
-    dataSource.setUrl(environment.getProperty("jdbc.url"));
-    dataSource.setUsername(environment.getProperty("jdbc.user"));
-    dataSource.setPassword(environment.getProperty("jdbc.pass"));
+    /**
+     * Set up the connection to the database.
+     */
+    @Bean
+    public DataSource dataSource() {
+        //    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        //    dataSource.setDriverClassName(Objects
+        //            .requireNonNull(environment.getProperty("jdbc.driverClassName")));
+        //    dataSource.setUrl(environment.getProperty("jdbc.url"));
+        //    dataSource.setUsername(environment.getProperty("jdbc.user"));
+        //    dataSource.setPassword(environment.getProperty("jdbc.pass"));
+        //
+        //    return dataSource;`
 
-    return dataSource;
-  }
+
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(Objects
+                .requireNonNull(environment.getProperty("spring.datasource.driverClassName")));
+        dataSource.setUrl(environment.getProperty("spring.datasource.url"));
+        dataSource.setUsername(environment.getProperty("spring.datasource.username"));
+        dataSource.setPassword(environment.getProperty("spring.datasource.password"));
+
+        return dataSource;
+    }
 }
 
