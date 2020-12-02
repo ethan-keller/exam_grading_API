@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping(path = "/userService")
 public class UserController {
   @Autowired
-  UserRepository userRepository; //NOPMD
+  private UserRepository userRepository; //NOPMD
 
 
   @GetMapping("/users")
