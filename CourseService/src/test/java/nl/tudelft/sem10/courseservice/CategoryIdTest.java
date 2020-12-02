@@ -30,6 +30,20 @@ public class CategoryIdTest {
     }
 
     /**
+     * Test {@link CategoryId#setCourse(String)}.
+     * Note that this class does not need field accessors
+     * and that the fields cannot be transient because
+     * they need to be serializable.
+     * They just exist to keep PMD happy.
+     * This is why no implementation is expected.
+     */
+    @Test
+    public void testSetCourse() {
+        Assertions.assertThrows(UnsupportedOperationException.class,
+                () -> c0.setCourse("NewCourseCode"));
+    }
+
+    /**
      * Test {@link CategoryId#getName()}.
      * Note that this class does not need field accessors
      * and that the fields cannot be transient because
@@ -40,6 +54,20 @@ public class CategoryIdTest {
     @Test
     public void testGetName() {
         Assertions.assertThrows(UnsupportedOperationException.class, c0::getName);
+    }
+
+    /**
+     * Test {@link CategoryId#setName(String)}.
+     * Note that this class does not need field accessors
+     * and that the fields cannot be transient because
+     * they need to be serializable.
+     * They just exist to keep PMD happy.
+     * This is why no implementation is expected.
+     */
+    @Test
+    public void testSetName() {
+        Assertions.assertThrows(UnsupportedOperationException.class,
+                () -> c0.setName("NewCategoryName"));
     }
 
     /**
