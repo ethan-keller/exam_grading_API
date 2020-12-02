@@ -27,7 +27,8 @@
 - We lost a bit of time while being unsure about Spring & Microservices				
 - The structure of the application was not quite clear until we came up with the databse schemas				
 - Figuring out how to connect a database to the application and setting up the database itself took quite some time				
-- The coordination of who should do what didn't go very smoothly				
+- The coordination of who should do what didn't go very smoothly			
+- In the first week, we couldn't start coding since we hadn't had the microservice lecture yet. 	
 					
 ## Adjustments for the next Sprint:
 - Prepare needed structural documents (graphs, doc of all API endpoints, ...) before implementing --> saves a lot of time				
