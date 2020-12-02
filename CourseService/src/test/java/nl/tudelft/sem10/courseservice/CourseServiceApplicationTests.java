@@ -30,7 +30,7 @@ import org.springframework.http.ResponseEntity;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CourseServiceApplicationTests {
-    private final transient Course c0 = new Course(9999L, "TEST_COURSE", "CSE9999");
+    private final transient Course c0 = new Course("TEST_COURSE", "CSE9999");
 
     @Autowired
     private transient CourseController controller;
@@ -40,7 +40,7 @@ class CourseServiceApplicationTests {
      */
     @BeforeAll
     public void setup() throws ReflectiveOperationException {
-        Map<Long, Course> map = new HashMap<>();
+        Map<String, Course> map = new HashMap<>();
         CourseRepository mock = Mockito.mock(CourseRepository.class);
 
         // #findAll()
@@ -48,31 +48,31 @@ class CourseServiceApplicationTests {
             return Collections.unmodifiableList(new ArrayList<>(map.values()));
         }).when(mock).findAll();
 
-        // #findById(Long)
+        // #findById(String)
         Mockito.doAnswer(invocation -> {
-            long id = invocation.getArgument(0);
+            String id = invocation.getArgument(0);
             return Optional.ofNullable(map.get(id));
-        }).when(mock).findById(Mockito.anyLong());
+        }).when(mock).findById(Mockito.anyString());
 
-        // #existsById(Long)
+        // #existsById(String)
         Mockito.doAnswer(invocation -> {
-            long id = invocation.getArgument(0);
+            String id = invocation.getArgument(0);
             return map.containsKey(id);
-        }).when(mock).existsById(Mockito.anyLong());
+        }).when(mock).existsById(Mockito.anyString());
 
         // #save(Course)
         Mockito.doAnswer(invocation -> {
             Course course = invocation.getArgument(0);
-            map.put(course.getId(), course);
+            map.put(course.getCode(), course);
             return course;
         }).when(mock).save(Mockito.any(Course.class));
 
-        // #deleteById(Long)
+        // #deleteById(String)
         Mockito.doAnswer(invocation -> {
-            long id = invocation.getArgument(0);
+            String id = invocation.getArgument(0);
             map.remove(id);
             return null;
-        }).when(mock).deleteById(Mockito.anyLong());
+        }).when(mock).deleteById(Mockito.anyString());
 
         // Inject mock into controller
         Field field = controller.getClass().getDeclaredField("courseRepository");
@@ -95,7 +95,7 @@ class CourseServiceApplicationTests {
     @Test
     @Order(2)
     public void testGetNonExistent() {
-        ResponseEntity<Course> response = controller.getCourse(c0.getId());
+        ResponseEntity<Course> response = controller.getCourse(c0.getCode());
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -131,7 +131,7 @@ class CourseServiceApplicationTests {
     @Order(5)
     public void testGet() {
         // Note that this entity should exist, as we inserted it in a previous test
-        ResponseEntity<Course> response = controller.getCourse(c0.getId());
+        ResponseEntity<Course> response = controller.getCourse(c0.getCode());
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(c0, response.getBody());
@@ -169,7 +169,7 @@ class CourseServiceApplicationTests {
     @Order(7)
     public void testRemove() {
         // Note that this entity should exist, as we inserted it in a previous test
-        ResponseEntity<Course> response = controller.removeCourse(c0.getId());
+        ResponseEntity<Course> response = controller.removeCourse(c0.getCode());
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(c0, response.getBody());
@@ -181,7 +181,7 @@ class CourseServiceApplicationTests {
     @Test
     @Order(8)
     public void testRemoveNonExisting() {
-        ResponseEntity<Course> response = controller.removeCourse(c0.getId());
+        ResponseEntity<Course> response = controller.removeCourse(c0.getCode());
 
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }

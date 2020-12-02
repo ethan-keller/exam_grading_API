@@ -10,30 +10,10 @@ import org.junit.jupiter.api.Test;
 public class CourseEntityTest {
     private final transient String courseName = "TEST_COURSE";
     private final transient String courseCode = "CSE9999";
-    private final transient Course c0 = new Course(1L, courseName, courseCode);
-    private final transient Course c1 = new Course(1L, courseName, courseCode);
-    private final transient Course c2 = new Course(2L, courseName, courseCode);
+    private final transient Course c0 = new Course(courseName, courseCode);
+    private final transient Course c1 = new Course(courseName, courseCode);
+    private final transient Course c2 = new Course("TEST_COURSE_2", courseCode);
     private final transient Course nullCourse = null;
-
-    /**
-     * Test {@link Course#getId()}.
-     */
-    @Test
-    public void testGetId() {
-        Assertions.assertEquals(1L, c0.getId());
-    }
-
-    /**
-     * Test {@link Course#setId(long)}.
-     */
-    @Test
-    public void testSetId() {
-        Course course = new Course(1L, courseName, courseCode);
-        course.setId(9);
-
-        // We assume the getter works as intended, as it is tested in a separate method.
-        Assertions.assertEquals(9, course.getId());
-    }
 
     /**
      * Test {@link Course#getName()}.
@@ -48,7 +28,7 @@ public class CourseEntityTest {
      */
     @Test
     public void testSetName() {
-        Course course = new Course(1L, courseName, courseCode);
+        Course course = new Course(courseName, courseCode);
         course.setName("NewCourseName");
 
         // We assume the getter works as intended, as it is tested in a separate method.
@@ -68,7 +48,7 @@ public class CourseEntityTest {
      */
     @Test
     public void testSetCode() {
-        Course course = new Course(1L, courseName, courseCode);
+        Course course = new Course(courseName, courseCode);
         course.setCode("NewCourseCode");
 
         // We assume the getter works as intended, as it is tested in a separate method.
@@ -80,7 +60,7 @@ public class CourseEntityTest {
      */
     @Test
     public void testHashCode() {
-        Assertions.assertEquals(-596495795, c0.hashCode());
+        Assertions.assertEquals(-596525586, c0.hashCode());
     }
 
     /**
@@ -135,6 +115,6 @@ public class CourseEntityTest {
      */
     @Test
     public void testToString() {
-        Assertions.assertEquals("Course[id=1, name=TEST_COURSE, code=CSE9999]", c0.toString());
+        Assertions.assertEquals("Course[name=TEST_COURSE, code=CSE9999]", c0.toString());
     }
 }

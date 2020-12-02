@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CourseController {
     private static final String RESPONSE_TYPE = "application/json";
     @Autowired
-    CourseRepository courseRepository; //NOPMD
+    private CourseRepository courseRepository; //NOPMD
 
     /**
      * Get all available courses.
@@ -36,14 +36,14 @@ public class CourseController {
     /**
      * Get a course from the repository by ID.
      *
-     * @param courseId - long Course ID.
+     * @param courseCode - String Course code.
      * @return the course or a 404 error if no such course exists.
      */
     @GetMapping(path = "/get", produces = RESPONSE_TYPE)
-    public ResponseEntity<Course> getCourse(@RequestParam long courseId) {
+    public ResponseEntity<Course> getCourse(@RequestParam String courseCode) {
 
         // Get a course by ID or null if no such course exists
-        Course course = courseRepository.findById(courseId).orElse(null);
+        Course course = courseRepository.findById(courseCode).orElse(null);
 
         // Return the course if it exists or a 404 error
         if (course == null) {
@@ -63,7 +63,7 @@ public class CourseController {
     public ResponseEntity<Course> addCourse(@RequestBody Course course) {
 
         // Duplicate course
-        if (courseRepository.existsById(course.getId())) {
+        if (courseRepository.existsById(course.getCode())) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
@@ -76,12 +76,12 @@ public class CourseController {
     /**
      * Remove a course from the repository.
      *
-     * @param courseId - long Course ID.
+     * @param courseCode - String Course code.
      * @return the deleted course or a 204 error.
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
-    public ResponseEntity<Course> removeCourse(@RequestParam long courseId) {
-        Course course = courseRepository.findById(courseId).orElse(null);
+    public ResponseEntity<Course> removeCourse(@RequestParam String courseCode) {
+        Course course = courseRepository.findById(courseCode).orElse(null);
 
         // No such course
         if (course == null) {
@@ -89,7 +89,7 @@ public class CourseController {
         }
 
         // Delete the course
-        courseRepository.deleteById(courseId);
+        courseRepository.deleteById(courseCode);
 
         // Return the deleted course
         return new ResponseEntity<>(course, HttpStatus.OK);

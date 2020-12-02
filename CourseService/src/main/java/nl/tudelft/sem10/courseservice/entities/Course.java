@@ -13,13 +13,10 @@ import javax.persistence.Table;
 @Table(name = "course")
 public class Course {
 
-    @Id
-    @Column(name = "id")
-    private long id;
-
     @Column(name = "course_name")
     private String name;
 
+    @Id
     @Column(name = "course_code")
     private String code;
 
@@ -33,32 +30,12 @@ public class Course {
     /**
      * Create a course object with given ID, name and course code.
      *
-     * @param id - long Course ID.
      * @param name - String Course name.
      * @param code - String Course code.
      */
-    public Course(long id, String name, String code) {
-        this.id = id;
+    public Course(String name, String code) {
         this.name = name;
         this.code = code;
-    }
-
-    /**
-     * Get the current course ID.
-     *
-     * @return the course ID.
-     */
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * Set a new course ID.
-     *
-     * @param id - long New course ID.
-     */
-    public void setId(long id) {
-        this.id = id;
     }
 
     /**
@@ -99,7 +76,7 @@ public class Course {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, code);
+        return Objects.hash(name, code);
     }
 
     @Override
@@ -111,17 +88,14 @@ public class Course {
             return false;
         }
         Course course = (Course) o;
-        return id == course.id
-                && Objects.equals(name, course.name)
+        return Objects.equals(name, course.name)
                 && Objects.equals(code, course.code);
     }
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("Course[id=")
-                .append(id)
-                .append(", name=")
+                .append("Course[name=")
                 .append(name)
                 .append(", code=")
                 .append(code)
