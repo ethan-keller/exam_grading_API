@@ -1,11 +1,12 @@
 package nl.tudelft.sem10.courseservice.entities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A composite key for {@link Category} objects used by the repository.
  */
-public class CategoryID {
+public class CategoryID implements Serializable {
     private String course;
     private String name;
 

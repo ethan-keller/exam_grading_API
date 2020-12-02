@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(path = "/course")
 public class CourseController {
     private static final String RESPONSE_TYPE = "application/json";
+
     @Autowired
     private CourseRepository courseRepository; //NOPMD
 
