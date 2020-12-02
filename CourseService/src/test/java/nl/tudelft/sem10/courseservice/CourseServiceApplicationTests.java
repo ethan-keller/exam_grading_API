@@ -1,29 +1,84 @@
 package nl.tudelft.sem10.courseservice;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import nl.tudelft.sem10.courseservice.controllers.CourseController;
 import nl.tudelft.sem10.courseservice.entities.Course;
+import nl.tudelft.sem10.courseservice.repositories.CourseRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
- * TODO: Fix pipeline issues (tests fail due to no database connection being present)
- * TODO: /course/courses (get all courses) endpoint testing.
+ * Tests for all {@link CourseController} endpoints.
  */
 @SpringBootTest(classes = CourseServiceApplication.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CourseServiceApplicationTests {
     private final transient Course c0 = new Course(9999L, "TEST_COURSE", "CSE9999");
 
     @Autowired
     private transient CourseController controller;
+
+    /**
+     * Mock the repository so no database connection is required.
+     */
+    @BeforeAll
+    public void setup() throws ReflectiveOperationException {
+        Map<Long, Course> map = new HashMap<>();
+        CourseRepository mock = Mockito.mock(CourseRepository.class);
+
+        // #findAll()
+        Mockito.doAnswer(invocation -> {
+            return Collections.unmodifiableList(new ArrayList<>(map.values()));
+        }).when(mock).findAll();
+
+        // #findById(Long)
+        Mockito.doAnswer(invocation -> {
+            long id = invocation.getArgument(0);
+            return Optional.ofNullable(map.get(id));
+        }).when(mock).findById(Mockito.anyLong());
+
+        // #existsById(Long)
+        Mockito.doAnswer(invocation -> {
+            long id = invocation.getArgument(0);
+            return map.containsKey(id);
+        }).when(mock).existsById(Mockito.anyLong());
+
+        // #save(Course)
+        Mockito.doAnswer(invocation -> {
+            Course course = invocation.getArgument(0);
+            map.put(course.getId(), course);
+            return course;
+        }).when(mock).save(Mockito.any(Course.class));
+
+        // #deleteById(Long)
+        Mockito.doAnswer(invocation -> {
+            long id = invocation.getArgument(0);
+            map.remove(id);
+            return null;
+        }).when(mock).deleteById(Mockito.anyLong());
+
+        // Inject mock into controller
+        Field field = controller.getClass().getDeclaredField("courseRepository");
+        field.setAccessible(true);
+        field.set(controller, mock);
+    }
 
     /**
      * Test if the controller is created.

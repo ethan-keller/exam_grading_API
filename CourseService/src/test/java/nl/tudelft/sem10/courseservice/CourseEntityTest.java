@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Course} entities.
- * TODO: Setter tests
  */
 public class CourseEntityTest {
     private final transient String courseName = "TEST_COURSE";
