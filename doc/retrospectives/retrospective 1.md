@@ -34,5 +34,6 @@
 - Prepare needed structural documents (graphs, doc of all API endpoints, ...) before implementing --> saves a lot of time				
 - Clear research if knowledge has to be sharpened				
 - Generalisation of the API.	
-- The API document that we created needs to be complete in order for us to establish the connecction between micro-services correctly			- - More and clearer communication.
+- The API document that we created needs to be complete in order for us to establish the connecction between micro-services correctly			
+- More and clearer communication.
 - The sprint iterations will be from wednesday to wednesday from now on.			
