@@ -92,7 +92,8 @@ public class User {
    * Standard to string method for user.
    */
   public String toString() {
-    return "netID: " + netId + " Pass: " + password + " type: " + type;
+    //return "netID: " + netId + " Pass: " + password + " type: " + type;
+    return "{\"netId\":\"" + netId + "\", \"password\":\"" + password + "\", \"type\":\"" + type + "\"}";
   }
 
   /**
