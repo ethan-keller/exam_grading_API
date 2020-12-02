@@ -21,7 +21,6 @@ plugins {
     id 'pmd'
     id 'info.solidsoft.pitest' version '1.5.2'
 }
-
 group = 'nl.tudelft.sem10'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -30,9 +29,26 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    compile 'mysql:mysql-connector-java:5.1.+'
+
+    // https://mvnrepository.com/artifact/org.json/json
+    compile group: 'org.json', name: 'json', version: '20090211'
+
+
+    // Local test database (in-memory)
+    implementation 'com.h2database:h2'
+    developmentOnly 'org.hibernate:hibernate-core'
+    developmentOnly 'org.hibernate:hibernate-entitymanager'
+
+    implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -48,6 +64,7 @@ test {
         includes = ['nl.tudelft.sem10.*']
     }
 }
+
 
 jacocoTestCoverageVerification() {
     dependsOn test
@@ -86,4 +103,3 @@ pitest {
     outputFormats = ['XML', 'HTML']
     timestampedReports = false
 }
-
