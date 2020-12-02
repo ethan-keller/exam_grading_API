@@ -1,16 +1,20 @@
 package nl.tudelft.sem10.gradingservice.controllers;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import nl.tudelft.sem10.gradingservice.entities.Grade;
 import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/grade")
@@ -34,6 +38,9 @@ public class GradeController {
         return gradeList;
     }
 
+    /**
+     * TODO: ADD ACTUAL JAVADOC.
+     */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.GET)
     @ResponseBody
     public Grade getGrade(@PathVariable final long gradeId) throws IllegalAccessException {
@@ -50,9 +57,13 @@ public class GradeController {
         gradeRepository.deleteGrade(gradeId);
     }
 
+    /**
+     * TODO: ADD ACTUAL JAVADOC.
+     */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.PUT)
     @ResponseBody
-    public void updateGrade(@RequestBody String jsonString, @PathVariable final long gradeId) throws JSONException {
+    public void updateGrade(@RequestBody String jsonString, @PathVariable final long gradeId)
+        throws JSONException {
         JSONObject obj = new JSONObject(jsonString);
         float mark = (float) obj.getDouble("mark");
 
@@ -63,6 +74,9 @@ public class GradeController {
         }
     }
 
+    /**
+     * TODO: ADD ACTUAL JAVADOC.
+     */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @SuppressWarnings("PMD")
