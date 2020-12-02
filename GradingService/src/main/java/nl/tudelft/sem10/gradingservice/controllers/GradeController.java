@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/grade")
+@SuppressWarnings("unused")
 public class GradeController {
 
     @Autowired
@@ -64,11 +65,9 @@ public class GradeController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
+    @SuppressWarnings("PMD")
     public void insertGrade(@RequestBody String jsonString) throws JSONException {
         JSONObject obj = new JSONObject(jsonString);
-        float mark = (float) obj.getDouble("mark");
-        String netid = obj.getString("netid");
-
         String courseCode = obj.getString("course_code");
         int numberCount = 0;
         for (char c : courseCode.toCharArray()) {
@@ -79,6 +78,8 @@ public class GradeController {
 
         String gradeType = obj.getString("grade_type");
         if (numberCount == 4) {
+            String netid = obj.getString("netid");
+            float mark = (float) obj.getDouble("mark");
             gradeRepository.insertGrade(mark, netid, courseCode, gradeType);
         }
     }

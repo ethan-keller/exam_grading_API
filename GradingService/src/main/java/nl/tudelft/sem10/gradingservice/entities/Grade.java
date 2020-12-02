@@ -8,6 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "grade")
+@SuppressWarnings({"PMD", "unused"})
 public class Grade {
 
     @Id
