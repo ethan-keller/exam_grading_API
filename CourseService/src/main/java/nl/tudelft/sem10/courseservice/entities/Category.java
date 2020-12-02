@@ -12,7 +12,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "categories")
+@IdClass(CategoryID.class)
 public class Category {
+
     @Id
     @Column(name = "course_code")
     private String course;

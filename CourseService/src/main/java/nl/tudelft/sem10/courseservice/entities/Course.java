@@ -28,7 +28,7 @@ public class Course {
     }
 
     /**
-     * Create a course object with given ID, name and course code.
+     * Create a course object with given name and course code.
      *
      * @param name - String Course name.
      * @param code - String Course code.
