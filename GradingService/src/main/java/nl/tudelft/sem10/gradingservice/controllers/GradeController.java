@@ -18,7 +18,7 @@ import java.util.Optional;
 public class GradeController {
 
     @Autowired
-    GradeRepository gradeRepository; //NOPMD
+    private GradeRepository gradeRepository; //NOPMD
 
     /**
      * TODO: Insert Javadoc here.
