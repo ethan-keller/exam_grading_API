@@ -41,6 +41,16 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
+     * Checks if a password is correct.
+     *
+     * @param password the password
+     * @return true if match, false otherwise
+     */
+    public boolean validate(final String password) {
+        return password.equals(getPassword());
+    }
+
+    /**
      * Getter for the user's password.
      *
      * @return user's password

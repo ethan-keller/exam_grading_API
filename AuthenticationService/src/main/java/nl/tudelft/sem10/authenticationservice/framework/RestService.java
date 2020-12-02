@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestService {
     private final transient RestTemplate restTemplate;
     private static final int USER_SERVICE_PORT = 8083;
+    private static final String GET_USER_ENDPOINT = "/userService/userByNetId";
 
     /**
      * Constructor.
@@ -29,9 +30,9 @@ public class RestService {
      *
      * @return the wanted user
      */
-    public User getUserFromUserService() {
-        // TODO: add endpoint to contact in user microservice
-        String url = "http://localhost:" + USER_SERVICE_PORT;
+    public User getUserFromUserService(String netId) {
+        String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
+                + "?netId=" + netId;
         ResponseEntity<User> response = this.restTemplate.getForEntity(url, User.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();

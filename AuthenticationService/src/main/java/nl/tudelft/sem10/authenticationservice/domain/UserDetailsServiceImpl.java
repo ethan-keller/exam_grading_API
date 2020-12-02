@@ -1,6 +1,7 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
 import nl.tudelft.sem10.authenticationservice.application.User;
+import nl.tudelft.sem10.authenticationservice.framework.RestService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,11 +22,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //TODO: communication with USER service to access user database
-        //RestService rest = new RestService();
-        //User user = rest.getUserFromUserService();
-
-        User user = new User("user", "pass");
+        RestService rest = new RestService();
+        User user = rest.getUserFromUserService(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("Could not find a user with netId: " + username);

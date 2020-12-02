@@ -2,7 +2,6 @@ package nl.tudelft.sem10.authenticationservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +18,7 @@ class JwtRequestTest {
      */
     @BeforeEach
     void setUp() {
-        jwtRequest = new JwtRequest("netId", "password123");
+        jwtRequest = new JwtRequest("netId", "password123", 0);
     }
 
     /**
@@ -45,5 +44,13 @@ class JwtRequestTest {
     @Test
     void getPassword() {
         assertEquals("password123", jwtRequest.getPassword());
+    }
+
+    /**
+     * Getter for type test.
+     */
+    @Test
+    void getType() {
+        assertEquals(0, jwtRequest.getType());
     }
 }
