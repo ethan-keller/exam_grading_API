@@ -17,6 +17,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM user WHERE netid = ?1 AND password = ?2", nativeQuery = true)
     User getUserByNetIdAndPassword(String netId, String password);
 
+    @Query(value = "SELECT * FROM user WHERE type = ?1", nativeQuery = true)
+    List<User> getUsersOfType(int type);
+
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO user (netid, password, type) "

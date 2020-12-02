@@ -51,6 +51,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint to get a user by both password and netId.
+     *
+     * @param netId    netId of user
+     * @param password password of user
+     * @return Json of user
+     */
     @GetMapping("/userByNetIdAndPassword")
     @ResponseBody
     public ResponseEntity<String> userByNetIdAndPassword(String netId, String password) {
@@ -62,12 +69,20 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint to create and add user to database.
+     *
+     * @param netId    netId of user
+     * @param password password of user
+     * @param type     type of user
+     * @return status code and a string with conformation
+     */
     @PostMapping("/add")
     @ResponseBody
     public ResponseEntity<String> createUser(String netId, String password, int type) {
         User u = userRepository.getUserByNetId(netId);
         if (u != null) {
-            return new ResponseEntity<>(HttpStatus.IM_USED);
+            return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
         } else {
             userRepository.insertUser(netId, password, type);
             User n = new User(netId, password, type);
@@ -75,6 +90,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint to delete a given user.
+     *
+     * @param netId netid of user
+     * @return status code and response string
+     */
     @DeleteMapping("/delete")
     @ResponseBody
     public ResponseEntity<String> deleteUser(String netId) {
@@ -87,6 +108,14 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint to change an existing user.
+     *
+     * @param netId    netid of user
+     * @param password password of user
+     * @param type     type of user
+     * @return status code and response string
+     */
     @PostMapping(path = "/change")
     @ResponseBody
     public ResponseEntity<String> changeDetails(String netId, String password, int type) {
@@ -100,9 +129,26 @@ public class UserController {
         }
     }
 
+    /**
+     * Endpoint to return a specific type of users.
+     *
+     * @param type type of user needed
+     * @return list of users of given type
+     */
+    @GetMapping("/usersOfType")
+    @ResponseBody
+    public List<User> userByType(int type) {
+        return userRepository.getUsersOfType(type);
+    }
+
+    /**
+     * Endpoint to test connection.
+     *
+     * @return confirmation string and a 200OK
+     */
     @GetMapping("/test")
     @ResponseBody
-    public ResponseEntity test() {
+    public ResponseEntity<String> test() {
         return new ResponseEntity<>("This is a test", HttpStatus.OK);
     }
 
