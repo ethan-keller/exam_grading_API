@@ -1,10 +1,10 @@
 package nl.tudelft.sem10.gradingservice.entities;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "grade")
@@ -32,13 +32,13 @@ public class Grade {
     }
 
     /**
-     *TODO: Insert javadoc here.
+     * TODO: Insert javadoc here.
      *
-     * @param id - long
-     * @param netid - String
+     * @param id         - long
+     * @param netid      - String
      * @param courseCode - String
-     * @param gradeType - String
-     * @param mark - float
+     * @param gradeType  - String
+     * @param mark       - float
      */
     public Grade(long id, float mark, String netid, String courseCode, String gradeType) {
         this.id = id;
@@ -50,13 +50,17 @@ public class Grade {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Grade grade = (Grade) o;
-        return id == grade.id &&
-                Float.compare(grade.mark, mark) == 0 &&
-                Objects.equals(netid, grade.netid) &&
-                Objects.equals(courseCode, grade.courseCode);
+        return id == grade.id
+            && Float.compare(grade.mark, mark) == 0
+            && Objects.equals(netid, grade.netid)
+            && Objects.equals(courseCode, grade.courseCode);
     }
 
     public long getId() {
