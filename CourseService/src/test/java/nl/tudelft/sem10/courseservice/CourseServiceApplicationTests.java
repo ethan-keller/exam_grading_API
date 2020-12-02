@@ -40,44 +40,11 @@ class CourseServiceApplicationTests {
      */
     @BeforeAll
     public void setup() throws ReflectiveOperationException {
-        Map<String, Course> map = new HashMap<>();
-        CourseRepository mock = Mockito.mock(CourseRepository.class);
-
-        // #findAll()
-        Mockito.doAnswer(invocation -> {
-            return Collections.unmodifiableList(new ArrayList<>(map.values()));
-        }).when(mock).findAll();
-
-        // #findById(String)
-        Mockito.doAnswer(invocation -> {
-            String id = invocation.getArgument(0);
-            return Optional.ofNullable(map.get(id));
-        }).when(mock).findById(Mockito.anyString());
-
-        // #existsById(String)
-        Mockito.doAnswer(invocation -> {
-            String id = invocation.getArgument(0);
-            return map.containsKey(id);
-        }).when(mock).existsById(Mockito.anyString());
-
-        // #save(Course)
-        Mockito.doAnswer(invocation -> {
-            Course course = invocation.getArgument(0);
-            map.put(course.getCode(), course);
-            return course;
-        }).when(mock).save(Mockito.any(Course.class));
-
-        // #deleteById(String)
-        Mockito.doAnswer(invocation -> {
-            String id = invocation.getArgument(0);
-            map.remove(id);
-            return null;
-        }).when(mock).deleteById(Mockito.anyString());
+        // Create repository mock
+       CourseRepository mock = Util.createMapBackedRepositoryMock(CourseRepository.class, Course.class, String.class, Course::getCode);
 
         // Inject mock into controller
-        Field field = controller.getClass().getDeclaredField("courseRepository");
-        field.setAccessible(true);
-        field.set(controller, mock);
+        Util.setField(controller, "courseRepository", mock);
     }
 
     /**
