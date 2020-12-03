@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,17 +17,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * Spring Security filter before authorizing access.
+ * Spring Security filter placed in filter chain before authorizing access.
  */
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
+
+    private final transient SecurityContext securityContext =
+            SecurityContextHolder.getContext();
 
     // use of transient for PMD
     @Autowired
     private transient JwtTokenUtil jwtTokenUtil;
     @Autowired
     private transient UserDetailsService userDetailsService;
-
 
     /**
      * Checks presence and validity of token and sets details.
@@ -46,7 +49,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         // check token presence and validity
         if (!isValidToken(requestTokenHeader)) {
-            System.out.println("JWT token is not prepended by 'Bearer ' string");
             filterChain.doFilter(request, response);
             return;
         }
@@ -57,7 +59,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String netId = fetchNetId(token);
 
         // if netId fetch was successful and no authentication has occurred yet
-        if (netId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (netId != null && securityContext.getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(netId);
 
             // check if token matches the user
@@ -77,7 +79,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
      * @return true if present, false otherwise
      */
     private boolean isValidToken(final String tokenHeader) {
-        return tokenHeader != null && tokenHeader.startsWith("Bearer ");
+        if (tokenHeader == null) {
+            return false;
+        } else if (!tokenHeader.startsWith("Bearer ")) {
+            System.out.println("JWT token is not prepended by 'Bearer ' string");
+            return false;
+        }
+        return true;
     }
 
     /**

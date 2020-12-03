@@ -31,9 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private transient JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-
+    /**
+     * Sets the user details service and password encoder to the authentication manager.
+     *
+     * @param auth builder that builds the authentication manager
+     * @throws Exception if building of authentication manager goes wrong
+     */
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureAuthManager(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 
