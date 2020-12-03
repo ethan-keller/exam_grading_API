@@ -22,18 +22,19 @@ class JwtAuthenticationEntryPointTest {
     /**
      * Fields that facilitate console output reading.
      */
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
-    private final PrintStream originalErr = System.err;
+    private final transient ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final transient ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private final transient PrintStream originalOut = System.out;
+    private final transient PrintStream originalErr = System.err;
 
     /**
      * Fields that imitate and/or mock method parameters needed.
      */
-    private final JwtAuthenticationEntryPoint entry = new JwtAuthenticationEntryPoint();
-    private final HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
-    private final HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
-    private final AccountExpiredException e = new AccountExpiredException("testing purposes");
+    private final transient JwtAuthenticationEntryPoint entry = new JwtAuthenticationEntryPoint();
+    private final transient HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+    private final transient HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
+    private final transient AccountExpiredException exception =
+            new AccountExpiredException("testing purposes");
 
     /**
      * Before each test the output streams are customized.
@@ -61,16 +62,16 @@ class JwtAuthenticationEntryPointTest {
     void commence() {
         try {
             // call method
-            entry.commence(req, resp, e);
+            entry.commence(req, resp, exception);
             // verify that error has been sent
             verify(resp, Mockito.times(1))
                     .sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             // check console output
-            assertEquals("HTTP Status 401 - " + e.getMessage()
+            assertEquals("HTTP Status 401 - " + exception.getMessage()
                     + System.getProperty("line.separator"), outContent.toString());
-        } catch (Exception ex) {
+        } catch (Exception e) {
             // if exception => fail
-            ex.printStackTrace();
+            e.printStackTrace();
             fail();
         }
     }
