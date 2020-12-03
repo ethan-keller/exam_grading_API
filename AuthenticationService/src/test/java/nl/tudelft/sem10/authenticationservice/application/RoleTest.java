@@ -2,13 +2,14 @@ package nl.tudelft.sem10.authenticationservice.application;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import org.junit.jupiter.api.Test;
 
 class RoleTest {
 
-    private final Role role1 = new Role(RoleType.STUDENT);
-    private final Role role2 = new Role(RoleType.TEACHER);
-    private final Role role3 = new Role(RoleType.STUDENT);
+    private final transient Role role1 = new Role(RoleType.STUDENT);
+    private final transient Role role2 = new Role(RoleType.TEACHER);
+    private final transient Role role3 = new Role(RoleType.STUDENT);
 
     @Test
     void getName() {
@@ -19,7 +20,7 @@ class RoleTest {
     @Test
     void getType() {
         assertEquals(RoleType.STUDENT, role1.getType());
-        assertEquals(RoleType.TEACHER, role2.getType());;
+        assertEquals(RoleType.TEACHER, role2.getType());
     }
 
     @Test
