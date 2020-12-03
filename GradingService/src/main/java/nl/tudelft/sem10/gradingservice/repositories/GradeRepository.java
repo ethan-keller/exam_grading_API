@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface GradeRepository extends JpaRepository<Grade, Long> {
 
     //update building information
@@ -28,4 +30,9 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Query(value = "DELETE FROM grade WHERE id = ?1", nativeQuery = true)
     void deleteGrade(long id);
 
+    //Finds grades of a user
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT * FROM grade WHERE netid = ?1", nativeQuery = true)
+    List<Grade> getGradesByNetId(String netId);
 }
