@@ -6,62 +6,77 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * A course object.
+ */
 @Entity
 @Table(name = "course")
 public class Course {
 
-    @Id
-    @Column(name = "id")
-    private long id;
-
     @Column(name = "course_name")
     private String name;
 
+    @Id
     @Column(name = "course_code")
     private String code;
 
-    public void setId(long id) {
-        this.id = id;
+    /**
+     * No-args constructor for internal use.
+     */
+    public Course() {
+        // Nothing
     }
 
-    public void setName(String name) {
+    /**
+     * Create a course object with given name and course code.
+     *
+     * @param name - String Course name.
+     * @param code - String Course code.
+     */
+    public Course(String name, String code) {
         this.name = name;
-    }
-
-    public void setCode(String code) {
         this.code = code;
     }
 
-    public Course() {}
-
-    public long getId() {
-        return id;
-    }
-
+    /**
+     * Get the current course name.
+     *
+     * @return the course name (may be null).
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set a new course name.
+     *
+     * @param name - String New course name.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Get the current course code.
+     *
+     * @return the course code (may be null).
+     */
     public String getCode() {
         return code;
     }
 
     /**
-     *TODO: Insert javadoc here.
+     * Set a new course code.
      *
-     * @param id - long
-     * @param name - String
-     * @param code - String
+     * @param code - String New course code.
      */
-    public Course(long id, String name, String code) {
-        this.id = id;
-        this.name = name;
+    public void setCode(String code) {
         this.code = code;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, code);
+        return Objects.hash(name, code);
     }
 
     @Override
@@ -73,9 +88,18 @@ public class Course {
             return false;
         }
         Course course = (Course) o;
-        return id == course.id
-                && Objects.equals(name, course.name)
+        return Objects.equals(name, course.name)
                 && Objects.equals(code, course.code);
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder()
+                .append("Course[name=")
+                .append(name)
+                .append(", code=")
+                .append(code)
+                .append("]")
+                .toString();
+    }
 }
