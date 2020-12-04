@@ -47,6 +47,9 @@ public class UserDetailsImpl implements UserDetails {
      * @return true if match, false otherwise
      */
     public boolean validate(final String password) {
+        if (password == null) {
+            return false;
+        }
         return password.equals(getPassword());
     }
 
