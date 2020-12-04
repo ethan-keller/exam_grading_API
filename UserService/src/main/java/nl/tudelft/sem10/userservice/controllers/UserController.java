@@ -1,24 +1,24 @@
 package nl.tudelft.sem10.userservice.controllers;
 
-import java.util.List;
 import nl.tudelft.sem10.userservice.entities.User;
 import nl.tudelft.sem10.userservice.repositories.UserRepository;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
  * Controller for userService module. Provides basic endpoints to interact with users database.
  */
 @Controller
-@RequestMapping(path = "/userService")
+@RequestMapping(path = "/user")
 public class UserController {
     @Autowired
     private UserRepository userRepository; //NOPMD
@@ -28,7 +28,7 @@ public class UserController {
      *
      * @return return all users as a List of type user
      */
-    @GetMapping("/all")
+    @GetMapping("")
     @ResponseBody
     public List<User> users() {
         return userRepository.getAllUsers();
@@ -40,9 +40,9 @@ public class UserController {
      * @param netId netId of the user in question
      * @return returns the user identified with the string.
      */
-    @GetMapping("/user")
+    @GetMapping("/{netId}")
     @ResponseBody
-    public ResponseEntity<String> userByNetId(String netId) {
+    public ResponseEntity<String> userByNetId(@PathVariable String netId) {
         User u = userRepository.getUserByNetId(netId);
         if (u == null) {
             return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
@@ -58,9 +58,9 @@ public class UserController {
      * @param password password of user
      * @return Json of user
      */
-    @GetMapping("/userByNetIdAndPassword")
+    @GetMapping("/{netId}/{password}")
     @ResponseBody
-    public ResponseEntity<String> userByNetIdAndPassword(String netId, String password) {
+    public ResponseEntity<String> userByNetIdAndPassword(@PathVariable String netId, @PathVariable String password) {
         User u = userRepository.getUserByNetIdAndPassword(netId, password);
         if (u == null) {
             return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
@@ -72,14 +72,17 @@ public class UserController {
     /**
      * Endpoint to create and add user to database.
      *
-     * @param netId    netId of user
-     * @param password password of user
-     * @param type     type of user
+     * @param jsonString - JSON representation of a User object
      * @return status code and a string with conformation
      */
-    @PostMapping("/add")
+    @PostMapping("")
+    @Modifying
     @ResponseBody
-    public ResponseEntity<String> createUser(String netId, String password, int type) {
+    public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
+        JSONObject json = new JSONObject(jsonString);
+        String netId = json.getString("netId");
+        String password = json.getString("password");
+        int type = json.getInt("type");
         User u = userRepository.getUserByNetId(netId);
         if (u != null) {
             return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
@@ -93,12 +96,15 @@ public class UserController {
     /**
      * Endpoint to delete a given user.
      *
-     * @param netId netId of user
+     * @param jsonString - JSON representation of a User object
      * @return status code and response string
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping("")
+    @Modifying
     @ResponseBody
-    public ResponseEntity<String> deleteUser(String netId) {
+    public ResponseEntity<String> deleteUser(@RequestBody String jsonString) throws JSONException {
+        JSONObject json = new JSONObject(jsonString);
+        String netId = json.getString("netId");
         User u = userRepository.getUserByNetId(netId);
         if (u == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -111,19 +117,22 @@ public class UserController {
     /**
      * Endpoint to change an existing user.
      *
-     * @param netId    netId of user
-     * @param password password of user
-     * @param type     type of user
+     * @param jsonString - JSON representation of a User object
      * @return status code and response string
      */
-    @PostMapping(path = "/change")
+    @PutMapping("")
+    @Modifying
     @ResponseBody
-    public ResponseEntity<String> changeDetails(String netId, String password, int type) {
+    public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
+        JSONObject json = new JSONObject(jsonString);
+        String netId = json.getString("netId");
+        String password = json.getString("password");
+        int type = json.getInt("type");
         User u = userRepository.getUserByNetId(netId);
         if (u == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            userRepository.updateUser(netId, type, password);
+            userRepository.updateUser(netId, password, type);
             User n = new User(netId, password, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.OK);
         }
@@ -135,9 +144,9 @@ public class UserController {
      * @param type type of user needed
      * @return list of users of given type
      */
-    @GetMapping("/usersOfType")
+    @GetMapping("/role/{type}")
     @ResponseBody
-    public List<User> userByType(int type) {
+    public List<User> userByType(@PathVariable int type) {
         return userRepository.getUsersOfType(type);
     }
 

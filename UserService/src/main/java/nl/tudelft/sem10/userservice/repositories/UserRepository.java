@@ -1,11 +1,12 @@
 package nl.tudelft.sem10.userservice.repositories;
 
-import java.util.List;
-import javax.transaction.Transactional;
 import nl.tudelft.sem10.userservice.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * The User Repository to interact with the database.
@@ -60,15 +61,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * Modify an existing user.
-     * @param netId of type String - to be updated
+     * @param netId of type String - to search for, can't be updated at the moment
      * @param password of type String - to be updated
      * @param type of type int - to be updated
      */
     @Modifying
     @Transactional
-    @Query(value = "UPDATE user SET netid = ?1, password = ?2, "
+    @Query(value = "UPDATE user SET password = ?2, "
             + "type = ?3 WHERE netid = ?1", nativeQuery = true)
-    void updateUser(String netId, int type, String password);
+    void updateUser(String netId, String password, int type);
 
     /**
      * Delete an existing user from the database.
@@ -76,7 +77,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM users WHERE netid = ?1", nativeQuery = true)
+    @Query(value = "DELETE FROM user WHERE netid = ?1", nativeQuery = true)
     void deleteUser(String netId);
 
 }
