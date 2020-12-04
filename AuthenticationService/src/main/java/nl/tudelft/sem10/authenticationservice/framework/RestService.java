@@ -31,6 +31,9 @@ public class RestService {
      * @return the wanted user
      */
     public User getUserFromUserService(String netId) {
+        if (netId == null) {
+            return null;
+        }
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
                 + "?netId=" + netId;
         ResponseEntity<User> response = this.restTemplate.getForEntity(url, User.class);

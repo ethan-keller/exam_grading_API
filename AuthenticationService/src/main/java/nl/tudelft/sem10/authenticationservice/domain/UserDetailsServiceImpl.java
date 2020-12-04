@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private final transient RestService rest = new RestService();
+
     /**
      * Get user details for a specific user.
      *
@@ -22,7 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        RestService rest = new RestService();
         User user = rest.getUserFromUserService(username);
 
         if (user == null) {

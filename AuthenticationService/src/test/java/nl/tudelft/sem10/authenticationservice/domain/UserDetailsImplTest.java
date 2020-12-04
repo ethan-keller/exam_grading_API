@@ -2,6 +2,7 @@ package nl.tudelft.sem10.authenticationservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import nl.tudelft.sem10.authenticationservice.application.Role;
@@ -20,6 +21,7 @@ class UserDetailsImplTest {
     private final transient User u2 = new User("aBeller", "pass456!", 1);
     private transient UserDetailsImpl userDetails1;
     private transient UserDetailsImpl userDetails2;
+    private transient UserDetailsImpl userDetails3;
 
     /**
      * Test set up.
@@ -28,6 +30,7 @@ class UserDetailsImplTest {
     void setUp() {
         userDetails1 = new UserDetailsImpl(u1);
         userDetails2 = new UserDetailsImpl(u2);
+        userDetails3 = new UserDetailsImpl(u2);
     }
 
     /**
@@ -127,5 +130,25 @@ class UserDetailsImplTest {
     @Test
     void isEnabled() {
         assertTrue(userDetails1.isEnabled());
+    }
+
+    /**
+     * Test for equals method.
+     */
+    @Test
+    void equalsTest() {
+        assertEquals(userDetails2, userDetails3);
+        assertEquals(userDetails1, userDetails1);
+        assertNotEquals(userDetails1, userDetails2);
+        assertNotEquals(userDetails1, new Object());
+    }
+
+    /**
+     * Test for hash code generator.
+     */
+    @Test
+    void hashTest() {
+        assertEquals(userDetails2.hashCode(), userDetails3.hashCode());
+        assertNotEquals(userDetails1.hashCode(), userDetails3.hashCode());
     }
 }
