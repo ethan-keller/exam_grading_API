@@ -1,12 +1,13 @@
 package nl.tudelft.sem10.gradingservice.repositories;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import nl.tudelft.sem10.gradingservice.entities.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+
 
 public interface GradeRepository extends JpaRepository<Grade, Long> {
 
@@ -14,14 +15,14 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE grade SET mark = ?2 "
-        + "WHERE id = ?1", nativeQuery = true)
+            + "WHERE id = ?1", nativeQuery = true)
     void updateGrade(long id, float mark);
 
     //insert new building in database
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO grade (mark, netid, course_code, grade_type) "
-        + "VALUES (?1, ?2, ?3, ?4)", nativeQuery = true)
+            + "VALUES (?1, ?2, ?3, ?4)", nativeQuery = true)
     void insertGrade(float mark, String netid, String courseCode, String gradeType);
 
     //deletes entry from building table
