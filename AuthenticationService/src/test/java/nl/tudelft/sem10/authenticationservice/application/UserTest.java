@@ -30,6 +30,12 @@ class UserTest {
     }
 
     @Test
+    void getRoleInteger() {
+        assertEquals(0, user1.getRoleInteger());
+        assertEquals(1, user3.getRoleInteger());
+    }
+
+    @Test
     void testEquals() {
         assertEquals(user2, user5);
         assertNotEquals(user2, user3);

@@ -64,6 +64,19 @@ public class User implements Serializable {
     }
 
     /**
+     * Getter for the user's role in integer representation.
+     *
+     * @return 0 if student and 1 if teacher
+     */
+    public int getRoleInteger() {
+        if (getRole().getType() == RoleType.STUDENT) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
      * Checks equality between users.
      *
      * @param o other object to compare to
