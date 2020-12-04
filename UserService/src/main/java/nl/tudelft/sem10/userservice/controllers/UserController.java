@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
- * Controller for userService module. Provides basic endpoints to nteract with users database.
+ * Controller for userService module. Provides basic endpoints to interact with users database.
  */
 @Controller
 @RequestMapping(path = "/userService")
@@ -38,7 +38,7 @@ public class UserController {
      * Endpoint to get one specific user.
      *
      * @param netId netId of the user in question
-     * @return returns the user identied with the string.
+     * @return returns the user identified with the string.
      */
     @GetMapping("/user")
     @ResponseBody
@@ -93,7 +93,7 @@ public class UserController {
     /**
      * Endpoint to delete a given user.
      *
-     * @param netId netid of user
+     * @param netId netId of user
      * @return status code and response string
      */
     @DeleteMapping("/delete")
@@ -111,7 +111,7 @@ public class UserController {
     /**
      * Endpoint to change an existing user.
      *
-     * @param netId    netid of user
+     * @param netId    netId of user
      * @param password password of user
      * @param type     type of user
      * @return status code and response string
