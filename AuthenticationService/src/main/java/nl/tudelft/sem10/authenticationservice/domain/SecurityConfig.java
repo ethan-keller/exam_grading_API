@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// A LOT OF INFO FROM https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
 
 /**
  * General Spring Security configuration class.

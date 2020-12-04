@@ -7,16 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-// https://attacomsian.com/blog/http-requests-resttemplate-spring-boot
-
 /**
  * External communication (other microservices).
  */
 @Service
 public class RestService {
-    private final transient RestTemplate restTemplate;
+
     private static final int USER_SERVICE_PORT = 8083;
     private static final String GET_USER_ENDPOINT = "/userService/userByNetId";
+    private final transient RestTemplate restTemplate;
+
 
     /**
      * Constructor.
