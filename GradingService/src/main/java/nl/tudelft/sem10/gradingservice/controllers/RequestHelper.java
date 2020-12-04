@@ -20,8 +20,8 @@ public class RequestHelper {
     public static HttpRequest getRequest(String path) {
 
         String reqPath = domainOfCourseService + path;
-        String userAndPass = username + ":" + password;
-        String basicAuthPayload = "Basic " + Base64.getEncoder().encodeToString(userAndPass.getBytes());
+        //String userAndPass = username + ":" + password;
+        //String basicAuthPayload = "Basic " + Base64.getEncoder().encodeToString(userAndPass.getBytes());
         //.header("Authorization", basicAuthPayload)
         return HttpRequest
                 .newBuilder()
@@ -32,17 +32,17 @@ public class RequestHelper {
 
 
     public static String sendRequest(HttpRequest request, HttpClient client) {
-        HttpResponse<String> response;
         try {
+            HttpResponse<String> response;
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.body().isEmpty()) {
+                return Integer.toString(response.statusCode());
+            }
+            return response.body();
         } catch (Exception e) {
             e.printStackTrace();
             return "Communication with server failed";
         }
-        if (response.body().isEmpty()) {
-            return Integer.toString(response.statusCode());
-        }
-        return response.body();
     }
 
 
