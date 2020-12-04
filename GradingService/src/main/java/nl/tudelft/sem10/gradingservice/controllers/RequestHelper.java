@@ -21,7 +21,8 @@ public class RequestHelper {
 
         String reqPath = domainOfCourseService + path;
         //String userAndPass = username + ":" + password;
-        //String basicAuthPayload = "Basic " + Base64.getEncoder().encodeToString(userAndPass.getBytes());
+        //String basicAuthPayload = "Basic "
+        // + Base64.getEncoder().encodeToString(userAndPass.getBytes());
         //.header("Authorization", basicAuthPayload)
         return HttpRequest
                 .newBuilder()
