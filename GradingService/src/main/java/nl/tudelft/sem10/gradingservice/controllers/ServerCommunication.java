@@ -1,10 +1,6 @@
 package nl.tudelft.sem10.gradingservice.controllers;
 
-import nl.tudelft.sem10.gradingservice.entities.Category;
-
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.util.List;
 
 public class ServerCommunication {
     static RequestHelper requestHelper = new RequestHelper();
