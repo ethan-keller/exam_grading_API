@@ -33,6 +33,8 @@ class UserTest {
     void testEquals() {
         assertEquals(user2, user5);
         assertNotEquals(user2, user3);
+        assertEquals(user2, user2);
+        assertNotEquals(user1, new Object());
     }
 
     @Test

@@ -27,6 +27,8 @@ class RoleTest {
     void testEquals() {
         assertEquals(role3, role1);
         assertNotEquals(role1, role2);
+        assertEquals(role3, role3);
+        assertNotEquals(role2, new Object());
     }
 
     @Test
