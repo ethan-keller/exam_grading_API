@@ -36,4 +36,10 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Transactional
     @Query(value = "SELECT * FROM grade WHERE netid = ?1", nativeQuery = true)
     List<Grade> getGradesByNetId(String netId);
+
+    //Finds grades of a user by course
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT * FROM grade WHERE netid = ?1 AND course_code = ?2", nativeQuery = true)
+    List<Grade> getGradesByNetIdAndCourse(String netId, String course);
 }

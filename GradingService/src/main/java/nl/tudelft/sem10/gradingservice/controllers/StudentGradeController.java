@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.gradingservice.controllers;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,8 @@ public class StudentGradeController {
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 
+    private transient ServerCommunication serverCommunication = new ServerCommunication();
+
     /**
      * Method to get mean grade of a student.
      *
@@ -50,5 +53,23 @@ public class StudentGradeController {
         sum = sum / list.size();
         return new ResponseEntity<>(sum, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/grade")
+    @ResponseBody
+    public ResponseEntity<Double> getGrade(@RequestParam String netId, @RequestParam String courseCode) throws JSONException {
+        List<Grade> list = gradeRepository.getGradesByNetIdAndCourse(netId, courseCode);
+        if (list == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        double g = 0.0;
+        for (Grade grade : list) {
+            String str = serverCommunication.getCourseWeights(courseCode, grade.getGradeType());
+            JSONObject obj = new JSONObject(str);
+            double weight  = obj.getDouble("weight");
+            g = g + (grade.getMark() * weight);
+        }
+        return new ResponseEntity<>(g, HttpStatus.ACCEPTED);
+    }
+
 
 }
