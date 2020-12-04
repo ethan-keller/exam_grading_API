@@ -81,16 +81,15 @@ public class UserController {
     public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
         JSONObject json = new JSONObject(jsonString);
         String netId = json.getString("netId");
-        String password = json.getString("password");
-        int type = json.getInt("type");
         User u = userRepository.getUserByNetId(netId);
         if (u != null) {
             return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
-        } else {
-            userRepository.insertUser(netId, password, type);
-            User n = new User(netId, password, type);
-            return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
         }
+        String password = json.getString("password");
+        int type = json.getInt("type");
+        userRepository.insertUser(netId, password, type);
+        User n = new User(netId, password, type);
+        return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
     }
 
     /**
@@ -126,16 +125,15 @@ public class UserController {
     public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
         JSONObject json = new JSONObject(jsonString);
         String netId = json.getString("netId");
-        String password = json.getString("password");
-        int type = json.getInt("type");
         User u = userRepository.getUserByNetId(netId);
         if (u == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            userRepository.updateUser(netId, password, type);
-            User n = new User(netId, password, type);
-            return new ResponseEntity<>(n.toString(), HttpStatus.OK);
         }
+        String password = json.getString("password");
+        int type = json.getInt("type");
+        userRepository.updateUser(netId, password, type);
+        User n = new User(netId, password, type);
+        return new ResponseEntity<>(n.toString(), HttpStatus.OK);
     }
 
     /**
