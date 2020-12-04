@@ -37,8 +37,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
      * @param request     http request
      * @param response    http response
      * @param filterChain the chain of Spring Security filters
-     * @throws ServletException overridden from super class
-     * @throws IOException      overridden from super class
+     * @throws ServletException if errors occur when handling servlets
+     * @throws IOException      if errors occur when handling IO
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -121,6 +121,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // set details from http request
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // set authentication
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        securityContext.setAuthentication(authToken);
     }
 }

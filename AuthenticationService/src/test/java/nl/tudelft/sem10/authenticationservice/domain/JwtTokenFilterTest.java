@@ -1,6 +1,8 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,15 +12,21 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nl.tudelft.sem10.authenticationservice.application.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
+/**
+ * Test suite for JWT token security filter.
+ */
 class JwtTokenFilterTest {
 
     private final transient JwtTokenFilter filter = new JwtTokenFilter();
@@ -32,9 +40,13 @@ class JwtTokenFilterTest {
     private transient JwtTokenUtil utils;
     @Mock
     private transient UserDetailsServiceImpl detailsService;
-    @Mock
-    private transient SecurityContextHolder securityContextHolder;
 
+    /**
+     * Mock set up and field injection.
+     *
+     * @throws NoSuchFieldException   if field does not exist
+     * @throws IllegalAccessException if access modifiers block access
+     */
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         // initialize mock objects
@@ -51,8 +63,18 @@ class JwtTokenFilterTest {
         userServiceField.set(filter, detailsService);
     }
 
+    /**
+     * Checks correct behaviour for invalid authorization header.
+     *
+     * @throws ServletException       if errors occur when handling servlets
+     * @throws IOException            if errors occur when handling IO
+     * @throws NoSuchFieldException   if field does not exist
+     * @throws IllegalAccessException if access modifiers block access
+     */
     @Test
-    void invalidHeader() throws ServletException, IOException {
+    void invalidHeader() throws ServletException, IOException, NoSuchFieldException, IllegalAccessException {
+        SecurityContext securityContext = getMockedSecurityContext();
+
         // cannot get header -> null
         when(req.getHeader("Authorization")).thenReturn(null);
         filter.doFilterInternal(req, res, filterChain);
@@ -61,14 +83,25 @@ class JwtTokenFilterTest {
         when(req.getHeader("Authorization")).thenReturn("no_bearer_prefix");
         filter.doFilterInternal(req, res, filterChain);
 
-
         verify(filterChain, times(2)).doFilter(req, res);
+        verify(securityContext, times(0)).getAuthentication();
+        verify(securityContext, times(0)).setAuthentication(any());
     }
 
+    /**
+     * Checks correct behaviour for invalid tokens.
+     *
+     * @throws ServletException       if errors occur when handling servlets
+     * @throws IOException            if errors occur when handling IO
+     * @throws NoSuchFieldException   if field does not exist
+     * @throws IllegalAccessException if access modifiers block access
+     */
     @Test
-    void invalidToken() throws ServletException, IOException {
-        String token = "this_is_an_invalid_token";
-        when(req.getHeader("Authorization")).thenReturn("Bearer " + token);
+    void invalidToken() throws ServletException, IOException, NoSuchFieldException, IllegalAccessException {
+        // setup
+        SecurityContext securityContext = getMockedSecurityContext();
+        String token = "invalid_token123";
+        validHeader(token);
 
         // 'token' is expired
         when(utils.getNetIdFromToken(token)).thenThrow(ExpiredJwtException.class);
@@ -82,13 +115,118 @@ class JwtTokenFilterTest {
         filter.doFilterInternal(req, res, filterChain);
 
         verify(filterChain, times(2)).doFilter(req, res);
+        verify(securityContext, times(0)).getAuthentication();
+        verify(securityContext, times(0)).setAuthentication(any());
     }
 
+    /**
+     * Checks correct behaviour for already authenticated requests.
+     *
+     * @throws ServletException       if errors occur when handling servlets
+     * @throws IOException            if errors occur when handling IO
+     * @throws NoSuchFieldException   if field does not exist
+     * @throws IllegalAccessException if access modifiers block access
+     */
     @Test
     void alreadyAuthenticated() throws NoSuchFieldException,
             IllegalAccessException,
             ServletException,
             IOException {
+
+        // set up
+        String token = "valid_token123";
+        String netId = "jSnow";
+        validHeader(token);
+        fetchNetIdSetUp(netId);
+        SecurityContext securityContext = getMockedSecurityContext();
+
+        // set up already authenticated
+        validAuthentication(securityContext);
+
+        filter.doFilterInternal(req, res, filterChain);
+        verify(filterChain, times(1)).doFilter(req, res);
+        verify(detailsService, times(0)).loadUserByUsername(any());
+    }
+
+    /**
+     * Checks correct behaviour when token gets invalidated.
+     *
+     * @throws ServletException       if errors occur when handling servlets
+     * @throws IOException            if errors occur when handling IO
+     * @throws NoSuchFieldException   if field does not exist
+     * @throws IllegalAccessException if access modifiers block access
+     */
+    @Test
+    void invalidatedToken() throws NoSuchFieldException,
+            IllegalAccessException,
+            IOException,
+            ServletException {
+        // set up
+        String token = "token123";
+        String netId = "jSnow";
+        SecurityContext securityContext = getMockedSecurityContext();
+        validHeader(token);
+        fetchNetIdSetUp(netId);
+        // mock user details service
+        UserDetails userDetails = new UserDetailsImpl(new User(netId, "pass", 0));
+        when(detailsService.loadUserByUsername(netId)).thenReturn(userDetails);
+
+        // not yet authenticated
+        when(securityContext.getAuthentication()).thenReturn(null);
+
+        // invalidated token
+        when(utils.validateToken(token, userDetails)).thenReturn(false);
+
+        filter.doFilterInternal(req, res, filterChain);
+        verify(filterChain, times(1)).doFilter(req, res);
+        verify(securityContext, times(0)).setAuthentication(any());
+    }
+
+    /**
+     * Checks correct behaviour when token gets validated.
+     *
+     * @throws ServletException       if errors occur when handling servlets
+     * @throws IOException            if errors occur when handling IO
+     * @throws NoSuchFieldException   if field does not exist
+     * @throws IllegalAccessException if access modifiers block access
+     */
+    @Test
+    void validatedToken() throws NoSuchFieldException,
+            IllegalAccessException,
+            ServletException,
+            IOException {
+        // set up
+        String token = "token123";
+        String netId = "jSnow";
+        SecurityContext securityContext = getMockedSecurityContext();
+        validHeader(token);
+        fetchNetIdSetUp(netId);
+        // mock user details service
+        UserDetails userDetails = new UserDetailsImpl(new User(netId, "pass", 0));
+        when(detailsService.loadUserByUsername(netId)).thenReturn(userDetails);
+
+        // validated token
+        when(utils.validateToken(token, userDetails)).thenReturn(true);
+
+        filter.doFilterInternal(req, res, filterChain);
+
+        // check if authentication has been set
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+        verify(securityContext, times(1))
+                .setAuthentication(authToken);
+        verify(filterChain, times(1)).doFilter(req, res);
+    }
+
+    /**
+     * Test helper method for mocking and injecting security context field.
+     *
+     * @return a mocked security context
+     * @throws NoSuchFieldException   if field does not exist
+     * @throws IllegalAccessException if access modifiers block access
+     */
+    private SecurityContext getMockedSecurityContext() throws NoSuchFieldException, IllegalAccessException {
         // mock the security context of Spring Security
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
@@ -97,13 +235,35 @@ class JwtTokenFilterTest {
         securityContextField.setAccessible(true);
         securityContextField.set(filter, securityContext);
 
-        // dummy authentication object
+        return securityContext;
+    }
+
+    /**
+     * Test helper method to make mocked Http request return a valid header.
+     *
+     * @param token the token
+     */
+    private void validHeader(String token) {
+        when(req.getHeader("Authorization")).thenReturn("Bearer " + token);
+    }
+
+    /**
+     * Test helper method to make mocked token utility class return a netId.
+     *
+     * @param netId the netId that needs to be returned
+     */
+    private void fetchNetIdSetUp(String netId) {
+        when(utils.getNetIdFromToken(anyString())).thenReturn(netId);
+    }
+
+    /**
+     * Test helper method to create an already authenticated environment.
+     *
+     * @param securityContext security context to modify
+     */
+    private void validAuthentication(SecurityContext securityContext) {
+        // dummy authentication
         Authentication dummyAuth = Mockito.mock(Authentication.class);
-
-        // return dummy when asked for authentication object
-        Mockito.when(securityContext.getAuthentication()).thenReturn(dummyAuth);
-
-        filter.doFilterInternal(req, res, filterChain);
-        verify(filterChain, times(1)).doFilter(req, res);
+        when(securityContext.getAuthentication()).thenReturn(dummyAuth);
     }
 }
