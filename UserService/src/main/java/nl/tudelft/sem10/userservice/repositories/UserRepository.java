@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * The User Repository to interact with the database.
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
 
     /**
      * Returns all users in the database.

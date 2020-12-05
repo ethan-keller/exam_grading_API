@@ -20,8 +20,18 @@ import java.util.List;
 @Controller
 @RequestMapping(path = "/user")
 public class UserController {
+
+
     @Autowired
     private UserRepository userRepository; //NOPMD
+
+    /**
+     * Setter for the userRepository, mainly used for testing purposes.
+     * @param userRepository  of type UserRepository
+     */
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Gets all the users in the database.
@@ -142,21 +152,10 @@ public class UserController {
      * @param type type of user needed
      * @return list of users of given type
      */
-    @GetMapping("/role/{type}")
+    @GetMapping("/type/{type}")
     @ResponseBody
     public List<User> userByType(@PathVariable int type) {
         return userRepository.getUsersOfType(type);
-    }
-
-    /**
-     * Endpoint to test connection.
-     *
-     * @return confirmation string and a 200OK
-     */
-    @GetMapping("/test")
-    @ResponseBody
-    public ResponseEntity<String> test() {
-        return new ResponseEntity<>("This is a test", HttpStatus.OK);
     }
 
 }
