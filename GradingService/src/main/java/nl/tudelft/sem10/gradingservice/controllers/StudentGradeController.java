@@ -76,7 +76,7 @@ public class StudentGradeController {
      * @return double representing grade of course
      * @throws JSONException exception if json is wrong
      */
-    private double getGrade(List<Grade> list, String courseCode) throws JSONException {
+    public double getGrade(List<Grade> list, String courseCode) throws JSONException {
         double g = 0.0;
         for (Grade grade : list) {
             String str = serverCommunication.getCourseWeights(courseCode, grade.getGradeType());
