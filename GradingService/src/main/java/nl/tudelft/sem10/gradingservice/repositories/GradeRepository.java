@@ -2,7 +2,6 @@ package nl.tudelft.sem10.gradingservice.repositories;
 
 import java.util.List;
 import javax.transaction.Transactional;
-
 import nl.tudelft.sem10.gradingservice.entities.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -43,12 +42,14 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Query(value = "SELECT * FROM grade WHERE netid = ?1 AND course_code = ?2", nativeQuery = true)
     List<Grade> getGradesByNetIdAndCourse(String netId, String course);
 
+    //Finds the courses a user takes
     @Modifying
     @Transactional
     @Query(value = "SELECT DISTINCT course_code FROM semgrade.grade "
             + "WHERE netid = ?1", nativeQuery = true)
     List<String> getCoursesOfStudent(String netId);
 
+    //Finds the students that take a course
     @Modifying
     @Transactional
     @Query(value = "SELECT DISTINCT netid FROM semgrade.grade "

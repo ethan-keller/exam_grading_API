@@ -47,6 +47,14 @@ public class StudentGradeController {
         return new ResponseEntity<>(sum, HttpStatus.OK);
     }
 
+    /**
+     * Method to return grade of a specific student for a specific course.
+     *
+     * @param netId      netId of student
+     * @param courseCode course code of the grade required
+     * @return a double representing grade of that course
+     * @throws JSONException exception if json is wrong
+     */
     @GetMapping(path = "/grade")
     @ResponseBody
     public ResponseEntity<Double> getGrade(@RequestParam String netId,
@@ -56,10 +64,18 @@ public class StudentGradeController {
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        double g = getGrade(list, courseCode);
-        return new ResponseEntity<>(g, HttpStatus.ACCEPTED);
+        double grade = getGrade(list, courseCode);
+        return new ResponseEntity<>(grade, HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Method containing logic used to calculate grade.
+     *
+     * @param list       list of all grades a student had acquired for a course
+     * @param courseCode course code of the course
+     * @return double representing grade of course
+     * @throws JSONException exception if json is wrong
+     */
     private double getGrade(List<Grade> list, String courseCode) throws JSONException {
         double g = 0.0;
         for (Grade grade : list) {
@@ -71,6 +87,13 @@ public class StudentGradeController {
         return g;
     }
 
+    /**
+     * Method to return the course code of all courses a student has passed.
+     *
+     * @param netId netId of the student
+     * @return A list of strings that are the course codes
+     * @throws JSONException exception if json is wrong
+     */
     @GetMapping(path = "/passed")
     @ResponseBody
     public ResponseEntity<List<String>> passedCourses(@RequestParam String netId)
@@ -91,6 +114,13 @@ public class StudentGradeController {
         return new ResponseEntity<>(passed, HttpStatus.OK);
     }
 
+    /**
+     * Method to get all the final grades a student has achieved for every course.
+     *
+     * @param netId netId of the student
+     * @return List of grades
+     * @throws JSONException exception if json is wrong
+     */
     @GetMapping(path = "/allGrades")
     @ResponseBody
     public ResponseEntity<List<Double>> allGrades(@RequestParam String netId) throws JSONException {
@@ -107,6 +137,13 @@ public class StudentGradeController {
         return new ResponseEntity<>(gr, HttpStatus.OK);
     }
 
+    /**
+     * Get the passing rate of a course.
+     *
+     * @param course course code of the course
+     * @return the passing rate as a double in between 0.0-1.0
+     * @throws JSONException exception if json is wrong
+     */
     @SuppressWarnings("PMD")
     @GetMapping(path = "/passingRate")
     @ResponseBody

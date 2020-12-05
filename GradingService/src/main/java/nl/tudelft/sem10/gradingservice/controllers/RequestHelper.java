@@ -16,7 +16,12 @@ public class RequestHelper {
     private static Integer type;
     private static final String domainOfCourseService = "http://localhost:8081";
 
-
+    /**
+     * Method that builds a getRequest to course service given a path.
+     *
+     * @param path path of the endpoint
+     * @return the httprequest that has to be sent
+     */
     public static HttpRequest getRequest(String path) {
 
         String reqPath = domainOfCourseService + path;
@@ -31,7 +36,13 @@ public class RequestHelper {
                 .build();
     }
 
-
+    /**
+     * Method that sends the request to the server.
+     *
+     * @param request request that needs to be sent
+     * @param client client sending the request
+     * @return response of request
+     */
     public static String sendRequest(HttpRequest request, HttpClient client) {
         try {
             HttpResponse<String> response;

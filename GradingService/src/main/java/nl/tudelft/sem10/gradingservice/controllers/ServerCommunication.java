@@ -2,14 +2,21 @@ package nl.tudelft.sem10.gradingservice.controllers;
 
 import java.net.http.HttpClient;
 
+/**
+ * Simple class to streamline communication with other services.
+ */
 public class ServerCommunication {
     static RequestHelper requestHelper = new RequestHelper();
     private static HttpClient client = HttpClient.newBuilder().build();
 
-    public static void main(String[] args) {
-        System.out.println(getCourseWeights("CSE1", "A"));
-    }
-
+    /**
+     * Communicates to the course microservice and finds
+     * the weights of grading categories of a course.
+     *
+     * @param courseCode course code of the course
+     * @param categoryName the specific category whose weight is needed
+     * @return JSON of the category and its weight
+     */
     public static String getCourseWeights(String courseCode, String categoryName) {
         String str = RequestHelper.sendRequest(
                 RequestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
