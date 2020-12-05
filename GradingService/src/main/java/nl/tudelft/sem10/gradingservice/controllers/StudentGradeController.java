@@ -118,20 +118,20 @@ public class StudentGradeController {
      * Method to get all the final grades a student has achieved for every course.
      *
      * @param netId netId of the student
-     * @return List of grades
+     * @return List of json objects
      * @throws JSONException exception if json is wrong
      */
     @GetMapping(path = "/allGrades")
     @ResponseBody
-    public ResponseEntity<List<Double>> allGrades(@RequestParam String netId) throws JSONException {
+    public ResponseEntity<List<String>> allGrades(@RequestParam String netId) throws JSONException {
         List<String> list = gradeRepository.getCoursesOfStudent(netId);
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Double> gr = new ArrayList<>();
+        List<String> gr = new ArrayList<>();
         for (String course : list) {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            gr.add(getGrade(l, course));
+            gr.add("{\"course\":\"" + course + "\", \"grade\":\"" + getGrade(l, course) + "\"}");
         }
 
         return new ResponseEntity<>(gr, HttpStatus.OK);
