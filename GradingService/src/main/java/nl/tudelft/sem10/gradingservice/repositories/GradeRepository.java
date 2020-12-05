@@ -48,4 +48,10 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Query(value = "SELECT DISTINCT course_code FROM semgrade.grade "
             + "WHERE netid = ?1", nativeQuery = true)
     List<String> getCoursesOfStudent(String netId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT DISTINCT netid FROM semgrade.grade "
+            + "WHERE course_code = ?1", nativeQuery = true)
+    List<String> getStudentsTakingCourse(String course);
 }

@@ -107,4 +107,27 @@ public class StudentGradeController {
         return new ResponseEntity<>(gr, HttpStatus.OK);
     }
 
+    @SuppressWarnings("PMD")
+    @GetMapping(path = "/passingRate")
+    @ResponseBody
+    public ResponseEntity<Double> passingRate(@RequestParam String course) throws JSONException {
+        List<String> students = gradeRepository.getStudentsTakingCourse(course);
+        if (students == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        double passCount = 0.0;
+        for (String netId : students) {
+            List<Grade> list =
+                    gradeRepository.getGradesByNetIdAndCourse(netId, course);
+            if (list == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            double grade = getGrade(list, course);
+            if (grade > passingGrade) {
+                passCount++;
+            }
+        }
+        double passRate = passCount / students.size();
+        return new ResponseEntity<>(passRate, HttpStatus.ACCEPTED);
+    }
 }
