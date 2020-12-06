@@ -30,27 +30,28 @@ import org.springframework.http.ResponseEntity;
 public class StudentGradeControllerTest {
 
     @InjectMocks
-    private StudentGradeController studentGradeController;
+    private transient StudentGradeController studentGradeController;
 
     @Mock
-    private GradeRepository gradeRepository;
+    private transient GradeRepository gradeRepository;
 
     @Mock
-    private ServerCommunication serverCommunication;
+    private transient ServerCommunication serverCommunication;
 
-    private String netId;
-    private String courseCode;
-    private List<Grade> allGradesOfUser;
-    private List<Grade> gradesOfCourse;
-    private List<Grade> gradesOfCourse2;
-    private List<String> coursesOfStudent;
-    private Grade grade;
+    private transient String netId;
+    private transient String courseCode;
+    private transient List<Grade> allGradesOfUser;
+    private transient List<Grade> gradesOfCourse;
+    private transient List<Grade> gradesOfCourse2;
+    private transient List<String> coursesOfStudent;
+    private transient Grade grade;
 
     /**
      * Sets up the Users used in multiple tests.
      */
     @BeforeEach
-    public void setup() {
+    @SuppressWarnings("PMD")
+    public void setUp() {
         netId = "user1";
         courseCode = "CSE1";
         grade = new Grade(1, 10, "user1", "CSE1", "A");

@@ -40,15 +40,12 @@ import org.springframework.test.web.servlet.MvcResult;
 public class GradingServiceApplicationTests {
 
     private static final String URL_TEMPLATE = "/grade";
-    @SuppressWarnings("PMD")
     @Autowired
     private transient MockMvc mockMvc;
 
-    @SuppressWarnings("PMD")
     @Autowired
     private ObjectMapper objectMapper;
 
-    @SuppressWarnings("PMD")
     @MockBean
     private Grade grade;
 
