@@ -149,7 +149,7 @@ public class StudentGradeControllerTest {
         students.add("user1");
         when(gradeRepository.getStudentsTakingCourse("CSE1")).thenReturn(students);
         when(gradeRepository.getGradesByNetIdAndCourse(netId, "CSE1")).thenReturn(gradesOfCourse);
-        ResponseEntity<Double> responseEntity = studentGradeController.passingRate("CSE1");
+        ResponseEntity<Double> responseEntity = studentGradeController.passingRateTestMethod("CSE1");
         assertEquals(200, responseEntity.getStatusCodeValue());
         assertEquals(1.0, responseEntity.getBody());
     }
