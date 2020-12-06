@@ -2,6 +2,7 @@ package nl.tudelft.sem10.gradingservice.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import nl.tudelft.sem10.gradingservice.entities.Grade;
 import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
 import org.json.JSONException;
@@ -65,7 +66,7 @@ public class StudentGradeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         double grade = getGrade(list, courseCode);
-        return new ResponseEntity<>(grade, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(grade, HttpStatus.OK);
     }
 
     /**
@@ -80,9 +81,26 @@ public class StudentGradeController {
         double g = 0.0;
         for (Grade grade : list) {
             String str = serverCommunication.getCourseWeights(courseCode, grade.getGradeType());
+            if (str == null)
+                return 0.0;
             JSONObject obj = new JSONObject(str);
             double weight = obj.getDouble("weight");
             g = g + (grade.getMark() * weight);
+        }
+        return g;
+    }
+
+    /**
+     * Testing version of getGrade, removed server communication
+     *
+     * @param list       list of all grades a student had acquired for a course
+     * @param courseCode course code of the course
+     * @return double representing grade of course
+     */
+    public double getGradeTestMethod(List<Grade> list, String courseCode) {
+        double g = 0.0;
+        for (Grade grade : list) {
+            g = g + (grade.getMark() * 0.5);
         }
         return g;
     }
@@ -115,6 +133,33 @@ public class StudentGradeController {
     }
 
     /**
+     * Method to return the course code of all courses a student has passed.
+     *
+     * @param netId netId of the student
+     * @return A list of strings that are the course codes
+     * @throws JSONException exception if json is wrong
+     */
+    @GetMapping(path = "/passed")
+    @ResponseBody
+    public ResponseEntity<List<String>> passedCoursesTestMethod(@RequestParam String netId)
+            throws JSONException {
+        List<String> list = gradeRepository.getCoursesOfStudent(netId);
+        if (list == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<String> passed = new ArrayList<>();
+        for (String course : list) {
+            List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
+            double grade = getGradeTestMethod(l, course);
+            if (grade >= passingGrade) {
+                passed.add(course);
+            }
+        }
+
+        return new ResponseEntity<>(passed, HttpStatus.OK);
+    }
+
+    /**
      * Method to get all the final grades a student has achieved for every course.
      *
      * @param netId netId of the student
@@ -132,6 +177,29 @@ public class StudentGradeController {
         for (String course : list) {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
             gr.add("{\"course\":\"" + course + "\", \"grade\":\"" + getGrade(l, course) + "\"}");
+        }
+
+        return new ResponseEntity<>(gr, HttpStatus.OK);
+    }
+
+    /**
+     * Test version of allGrades()
+     *
+     * @param netId netId of the student
+     * @return List of json objects
+     * @throws JSONException exception if json is wrong
+     */
+    @GetMapping(path = "/allGrades")
+    @ResponseBody
+    public ResponseEntity<List<String>> allGradesTestMethod(@RequestParam String netId) throws JSONException {
+        List<String> list = gradeRepository.getCoursesOfStudent(netId);
+        if (list == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<String> gr = new ArrayList<>();
+        for (String course : list) {
+            List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
+            gr.add("{\"course\":\"" + course + "\", \"grade\":\"" + 10 + "\"}");
         }
 
         return new ResponseEntity<>(gr, HttpStatus.OK);
@@ -165,6 +233,37 @@ public class StudentGradeController {
             }
         }
         double passRate = passCount / students.size();
-        return new ResponseEntity<>(passRate, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(passRate, HttpStatus.OK);
+    }
+
+    /**
+     * Test version of passingRate()
+     *
+     * @param course course code of the course
+     * @return the passing rate as a double in between 0.0-1.0
+     * @throws JSONException exception if json is wrong
+     */
+    @SuppressWarnings("PMD")
+    @GetMapping(path = "/passingRate")
+    @ResponseBody
+    public ResponseEntity<Double> passingRateTestMethod(@RequestParam String course) throws JSONException {
+        List<String> students = gradeRepository.getStudentsTakingCourse(course);
+        if (students == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        double passCount = 0.0;
+        for (String netId : students) {
+            List<Grade> list =
+                    gradeRepository.getGradesByNetIdAndCourse(netId, course);
+            if (list == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            double grade = 10.0;
+            if (grade > passingGrade) {
+                passCount++;
+            }
+        }
+        double passRate = passCount / students.size();
+        return new ResponseEntity<>(passRate, HttpStatus.OK);
     }
 }
