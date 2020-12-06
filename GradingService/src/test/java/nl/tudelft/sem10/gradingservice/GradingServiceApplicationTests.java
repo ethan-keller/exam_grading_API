@@ -42,6 +42,7 @@ public class GradingServiceApplicationTests {
     private Grade grade;
 
     //@Test
+    @SuppressWarnings("PMD")
     void testBuildingEndpoint() throws Exception {
         mockMvc.perform(get("/grade")
                 .contentType("application/json"))
@@ -49,6 +50,7 @@ public class GradingServiceApplicationTests {
     }
 
     //@Test
+    @SuppressWarnings("PMD")
     void crudGradeTest() throws Exception {
         JSONObject objNew = new JSONObject();
 
