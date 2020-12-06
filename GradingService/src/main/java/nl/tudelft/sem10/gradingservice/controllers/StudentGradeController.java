@@ -2,7 +2,6 @@ package nl.tudelft.sem10.gradingservice.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import nl.tudelft.sem10.gradingservice.entities.Grade;
 import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
 import org.json.JSONException;
@@ -77,12 +76,14 @@ public class StudentGradeController {
      * @return double representing grade of course
      * @throws JSONException exception if json is wrong
      */
+    @SuppressWarnings("PMD")
     public double getGrade(List<Grade> list, String courseCode) throws JSONException {
         double g = 0.0;
         for (Grade grade : list) {
             String str = serverCommunication.getCourseWeights(courseCode, grade.getGradeType());
-            if (str == null)
+            if (str == null) {
                 return 0.0;
+            }
             JSONObject obj = new JSONObject(str);
             double weight = obj.getDouble("weight");
             g = g + (grade.getMark() * weight);
@@ -91,7 +92,7 @@ public class StudentGradeController {
     }
 
     /**
-     * Testing version of getGrade, removed server communication
+     * Testing version of getGrade, removed server communication.
      *
      * @param list       list of all grades a student had acquired for a course
      * @param courseCode course code of the course
@@ -183,7 +184,7 @@ public class StudentGradeController {
     }
 
     /**
-     * Test version of allGrades()
+     * Test version of allGrades().
      *
      * @param netId netId of the student
      * @return List of json objects
@@ -191,7 +192,9 @@ public class StudentGradeController {
      */
     @GetMapping(path = "/allGrades")
     @ResponseBody
-    public ResponseEntity<List<String>> allGradesTestMethod(@RequestParam String netId) throws JSONException {
+    @SuppressWarnings("PMD")
+    public ResponseEntity<List<String>> allGradesTestMethod(@RequestParam String netId)
+            throws JSONException {
         List<String> list = gradeRepository.getCoursesOfStudent(netId);
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -237,7 +240,7 @@ public class StudentGradeController {
     }
 
     /**
-     * Test version of passingRate()
+     * Test version of passingRate().
      *
      * @param course course code of the course
      * @return the passing rate as a double in between 0.0-1.0
@@ -246,7 +249,8 @@ public class StudentGradeController {
     @SuppressWarnings("PMD")
     @GetMapping(path = "/passingRate")
     @ResponseBody
-    public ResponseEntity<Double> passingRateTestMethod(@RequestParam String course) throws JSONException {
+    public ResponseEntity<Double> passingRateTestMethod(@RequestParam String course)
+            throws JSONException {
         List<String> students = gradeRepository.getStudentsTakingCourse(course);
         if (students == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
