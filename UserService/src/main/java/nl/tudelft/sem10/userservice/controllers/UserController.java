@@ -19,6 +19,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(path = "/user")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserController {
 
 
@@ -75,7 +76,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
         JSONObject json = new JSONObject(jsonString);
-        if (json.has(netIdStr)) {
+        if (json.has(netIdStr) && json.has("password") && json.has("type")) {
             String netId = json.getString(netIdStr);
             User u = userRepository.getUserByNetId(netId);
             if (u != null) {
@@ -129,7 +130,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
         JSONObject json = new JSONObject(jsonString);
-        if (json.has(netIdStr)) {
+        if (json.has(netIdStr) && json.has("password") && json.has("type")) {
             String netId = json.getString(netIdStr);
             User u = userRepository.getUserByNetId(netId);
             if (u == null) {
