@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 class RestServiceTest {
 
     private static final int USER_SERVICE_PORT = 8083;
-    private static final String GET_USER_ENDPOINT = "/userService/userByNetId";
+    private static final String GET_USER_ENDPOINT = "/userByNetId";
     private final transient RestService rest = new RestService();
     private final transient RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
     private final transient User user = new User("jSnow", "pass123#", 0);
