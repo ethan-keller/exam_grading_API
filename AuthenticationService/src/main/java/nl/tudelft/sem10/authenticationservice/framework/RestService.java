@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestService {
 
     private static final int USER_SERVICE_PORT = 8083;
-    private static final String GET_USER_ENDPOINT = "/userService/userByNetId";
+    private static final String GET_USER_ENDPOINT = "/userByNetId";
     private final transient RestTemplate restTemplate;
 
 
