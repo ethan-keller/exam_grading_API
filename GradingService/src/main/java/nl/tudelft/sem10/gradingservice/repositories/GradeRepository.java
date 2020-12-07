@@ -10,21 +10,21 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface GradeRepository extends JpaRepository<Grade, Long> {
 
-    //update building information
+    //update grade information
     @Modifying
     @Transactional
     @Query(value = "UPDATE grade SET mark = ?2 "
             + "WHERE id = ?1", nativeQuery = true)
     void updateGrade(long id, float mark);
 
-    //insert new building in database
+    //insert new grade in database
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO grade (mark, netid, course_code, grade_type) "
             + "VALUES (?1, ?2, ?3, ?4)", nativeQuery = true)
     void insertGrade(float mark, String netid, String courseCode, String gradeType);
 
-    //deletes entry from building table
+    //deletes entry from grade table
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM grade WHERE id = ?1", nativeQuery = true)
@@ -41,6 +41,11 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Transactional
     @Query(value = "SELECT * FROM grade WHERE netid = ?1 AND course_code = ?2", nativeQuery = true)
     List<Grade> getGradesByNetIdAndCourse(String netId, String course);
+
+    //Finds grades by course
+    @Transactional
+    @Query(value = "SELECT * FROM grade WHERE course_code = ?1", nativeQuery = true)
+    List<Grade> getGradesByCourse(String course);
 
     //Finds the courses a user takes
     @Modifying

@@ -140,7 +140,9 @@ public class StudentGradeController {
      * @return A list of strings that are the course codes
      * @throws JSONException exception if json is wrong
      */
-    @GetMapping(path = "/passed")
+
+    // Why does this have the same mapping as an actual method? Changed to reflect it's test status
+    @GetMapping(path = "/passedTest")
     @ResponseBody
     public ResponseEntity<List<String>> passedCoursesTestMethod(@RequestParam String netId)
             throws JSONException {
@@ -190,7 +192,7 @@ public class StudentGradeController {
      * @return List of json objects
      * @throws JSONException exception if json is wrong
      */
-    @GetMapping(path = "/allGrades")
+    @GetMapping(path = "/allGradesTest")
     @ResponseBody
     @SuppressWarnings("PMD")
     public ResponseEntity<List<String>> allGradesTestMethod(@RequestParam String netId)
@@ -247,7 +249,7 @@ public class StudentGradeController {
      * @throws JSONException exception if json is wrong
      */
     @SuppressWarnings("PMD")
-    @GetMapping(path = "/passingRate")
+    @GetMapping(path = "/passingRateTest")
     @ResponseBody
     public ResponseEntity<Double> passingRateTestMethod(@RequestParam String course)
             throws JSONException {

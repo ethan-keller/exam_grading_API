@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,17 +42,21 @@ public class GradingServiceApplicationTests {
     @MockBean
     private Grade grade;
 
-    //@Test
+    @Test
     @SuppressWarnings("PMD")
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
     void testBuildingEndpoint() throws Exception {
+        // Test if an endpoint exists
         mockMvc.perform(get("/grade")
                 .contentType("application/json"))
                 .andExpect(status().isOk());
     }
 
-    //@Test
+    @Test
     @SuppressWarnings("PMD")
-    void crudGradeTest() throws Exception {
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    void insertTest() throws Exception {
+        // Insert element into DB
         JSONObject objNew = new JSONObject();
 
         objNew.put("mark", 5.98);
@@ -59,17 +64,6 @@ public class GradingServiceApplicationTests {
         objNew.put("course_code", "CSE2425");
         objNew.put("grade_type", "endterm");
 
-
-        JSONObject objNew2 = new JSONObject();
-
-        objNew2.put("mark", 9.45);
-        objNew2.put("netid", "testId2");
-        objNew2.put("course_code", "CSE4567");
-        objNew2.put("grade_type", "midterm");
-
-        /*
-        Submit 2 grade entities and check if that works
-         */
         mockMvc.perform(post("/grade")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
@@ -79,26 +73,10 @@ public class GradingServiceApplicationTests {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        mockMvc.perform(post("/grade")
-                .contentType("application/json")
-                .content(String.valueOf(objNew2)))
-                .andExpect(status().isOk());
-        MvcResult result2 = mockMvc.perform(get("/grade")
-                .contentType("application/json"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        mockMvc.perform(delete("/grade/2")
-                .contentType("application/json")
-                .accept("application/json"))
-                .andExpect(status().isOk());
-
-        /*
-        Get the currently stored entities in the database and check the values
-         */
         String content = result.getResponse().getContentAsString();
-
         JSONArray jsonArray = new JSONArray(new JSONTokener(content));
+
+        // Check if all values gotten back are in fact correct
         assertEquals(1, jsonArray.length());
         assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
         assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
@@ -110,42 +88,144 @@ public class GradingServiceApplicationTests {
                 "Expected getJSONObject(1) to throw, but it didn't"
         );
         assertTrue(thrown.getMessage().contains("JSON"));
+    }
 
-        JSONObject objNew3 = new JSONObject();
+    @Test
+    @SuppressWarnings("PMD")
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    void deleteTest() throws Exception {
+        // Insert an element, get it back and check if all values are correct
+        JSONObject objNew = new JSONObject();
 
-        /*
-        Test upgrade of a mark; first invalid then valid
-         */
-        objNew3.put("mark", 0.587);
-        mockMvc.perform(put("/grade/1")
+        objNew.put("mark", 5.98);
+        objNew.put("netid", "testId");
+        objNew.put("course_code", "CSE2425");
+        objNew.put("grade_type", "endterm");
+
+        mockMvc.perform(post("/grade")
                 .contentType("application/json")
-                .content(String.valueOf(objNew3)))
+                .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
 
-        MvcResult result3 = mockMvc.perform(get("/grade/1")
+        // Delete element from DB and see if it's actually gone
+        mockMvc.perform(delete("/grade/1")
+                .accept("application/json"))
+                .andExpect(status().isOk());
+
+        MvcResult result = mockMvc.perform(get("/grade")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String content2 = result.getResponse().getContentAsString();
+        String content = result.getResponse().getContentAsString();
 
-        JSONArray jsonArray2 = new JSONArray(new JSONTokener(content2));
-        assert(jsonArray2.getJSONObject(0).getDouble("mark") > objNew3.getDouble("mark"));
+        JSONArray jsonArray = new JSONArray(new JSONTokener(content));
+        JSONException thrown = assertThrows(
+                JSONException.class,
+                () -> jsonArray.getJSONObject(0),
+                "Expected getJSONObject(0) to throw, but it didn't"
+        );
+        assertTrue(thrown.getMessage().contains("JSON"));
+    }
 
-        objNew3.put("mark", 9.99);
-        mockMvc.perform(put("/grade/1")
+    @Test
+    @SuppressWarnings("PMD")
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    void updateTestSmallerValue() throws Exception {
+        // Insert first element into DB, check all values are correct
+        JSONObject objNew = new JSONObject();
+
+        objNew.put("mark", 5.98);
+        objNew.put("netid", "testId");
+        objNew.put("course_code", "CSE2425");
+        objNew.put("grade_type", "endterm");
+
+        mockMvc.perform(post("/grade")
                 .contentType("application/json")
-                .content(String.valueOf(objNew3)))
+                .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
 
-        MvcResult result4 = mockMvc.perform(get("/grade/1")
+        MvcResult result = mockMvc.perform(get("/grade")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String content3 = "[" + result4.getResponse().getContentAsString() + "]";
+        String content = result.getResponse().getContentAsString();
 
-        JSONArray jsonArray3 = new JSONArray(new JSONTokener(content3));
-        assert(jsonArray3.getJSONObject(0).getDouble("mark") == objNew3.getDouble("mark"));
+        JSONArray jsonArray = new JSONArray(new JSONTokener(content));
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+
+        // Update the grade in the DB with a smaller mark, check if the value stayed the same
+        objNew.put("mark", 4.99);
+        mockMvc.perform(put("/grade/1")
+                .contentType("application/json")
+                .content(String.valueOf(objNew)))
+                .andExpect(status().isOk());
+
+        // Check get with an ID instead of getting all grades
+        result = mockMvc.perform(get("/grade/1")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        content = "[" + result.getResponse().getContentAsString() + "]";
+        jsonArray = new JSONArray(new JSONTokener(content));
+
+        assertEquals(1, jsonArray.length());
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+    }
+
+    @Test
+    @SuppressWarnings("PMD")
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    void updateTestBiggerValue() throws Exception {
+        // Insert first element into DB, check all values are correct
+        JSONObject objNew = new JSONObject();
+
+        objNew.put("mark", 5.98);
+        objNew.put("netid", "testId");
+        objNew.put("course_code", "CSE2425");
+        objNew.put("grade_type", "endterm");
+
+        mockMvc.perform(post("/grade")
+                .contentType("application/json")
+                .content(String.valueOf(objNew)))
+                .andExpect(status().isOk());
+
+        MvcResult result = mockMvc.perform(get("/grade")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        JSONArray jsonArray = new JSONArray(new JSONTokener(content));
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+
+        // Update the grade in the DB with a higher mark, check if the value updated accordingly
+        objNew.put("mark", 7.99);
+        mockMvc.perform(put("/grade/1")
+                .contentType("application/json")
+                .content(String.valueOf(objNew)))
+                .andExpect(status().isOk());
+
+        // Check get with an ID instead of getting all grades
+        result = mockMvc.perform(get("/grade/1")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        content = "[" + result.getResponse().getContentAsString() + "]";
+        jsonArray = new JSONArray(new JSONTokener(content));
+
+        assertEquals(1, jsonArray.length());
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(7.99, jsonArray.getJSONObject(0).getDouble("mark"));
     }
 }
+

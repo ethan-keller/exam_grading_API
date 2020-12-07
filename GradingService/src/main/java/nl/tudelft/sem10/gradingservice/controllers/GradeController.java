@@ -1,6 +1,5 @@
 package nl.tudelft.sem10.gradingservice.controllers;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import nl.tudelft.sem10.gradingservice.entities.Grade;
@@ -9,12 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/grade")
@@ -25,21 +19,35 @@ public class GradeController {
     private GradeRepository gradeRepository; //NOPMD
 
     /**
-     * TODO: Insert Javadoc here.
+     * Returns a list of all grade entities in the database
+     * Possibility of filtering on either netid, course, both or none
+     *
+     * @return the list of all grades in the database
      */
 
     @RequestMapping(method = RequestMethod.GET)
     @GetMapping("grade")
     @ResponseBody
-    public List<Grade> getAllGrades() {
-        List<Grade> gradeList = gradeRepository.findAll();
-        Comparator<Grade> comp = Comparator.comparing(Grade::getNetid);
-        gradeList.sort(comp);
+    public List<Grade> getAllGrades(@RequestParam(required = false) String netid,
+                                    @RequestParam(required = false) String courseCode) {
+        List<Grade> gradeList;
+        if (netid == null && courseCode == null) {
+            gradeList = gradeRepository.findAll();
+        } else if (netid != null && courseCode == null) {
+            gradeList = gradeRepository.getGradesByNetId(netid);
+        } else if (netid == null) {
+            gradeList = gradeRepository.getGradesByCourse(courseCode);
+        } else {
+            gradeList = gradeRepository.getGradesByNetIdAndCourse(netid, courseCode);
+        }
+
         return gradeList;
     }
 
     /**
-     * TODO: ADD ACTUAL JAVADOC.
+     * return a grade from the database based on id of said grade in the database
+     * @throws IllegalAccessException if grade isn't in the database
+     * @return grade with pathvariable id
      */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.GET)
     @ResponseBody
@@ -52,13 +60,20 @@ public class GradeController {
         }
     }
 
+    /**
+     * Deletes grade from database based on id
+     * @param gradeId path variable of grade to be deleted
+     */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.DELETE)
     public void deleteGrade(@PathVariable final long gradeId) {
         gradeRepository.deleteGrade(gradeId);
     }
 
     /**
-     * TODO: ADD ACTUAL JAVADOC.
+     * updates grade from database based on id if the updated value is higher than the previous one
+     * @param jsonString body with the grade in it
+     * @param gradeId grade to be updated
+     * @throws JSONException if grade is not found in database
      */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.PUT)
     @ResponseBody
@@ -75,7 +90,9 @@ public class GradeController {
     }
 
     /**
-     * TODO: ADD ACTUAL JAVADOC.
+     * Inserts a new grade into the database
+     * @param jsonString body of post request, contains all info for a new grade
+     * @throws JSONException if something goes wrong while creating a JSON object
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
@@ -97,6 +114,4 @@ public class GradeController {
             gradeRepository.insertGrade(mark, netid, courseCode, gradeType);
         }
     }
-
-
 }

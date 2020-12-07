@@ -35,7 +35,8 @@ public class Grade {
     }
 
     /**
-     * TODO: Insert javadoc here.
+     * Constructor for a grade.
+     * All elements needed are set, database id is auto generated.
      *
      * @param id         - long
      * @param netid      - String
