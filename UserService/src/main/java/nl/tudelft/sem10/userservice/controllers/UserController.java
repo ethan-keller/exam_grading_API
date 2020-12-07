@@ -25,6 +25,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository; //NOPMD
 
+    // To adhere to the lovely PMD rules
+    private transient final String netIdStr = "netId";
+
     /**
      * Setter for the userRepository, mainly used for testing purposes.
      * @param userRepository  of type UserRepository
@@ -62,24 +65,6 @@ public class UserController {
     }
 
     /**
-     * Endpoint to get a user by both password and netId.
-     *
-     * @param netId    netId of user
-     * @param password password of user
-     * @return Json of user
-     */
-    @GetMapping("/{netId}/{password}")
-    @ResponseBody
-    public ResponseEntity<String> userByNetIdAndPassword(@PathVariable String netId, @PathVariable String password) {
-        User u = userRepository.getUserByNetIdAndPassword(netId, password);
-        if (u == null) {
-            return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(u.toString(), HttpStatus.OK);
-        }
-    }
-
-    /**
      * Endpoint to create and add user to database.
      *
      * @param jsonString - JSON representation of a User object
@@ -90,16 +75,21 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
         JSONObject json = new JSONObject(jsonString);
-        String netId = json.getString("netId");
-        User u = userRepository.getUserByNetId(netId);
-        if (u != null) {
-            return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
+        if (json.has(netIdStr)) {
+            String netId = json.getString(netIdStr);
+            User u = userRepository.getUserByNetId(netId);
+            if (u != null) {
+                return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
+            }
+            String password = json.getString("password");
+            int type = json.getInt("type");
+            userRepository.insertUser(netId, password, type);
+            User n = new User(netId, password, type);
+            return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
         }
-        String password = json.getString("password");
-        int type = json.getInt("type");
-        userRepository.insertUser(netId, password, type);
-        User n = new User(netId, password, type);
-        return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
+        else{
+            return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -113,13 +103,18 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> deleteUser(@RequestBody String jsonString) throws JSONException {
         JSONObject json = new JSONObject(jsonString);
-        String netId = json.getString("netId");
-        User u = userRepository.getUserByNetId(netId);
-        if (u == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            userRepository.deleteUser(netId);
-            return new ResponseEntity<>(HttpStatus.OK);
+        if (json.has(netIdStr)) {
+            String netId = json.getString(netIdStr);
+            User u = userRepository.getUserByNetId(netId);
+            if (u == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                userRepository.deleteUser(netId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        else{
+            return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -134,16 +129,21 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
         JSONObject json = new JSONObject(jsonString);
-        String netId = json.getString("netId");
-        User u = userRepository.getUserByNetId(netId);
-        if (u == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (json.has(netIdStr)) {
+            String netId = json.getString(netIdStr);
+            User u = userRepository.getUserByNetId(netId);
+            if (u == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            String password = json.getString("password");
+            int type = json.getInt("type");
+            userRepository.updateUser(netId, password, type);
+            User n = new User(netId, password, type);
+            return new ResponseEntity<>(n.toString(), HttpStatus.OK);
         }
-        String password = json.getString("password");
-        int type = json.getInt("type");
-        userRepository.updateUser(netId, password, type);
-        User n = new User(netId, password, type);
-        return new ResponseEntity<>(n.toString(), HttpStatus.OK);
+        else{
+            return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**

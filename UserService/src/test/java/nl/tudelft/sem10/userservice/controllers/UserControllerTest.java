@@ -68,21 +68,6 @@ class UserControllerTest {
   }
 
   /**
-   * Test the retrieval of a user given its netId and password.
-   * If the user doesn't exist, 404 Not Found code must be present in the ResponseEntity.
-   */
-  @Test
-  void userByNetIdAndPassword() {
-    String valid = String.valueOf(userController.userByNetIdAndPassword("student1","pass"));
-    String invalid = String.valueOf(userController.userByNetIdAndPassword("doesn't exist","invalid"));
-
-    assertTrue(valid.contains(netId));
-    assertTrue(valid.contains(student1));
-    assertTrue(valid.contains(HttpStatus.OK.toString()));
-    assertTrue(invalid.contains(HttpStatus.NOT_FOUND.toString()));
-  }
-
-  /**
    * Test if a user is created successfully.
    * If successful, Response Entity must contain status code 201.
    * If not, Response Entity must contain status code 226, meaning that the user already exists.
