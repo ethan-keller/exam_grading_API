@@ -97,8 +97,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // set permissions
         http.authorizeRequests()
-                //      .antMatchers("/").hasAnyAuthority("STUDENT", "TEACHER")
-                .antMatchers("/getToken").permitAll()
+                .antMatchers("/*")
+                .permitAll()
                 .antMatchers("/student").hasAnyAuthority("STUDENT")
                 .antMatchers("/teacher").hasAnyAuthority("TEACHER")
                 .anyRequest().authenticated()
