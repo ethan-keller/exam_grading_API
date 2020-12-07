@@ -1,18 +1,43 @@
 package nl.tudelft.sem10.userservice.controllers;
 
+import nl.tudelft.sem10.userservice.entities.User;
+import nl.tudelft.sem10.userservice.repositories.UserRepository;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 /**
  * The UserController class's test.
  */
+@SpringBootTest
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class UserControllerTest {
 
   private transient UserController userController;
+
+  private transient List<User> students;
+
+  private transient List<User> teachers;
+
+  private transient User user1;
+
+  @Autowired
+  @MockBean
+  UserRepository userRepository; //NOPMD
+
   // The following fields were created to adhere to the PMD rules.
   transient String netId;
   transient String password;
@@ -28,16 +53,28 @@ class UserControllerTest {
    */
   @BeforeEach
   void setUp() {
-    MockRepository mock = new MockRepository();
+    this.userRepository = mock(UserRepository.class);
+    this.students = new ArrayList<>();
+    this.teachers = new ArrayList<>();
+    this.user1 = new User("student1","pass",0);
+    User user2 = new User("teacher1", "pass", 1);
+    User user3 = new User("student2", "pass", 0);
+    User user4 = new User("teacher2", "pass", 1);
+    students.add(user1);
+    students.add(user3);
+    teachers.add(user2);
+    teachers.add(user4);
+
+
     userController = new UserController();
-    userController.setUserRepository(mock);
+    userController.setUserRepository(userRepository);
     netId = "netId";
     password = "password";
     student1 = "student1";
-    n = "{\n";
-    pass = "\"password\": \"pass\",\n";
-    type0 = "        \"type\": 0\n";
-    parenthesis = "    }";
+    n = "{";
+    pass = "\"password\":\"pass\", ";
+    type0 = "\"type\":\"0\"";
+    parenthesis = "}";
   }
 
 
@@ -46,10 +83,14 @@ class UserControllerTest {
    */
   @Test
   void users() {
-    String allUsers = userController.users().toString();
-    assertTrue(allUsers.contains(netId));
-    assertTrue(allUsers.contains(password));
-    assertTrue(allUsers.contains("type"));
+    when(userRepository.getAllUsers()).thenReturn(students);
+    List<User> users = userController.users();
+    Iterator<User> iter = users.iterator();
+    Iterator<User> iterComp = students.iterator();
+
+    while (iter.hasNext() && iterComp.hasNext()){
+      assertEquals(iter.next(),iterComp.next());
+    }
   }
 
   /**
@@ -58,13 +99,22 @@ class UserControllerTest {
    */
   @Test
   void userByNetId() {
-    String valid = String.valueOf(userController.userByNetId(student1));
-    String invalid = String.valueOf(userController.userByNetId("doesn't exist"));
+    when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
+    ResponseEntity<String> response = userController.userByNetId(student1);
+    String jsonString = response.getBody();
+    JSONObject json = new JSONObject(jsonString);
+    String netId = json.getString("netId");
+    String password = json.getString("password");
+    int type = json.getInt("type");
+    User n = new User(netId, password, type);
 
-    assertTrue(valid.contains(netId));
-    assertTrue(valid.contains(student1));
-    assertTrue(valid.contains(HttpStatus.OK.toString()));
-    assertTrue(invalid.contains(HttpStatus.NOT_FOUND.toString()));
+    assertEquals(n,user1);
+    assertEquals(response.getStatusCode(),HttpStatus.OK);
+
+    when(userRepository.getUserByNetId(anyString())).thenReturn(null);
+
+    ResponseEntity<String> responseOther = userController.userByNetId(student1);
+    assertEquals(responseOther.getStatusCode(),HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -75,25 +125,33 @@ class UserControllerTest {
    */
   @Test
   void createUser() {
-    String existingJson = n +
-            "        \"netId\": \"student1\",\n" +
-                    pass +
-            type0 +
-            parenthesis;
-    String  jsonString = n +
-            "        \"netId\": \"newUser\",\n" +
-                    pass +
-            type0 +
-            parenthesis;
-    String valid = String.valueOf(userController.createUser(jsonString));
-    String invalid = String.valueOf(userController.createUser(existingJson));
+    when(userRepository.getUserByNetId(anyString())).thenReturn(null);
+    User newUser = new User("newUser","pass",0);
+    String  jsonStr = newUser.toString();
+    ResponseEntity<String> response = userController.createUser(jsonStr);
+    String jsonString = response.getBody();
+    JSONObject json = new JSONObject(jsonString);
+    String netId = json.getString("netId");
+    String password = json.getString("password");
+    int type = json.getInt("type");
+    User n = new User(netId, password, type);
 
-    System.out.println(valid);
-    System.out.println(invalid);
-    assertTrue(valid.contains(netId));
-    assertTrue(valid.contains("newUser"));
-    assertTrue(valid.contains(HttpStatus.CREATED.toString()));
-    assertTrue(invalid.contains(HttpStatus.IM_USED.toString()));
+    verify(userRepository,times(1)).insertUser(anyString(),anyString(),anyInt());
+    assertEquals(n, newUser);
+    assertEquals(response.getStatusCode(),HttpStatus.CREATED);
+
+    when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
+    String existingJson = n +
+            "        \"netId\": \"student1\"," +
+            pass +
+            type0 +
+            parenthesis;
+    ResponseEntity<String> responseOther = userController.createUser(existingJson);
+    assertEquals(responseOther.getStatusCode(),HttpStatus.IM_USED);
+
+    String invalidJson = "{SQL injection attack:This is an SQL injection attack}";
+    ResponseEntity<String> responseInvalid = userController.createUser(invalidJson);
+    assertEquals(responseInvalid.getStatusCode(),HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -102,23 +160,25 @@ class UserControllerTest {
    */
   @Test
   void deleteUser() {
-    String existingJson = n +
-            "        \"netId\": \"student1\",\n" +
-                    pass +
-            type0 +
-            parenthesis;
-    String  nonExistingJson = n +
-            "        \"netId\": \"newUser\",\n" +
-                    pass +
-            type0 +
-            parenthesis;
-    String valid = String.valueOf(userController.deleteUser(existingJson));
-    String invalid = String.valueOf(userController.deleteUser(nonExistingJson));
+    when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
+    String  jsonStr = user1.toString();
+    ResponseEntity<String> response = userController.deleteUser(jsonStr);
 
-    System.out.println(valid);
-    System.out.println(invalid);
-    assertTrue(valid.contains(HttpStatus.OK.toString()));
-    assertTrue(invalid.contains(HttpStatus.NOT_FOUND.toString()));
+    verify(userRepository,times(1)).deleteUser(anyString());
+    assertEquals(response.getStatusCode(),HttpStatus.OK);
+
+    when(userRepository.getUserByNetId(anyString())).thenReturn(null);
+    String nonExistingJson = n +
+            "        \"netId\": \"doesn't exist\"," +
+            pass +
+            type0 +
+            parenthesis;
+    ResponseEntity<String> responseOther = userController.deleteUser(nonExistingJson);
+    assertEquals(responseOther.getStatusCode(),HttpStatus.NOT_FOUND);
+
+    String invalidJson = "{SQL injection attack:This is an SQL injection attack}";
+    ResponseEntity<String> responseInvalid = userController.createUser(invalidJson);
+    assertEquals(responseInvalid.getStatusCode(),HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -127,25 +187,33 @@ class UserControllerTest {
    */
   @Test
   void changeDetails() {
-    String existingJson = n +
-            "        \"netId\": \"student1\",\n" +
-            "        \"password\": \"newPass\",\n" +
-            type0 +
-            parenthesis;
-    String  nonExistingJson = n +
-            "        \"netId\": \"newUser\",\n" +
-                    pass +
-            type0 +
-            parenthesis;
-    String valid = String.valueOf(userController.changeDetails(existingJson));
-    String invalid = String.valueOf(userController.changeDetails(nonExistingJson));
+    when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
+    User changedUser = new User("student1","newPass",0);
+    String  jsonStr = changedUser.toString();
+    ResponseEntity<String> response = userController.changeDetails(jsonStr);
+    String jsonString = response.getBody();
+    JSONObject json = new JSONObject(jsonString);
+    String netId = json.getString("netId");
+    String password = json.getString("password");
+    int type = json.getInt("type");
+    User n = new User(netId, password, type);
 
-    System.out.println(valid);
-    System.out.println(invalid);
-    assertTrue(valid.contains(netId));
-    assertTrue(valid.contains("newPass"));
-    assertTrue(valid.contains(HttpStatus.OK.toString()));
-    assertTrue(invalid.contains(HttpStatus.NOT_FOUND.toString()));
+    verify(userRepository,times(1)).updateUser(anyString(),anyString(),anyInt());
+    assertEquals(n, changedUser);
+    assertEquals(response.getStatusCode(),HttpStatus.OK);
+
+    when(userRepository.getUserByNetId(anyString())).thenReturn(null);
+    String nonExistingJson = n +
+            "        \"netId\": \"doesn't exist\"," +
+            pass +
+            type0 +
+            parenthesis;
+    ResponseEntity<String> responseOther = userController.changeDetails(nonExistingJson);
+    assertEquals(responseOther.getStatusCode(),HttpStatus.NOT_FOUND);
+
+    String invalidJson = "{SQL injection attack:This is an SQL injection attack}";
+    ResponseEntity<String> responseInvalid = userController.changeDetails(invalidJson);
+    assertEquals(responseInvalid.getStatusCode(),HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -153,11 +221,26 @@ class UserControllerTest {
    */
   @Test
   void userByType() {
-    String allStudents = userController.userByType(0).toString();
-    String allTeachers = userController.userByType(1).toString();
+    when(userRepository.getUsersOfType(0)).thenReturn(students);
+    when(userRepository.getUsersOfType(1)).thenReturn(teachers);
+
+    List<User> studs = userController.userByType(0);
+    Iterator<User> iter = studs.iterator();
+    Iterator<User> iterComp = students.iterator();
+
+    while (iter.hasNext() && iterComp.hasNext()){
+      assertEquals(iter.next(),iterComp.next());
+    }
+
+    List<User> teach = userController.userByType(1);
+    Iterator<User> iterTeach = teach.iterator();
+    Iterator<User> iterCompTeach = teachers.iterator();
+
+    while (iterTeach.hasNext() && iterCompTeach.hasNext()){
+      assertEquals(iterTeach.next(),iterCompTeach.next());
+    }
+
     var invalid = userController.userByType(2);
-    assertTrue(allStudents.contains(student1));
-    assertTrue(allTeachers.contains("teacher1"));
-    assertNull(invalid);
+    assertTrue(invalid.isEmpty());
   }
 }

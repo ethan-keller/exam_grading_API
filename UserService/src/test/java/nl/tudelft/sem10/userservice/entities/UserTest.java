@@ -13,15 +13,8 @@ class UserTest {
   private transient User student2;
   private transient User teacher1;
   private transient User teacher2;
-  private transient User nullUser = null;
   private transient User student1Cop;
   private transient User teacher1Cop;
-  private transient final String password = "pass";
-  private transient final String password1 = "pass1";
-  private transient final String netIdStudent1 = "student1";
-  private transient final String netIdStudent2 = "student2";
-  private transient final String netIdTeacher1 = "teacher1";
-  private transient final String netIdTeacher2 = "teacher2";
 
 
   /**
@@ -29,11 +22,17 @@ class UserTest {
    */
   @BeforeEach
   void setUp() {
+    String password = "pass";
+    String netIdStudent1 = "student1";
     student1 = new User(netIdStudent1, password,0);
+    String password1 = "pass1";
+    String netIdStudent2 = "student2";
     student2 = new User(netIdStudent2, password1,0);
     student1Cop = new User(netIdStudent1, password,0);
+    String netIdTeacher1 = "teacher1";
     teacher1 = new User(netIdTeacher1, password,1);
     teacher1Cop = new User(netIdTeacher1, password,1);
+    String netIdTeacher2 = "teacher2";
     teacher2 = new User(netIdTeacher2, password1,1);
   }
 
@@ -131,8 +130,8 @@ class UserTest {
    */
   @Test
   void testEquals() {
-    Assertions.assertTrue(student1.equals(student1));
-    Assertions.assertTrue(teacher1.equals(teacher1));
+    Assertions.assertEquals(student1, student1);
+    Assertions.assertEquals(teacher1, teacher1);
   }
 
   /**
@@ -140,8 +139,8 @@ class UserTest {
    */
   @Test
   void testEqualsSame() {
-    Assertions.assertTrue(student1.equals(student1Cop));
-    Assertions.assertTrue(teacher1.equals(teacher1Cop));
+    Assertions.assertEquals(student1Cop, student1);
+    Assertions.assertEquals(teacher1Cop, teacher1);
   }
 
   /**
@@ -149,8 +148,8 @@ class UserTest {
    */
   @Test
   void testEqualsNull() {
-    Assertions.assertFalse(student1.equals(nullUser));
-    Assertions.assertFalse(teacher1.equals(nullUser));
+    Assertions.assertNotEquals(null, student1);
+    Assertions.assertNotEquals(null, teacher1);
   }
 
   /**
@@ -158,7 +157,7 @@ class UserTest {
    */
   @Test
   void testNotEquals() {
-    Assertions.assertFalse(student1.equals(teacher1));
+    Assertions.assertNotEquals(teacher1, student1);
   }
 
   /**
