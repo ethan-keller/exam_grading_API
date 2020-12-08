@@ -3,85 +3,161 @@ package nl.tudelft.sem10.userservice.controllers;
 import java.util.List;
 import nl.tudelft.sem10.userservice.entities.User;
 import nl.tudelft.sem10.userservice.repositories.UserRepository;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
+/**
+ * Controller for userService module. Provides basic endpoints to interact with users database.
+ */
 @Controller
-@RequestMapping(path = "/userService")
+@RequestMapping(path = "/user")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserController {
+
+
     @Autowired
     private UserRepository userRepository; //NOPMD
 
+    // To adhere to the lovely PMD rules
+    private transient final String netIdStr = "netId";
 
-    @GetMapping("/users")
+    /**
+     * Setter for the userRepository, mainly used for testing purposes.
+     * @param userRepository  of type UserRepository
+     */
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * Gets all the users in the database.
+     *
+     * @return return all users as a List of type user
+     */
+    @GetMapping("")
     @ResponseBody
     public List<User> users() {
         return userRepository.getAllUsers();
     }
 
-    @GetMapping("/userByNetId")
+    /**
+     * Endpoint to get one specific user.
+     *
+     * @param netId netId of the user in question
+     * @return returns the user identified with the string.
+     */
+    @GetMapping("/{netId}")
     @ResponseBody
-    public User userByNetId(String netId) {
-        return userRepository.getUserByNetId(netId);
-    }
-
-    @GetMapping("/userByNetIdAndPassword")
-    @ResponseBody
-    public User userByNetIdAndPassword(String netId, String password) {
-        return userRepository.getUserByNetIdAndPassword(netId, password);
-    }
-
-    @PostMapping("/add")
-    @ResponseBody
-    public ResponseEntity<String> createUser(String netId, String password, int type) {
+    public ResponseEntity<String> userByNetId(@PathVariable String netId) {
         User u = userRepository.getUserByNetId(netId);
-        if (u != null) {
-            return new ResponseEntity<>(HttpStatus.IM_USED);
+        if (u == null) {
+            return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
         } else {
+            return new ResponseEntity<>(u.toString(), HttpStatus.OK);
+        }
+    }
+
+    /**
+     * Endpoint to create and add user to database.
+     *
+     * @param jsonString - JSON representation of a User object
+     * @return status code and a string with conformation
+     */
+    @PostMapping("")
+    @Modifying
+    @ResponseBody
+    public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
+        JSONObject json = new JSONObject(jsonString);
+        if (json.has(netIdStr) && json.has("password") && json.has("type")) {
+            String netId = json.getString(netIdStr);
+            User u = userRepository.getUserByNetId(netId);
+            if (u != null) {
+                return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
+            }
+            String password = json.getString("password");
+            int type = json.getInt("type");
             userRepository.insertUser(netId, password, type);
             User n = new User(netId, password, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
         }
-
-        //return userRepository.insertUser(netId, password, type);
-    }
-
-    @DeleteMapping("/delete")
-    @ResponseBody
-    public ResponseEntity<String> deleteUser(String netId) {
-        User u = userRepository.getUserByNetId(netId);
-        if (u == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            userRepository.deleteUser(netId);
-            return new ResponseEntity<>(HttpStatus.OK);
+        else{
+            return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping(path = "/change")
+    /**
+     * Endpoint to delete a given user.
+     *
+     * @param jsonString - JSON representation of a User object
+     * @return status code and response string
+     */
+    @DeleteMapping("")
+    @Modifying
     @ResponseBody
-    public ResponseEntity<String> changeDetails(String netId, String password, int type) {
-        User u = userRepository.getUserByNetId(netId);
-        if (u == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            userRepository.updateUser(netId, type, password);
+    public ResponseEntity<String> deleteUser(@RequestBody String jsonString) throws JSONException {
+        JSONObject json = new JSONObject(jsonString);
+        if (json.has(netIdStr)) {
+            String netId = json.getString(netIdStr);
+            User u = userRepository.getUserByNetId(netId);
+            if (u == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                userRepository.deleteUser(netId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        else{
+            return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Endpoint to change an existing user.
+     *
+     * @param jsonString - JSON representation of a User object
+     * @return status code and response string
+     */
+    @PutMapping("")
+    @Modifying
+    @ResponseBody
+    public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
+        JSONObject json = new JSONObject(jsonString);
+        if (json.has(netIdStr) && json.has("password") && json.has("type")) {
+            String netId = json.getString(netIdStr);
+            User u = userRepository.getUserByNetId(netId);
+            if (u == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            String password = json.getString("password");
+            int type = json.getInt("type");
+            userRepository.updateUser(netId, password, type);
             User n = new User(netId, password, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.OK);
         }
+        else{
+            return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @GetMapping("/test")
+    /**
+     * Endpoint to return a specific type of users.
+     *
+     * @param type type of user needed
+     * @return list of users of given type
+     */
+    @GetMapping("/type/{type}")
     @ResponseBody
-    public ResponseEntity test() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public List<User> userByType(@PathVariable int type) {
+        return userRepository.getUsersOfType(type);
     }
 
 }

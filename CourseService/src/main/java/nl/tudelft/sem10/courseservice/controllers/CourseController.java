@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Course REST API.
  */
 @Controller
-@RequestMapping(path = "/course")
+@RequestMapping(path = "/teacher/course")
 public class CourseController {
     private static final String RESPONSE_TYPE = "application/json";
+
     @Autowired
     private CourseRepository courseRepository; //NOPMD
 

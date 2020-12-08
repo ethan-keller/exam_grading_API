@@ -3,6 +3,8 @@ package nl.tudelft.sem10.gradingservice.entities;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,6 +14,7 @@ import javax.persistence.Table;
 public class Grade {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -32,12 +35,13 @@ public class Grade {
     }
 
     /**
-     * TODO: Insert javadoc here.
+     * Constructor for a grade.
+     * All elements needed are set, database id is auto generated.
      *
      * @param id         - long
      * @param netid      - String
      * @param courseCode - String
-     * @param gradeType  - String
+     * @param gradeType  - String Specify what category of grade it is e.g. midterm
      * @param mark       - float
      */
     public Grade(long id, float mark, String netid, String courseCode, String gradeType) {
