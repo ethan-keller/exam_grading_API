@@ -35,8 +35,6 @@ public class StudentGradeControllerTest {
     @Mock
     private transient GradeRepository gradeRepository;
 
-    @Mock
-    private transient ServerCommunication serverCommunication;
 
     private transient String netId;
     private transient String courseCode;
@@ -44,7 +42,6 @@ public class StudentGradeControllerTest {
     private transient List<Grade> gradesOfCourse;
     private transient List<Grade> gradesOfCourse2;
     private transient List<String> coursesOfStudent;
-    private transient Grade grade;
 
     /**
      * Sets up the Users used in multiple tests.
@@ -54,7 +51,6 @@ public class StudentGradeControllerTest {
     public void setUp() {
         netId = "user1";
         courseCode = "CSE1";
-        grade = new Grade(1, 10, "user1", "CSE1", "A");
         Grade grade1 = new Grade(1, 10, "user1", "CSE1", "A");
         Grade grade2 = new Grade(2, 10, "user1", "CSE1", "B");
         Grade grade3 = new Grade(3, 5, "user1", "CSE2", "A");
@@ -97,11 +93,6 @@ public class StudentGradeControllerTest {
         when(gradeRepository.getGradesByNetIdAndCourse(netId, courseCode)).thenReturn(null);
         ResponseEntity<Double> responseEntity = studentGradeController.getGrade(netId, courseCode);
         assertEquals(404, responseEntity.getStatusCodeValue());
-    }
-
-    @Test
-    public void testGetGrade() throws JSONException {
-        assertEquals(10.0, studentGradeController.getGradeTestMethod(gradesOfCourse, "CSE1"));
     }
 
     @Test

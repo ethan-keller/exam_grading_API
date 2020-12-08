@@ -6,7 +6,6 @@ import java.net.http.HttpClient;
  * Simple class to streamline communication with other services.
  */
 public class ServerCommunication {
-    static RequestHelper requestHelper = new RequestHelper();
     private static HttpClient client = HttpClient.newBuilder().build();
 
     /**

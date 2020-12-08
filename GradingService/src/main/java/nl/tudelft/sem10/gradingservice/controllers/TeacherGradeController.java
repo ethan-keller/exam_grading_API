@@ -20,9 +20,9 @@ public class TeacherGradeController {
 
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
-    private static double passingGrade = 5.75;
-    private transient ServerCommunication serverCommunication = new ServerCommunication();
-    private transient StudentGradeController studentGradeController = new StudentGradeController();
+    final static double passingGrade = 5.75;
+    private transient  StudentLogic studentLogic;
+
 
     /**
      * NOT REAL JAVADOC
@@ -49,7 +49,7 @@ public class TeacherGradeController {
             if (list == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            double grade = studentGradeController.getGrade(list, course);
+            double grade = StudentLogic.getGrade(list, course);
             if (grade > passingGrade) {
                 passCount++;
             }
@@ -71,10 +71,10 @@ public class TeacherGradeController {
     public ResponseEntity<String> meanAndVariance(@RequestParam String course)
             throws JSONException {
         List<String> students = gradeRepository.getStudentsTakingCourse(course);
-        List<Double> grades = new ArrayList<>(students.size());
         if (students == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        List<Double> grades = new ArrayList<>(students.size());
         double sum = 0.0;
         for (String netId : students) {
             List<Grade> list =
@@ -82,23 +82,14 @@ public class TeacherGradeController {
             if (list == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            double g = studentGradeController.getGrade(list, course);
+            double g = StudentLogic.getGrade(list, course);
             grades.add(g);
             sum = sum + g;
         }
         sum = sum / students.size();
-        double variance = getVariance(grades, sum);
+        double variance = StudentLogic.getVariance(grades, sum);
         String json =  "{\"mean\":\"" + sum + "\", \"variance\":\"" + variance + "\"}";
         return new ResponseEntity<>(json, HttpStatus.OK);
-    }
-
-
-    double getVariance(List<Double> grades, double mean) {
-        double square = 0;
-        for (double a : grades) {
-            square += (a - mean) * (a - mean);
-        }
-        return square / grades.size();
     }
 
 }
