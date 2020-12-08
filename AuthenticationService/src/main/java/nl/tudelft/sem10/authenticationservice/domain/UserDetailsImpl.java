@@ -3,6 +3,7 @@ package nl.tudelft.sem10.authenticationservice.domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import nl.tudelft.sem10.authenticationservice.application.Role;
 import nl.tudelft.sem10.authenticationservice.application.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +39,19 @@ public class UserDetailsImpl implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role.getName()));
         return authorities;
+    }
+
+    /**
+     * Checks if a password is correct.
+     *
+     * @param password the password
+     * @return true if match, false otherwise
+     */
+    public boolean validate(final String password) {
+        if (password == null) {
+            return false;
+        }
+        return password.equals(getPassword());
     }
 
     /**
@@ -98,5 +112,35 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    /**
+     * Equals method.
+     * Mostly for testing purposes
+     *
+     * @param o object to compare with
+     * @return true if users equal, else false
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof UserDetailsImpl)) {
+            return false;
+        }
+        UserDetailsImpl that = (UserDetailsImpl) o;
+        return Objects.equals(user, that.user);
+    }
+
+    /**
+     * Hash code generator.
+     * Mostly for testing purposes
+     *
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(user);
     }
 }

@@ -1,5 +1,7 @@
 package nl.tudelft.sem10.userservice.repositories;
 
+import java.util.List;
+import javax.transaction.Transactional;
 import nl.tudelft.sem10.userservice.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.userservice.controllers;
 
+import java.util.List;
 import nl.tudelft.sem10.userservice.entities.User;
 import nl.tudelft.sem10.userservice.repositories.UserRepository;
 import org.json.JSONException;

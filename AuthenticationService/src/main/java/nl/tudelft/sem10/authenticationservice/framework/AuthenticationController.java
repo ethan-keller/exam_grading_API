@@ -3,25 +3,22 @@ package nl.tudelft.sem10.authenticationservice.framework;
 import nl.tudelft.sem10.authenticationservice.domain.JwtRequest;
 import nl.tudelft.sem10.authenticationservice.domain.JwtResponse;
 import nl.tudelft.sem10.authenticationservice.domain.JwtTokenUtil;
+import nl.tudelft.sem10.authenticationservice.domain.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for authentication.
  */
-@RestController
+@Controller
 public class AuthenticationController {
 
     // use of transient for PMD
-    //    @Autowired
-    //    private AuthenticationManager authenticationManager;
     @Autowired
     private transient JwtTokenUtil jwtTokenUtil;
     @Autowired
@@ -35,8 +32,12 @@ public class AuthenticationController {
      */
     @GetMapping("/getToken")
     public ResponseEntity<JwtResponse> getToken(@RequestBody JwtRequest request) {
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getNetId());
-        final String token = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService
+                .loadUserByUsername(request.getNetId());
+        if (userDetails != null && userDetails.validate(request.getPassword())) {
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            return ResponseEntity.ok(new JwtResponse(token));
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }
