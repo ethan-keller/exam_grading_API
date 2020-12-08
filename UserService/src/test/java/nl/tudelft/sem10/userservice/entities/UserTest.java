@@ -168,4 +168,25 @@ class UserTest {
     Assertions.assertEquals(student1.hashCode(),student1Cop.hashCode());
     Assertions.assertEquals(teacher1.hashCode(),teacher1Cop.hashCode());
   }
+
+  /**
+   * Test to check the functionality of the empty constructor.
+   */
+  @Test
+  void testEmptyConstructor() {
+    User emptyUser = new User();
+    Assertions.assertNull(emptyUser.getNetId());
+    Assertions.assertNull(emptyUser.getPassword());
+  }
+
+  /**
+   * Test to check the functionality of the empty constructor.
+   */
+  @Test
+  void testEqualsObject() {
+    Object o = new Object();
+    Assertions.assertNotEquals(student1,o);
+    Assertions.assertNotEquals(teacher1,o);
+  }
+
 }

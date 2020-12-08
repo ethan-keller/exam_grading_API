@@ -177,7 +177,7 @@ class UserControllerTest {
     assertEquals(responseOther.getStatusCode(),HttpStatus.NOT_FOUND);
 
     String invalidJson = "{SQL injection attack:This is an SQL injection attack}";
-    ResponseEntity<String> responseInvalid = userController.createUser(invalidJson);
+    ResponseEntity<String> responseInvalid = userController.deleteUser(invalidJson);
     assertEquals(responseInvalid.getStatusCode(),HttpStatus.BAD_REQUEST);
   }
 
