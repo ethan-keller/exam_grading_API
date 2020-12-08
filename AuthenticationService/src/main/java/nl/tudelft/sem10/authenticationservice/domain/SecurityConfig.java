@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// A LOT OF INFO FROM https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
 
 /**
  * General Spring Security configuration class.
@@ -31,9 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private transient JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-
+    /**
+     * Sets the user details service and password encoder to the authentication manager.
+     *
+     * @param auth builder that builds the authentication manager
+     * @throws Exception if building of authentication manager goes wrong
+     */
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureAuthManager(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 
@@ -93,8 +97,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // set permissions
         http.authorizeRequests()
-                //      .antMatchers("/").hasAnyAuthority("STUDENT", "TEACHER")
-                .antMatchers("/authenticate").permitAll()
+                .antMatchers("/*")
+                .permitAll()
                 .antMatchers("/student").hasAnyAuthority("STUDENT")
                 .antMatchers("/teacher").hasAnyAuthority("TEACHER")
                 .anyRequest().authenticated()

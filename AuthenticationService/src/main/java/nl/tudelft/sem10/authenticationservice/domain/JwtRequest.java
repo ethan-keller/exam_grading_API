@@ -10,6 +10,7 @@ public class JwtRequest implements Serializable {
     private static final long serialVersionUID = 6049127233484238473L;
     private transient String netId;
     private transient String password;
+    private transient int type;
 
     /**
      * Default constructor.
@@ -24,9 +25,10 @@ public class JwtRequest implements Serializable {
      * @param netId    the netId of the user.
      * @param password the password of the user.
      */
-    public JwtRequest(String netId, String password) {
+    public JwtRequest(String netId, String password, int type) {
         this.netId = netId;
         this.password = password;
+        this.type = type;
     }
 
     /**
@@ -45,6 +47,15 @@ public class JwtRequest implements Serializable {
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * Getter for the type.
+     *
+     * @return type of user
+     */
+    public int getType() {
+        return type;
     }
 
 }

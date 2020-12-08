@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.Serializable;
+import java.time.Clock;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
@@ -26,6 +27,7 @@ public class JwtTokenUtil implements Serializable {
     // transient for PMD
     @Value("${jwt.secret}")
     private transient String secret;
+    private final transient Clock clock = Clock.systemDefaultZone();
 
     /**
      * Get the user's netId from the token.
@@ -55,7 +57,8 @@ public class JwtTokenUtil implements Serializable {
      */
     private boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        Date d = new Date(clock.millis());
+        return expiration.before(d);
     }
 
     /**
@@ -110,9 +113,10 @@ public class JwtTokenUtil implements Serializable {
      * @return string representation of the generated token
      */
     private String internalGenerateToken(String netId) {
+        final long millis = clock.millis();
         return Jwts.builder().setClaims(new HashMap<>()).setSubject(netId)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * JWT_VALIDITY))
+                .setIssuedAt(new Date(millis))
+                .setExpiration(new Date(millis + 1000 * JWT_VALIDITY))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
