@@ -1,5 +1,7 @@
 package nl.tudelft.sem10.gradingservice.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import nl.tudelft.sem10.gradingservice.entities.Grade;
 import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
 import org.json.JSONException;
@@ -9,14 +11,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class StudentLogic {
 
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 
+    /**
+     * Logic to get the mean of a list of grades.
+     *
+     * @param list list of grades
+     * @return mean of grades
+     */
     public static float getMean(List<Grade> list) {
         float sum = 0;
         for (Grade g : list) {
@@ -54,6 +60,13 @@ public class StudentLogic {
         return g;
     }
 
+    /**
+     *Gets the variance given a list of grades and a mean of the grades.
+     *
+     * @param grades list of grades
+     * @param mean mean of grades
+     * @return variance of the grades
+     */
     public static double getVariance(List<Double> grades, double mean) {
         double square = 0;
         for (double a : grades) {

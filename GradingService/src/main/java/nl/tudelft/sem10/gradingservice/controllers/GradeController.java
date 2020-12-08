@@ -19,8 +19,8 @@ public class GradeController {
     private GradeRepository gradeRepository; //NOPMD
 
     /**
-     * Returns a list of all grade entities in the database
-     * Possibility of filtering on either netid, course, both or none
+     * Returns a list of all grade entities in the database.
+     * Possibility of filtering on either netid, course, both or none.
      *
      * @return the list of all grades in the database
      */
@@ -44,8 +44,9 @@ public class GradeController {
     }
 
     /**
-     * return a grade from the database based on id of said grade in the database
-     * @throws IllegalAccessException if grade isn't in the database
+     * return a grade from the database based on id of said grade in the database.
+     *
+     * @throws IllegalAccessException if grade isn't in the database.
      * @return grade with pathvariable id
      */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.GET)
@@ -60,7 +61,8 @@ public class GradeController {
     }
 
     /**
-     * Deletes grade from database based on id
+     * Deletes grade from database based on id.
+     *
      * @param gradeId path variable of grade to be deleted
      */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.DELETE)
@@ -69,7 +71,8 @@ public class GradeController {
     }
 
     /**
-     * updates grade from database based on id if the updated value is higher than the previous one
+     * updates grade from database based on id if the updated value is higher than the previous one.
+     *
      * @param jsonString body with the grade in it
      * @param gradeId grade to be updated
      * @throws JSONException if grade is not found in database
@@ -89,7 +92,8 @@ public class GradeController {
     }
 
     /**
-     * Inserts a new grade into the database
+     * Inserts a new grade into the database.
+     *
      * @param jsonString body of post request, contains all info for a new grade
      * @throws JSONException if something goes wrong while creating a JSON object
      */

@@ -41,7 +41,7 @@ public class Grade {
      * @param id         - long
      * @param netid      - String
      * @param courseCode - String
-     * @param gradeType  - String
+     * @param gradeType  - String Specify what category of grade it is e.g. midterm
      * @param mark       - float
      */
     public Grade(long id, float mark, String netid, String courseCode, String gradeType) {

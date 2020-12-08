@@ -23,7 +23,7 @@ public class StudentGradeController {
 
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
-    final static double passingGrade = 5.75;
+    static final double passingGrade = 5.75;
 
     /**
      * Method to get mean grade of a student.
@@ -89,35 +89,6 @@ public class StudentGradeController {
         return new ResponseEntity<>(passed, HttpStatus.OK);
     }
 
-    /**
-     * Method to return the course code of all courses a student has passed.
-     *
-     * @param netId netId of the student
-     * @return A list of strings that are the course codes
-     * @throws JSONException exception if json is wrong
-     */
-
-    // Why does this have the same mapping as an actual method? Changed to reflect it's test status
-    @GetMapping(path = "/passedTest")
-    @SuppressWarnings("PMD")
-    @ResponseBody
-    public ResponseEntity<List<String>> passedCoursesTestMethod(@RequestParam String netId)
-            throws JSONException {
-        List<String> list = gradeRepository.getCoursesOfStudent(netId);
-        if (list == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<String> passed = new ArrayList<>();
-        for (String course : list) {
-            List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            double grade = 10.0;
-            if (grade >= passingGrade) {
-                passed.add(course);
-            }
-        }
-
-        return new ResponseEntity<>(passed, HttpStatus.OK);
-    }
 
     /**
      * Method to get all the final grades a student has achieved for every course.
@@ -136,31 +107,8 @@ public class StudentGradeController {
         List<String> gr = new ArrayList<>();
         for (String course : list) {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            gr.add("{\"course\":\"" + course + "\", \"grade\":\"" + StudentLogic.getGrade(l, course) + "\"}");
-        }
-        return new ResponseEntity<>(gr, HttpStatus.OK);
-    }
-
-    /**
-     * Test version of allGrades().
-     *
-     * @param netId netId of the student
-     * @return List of json objects
-     * @throws JSONException exception if json is wrong
-     */
-    @GetMapping(path = "/allGradesTest")
-    @ResponseBody
-    @SuppressWarnings("PMD")
-    public ResponseEntity<List<String>> allGradesTestMethod(@RequestParam String netId)
-            throws JSONException {
-        List<String> list = gradeRepository.getCoursesOfStudent(netId);
-        if (list == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<String> gr = new ArrayList<>();
-        for (String course : list) {
-            List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            gr.add("{\"course\":\"" + course + "\", \"grade\":\"" + 10 + "\"}");
+            gr.add("{\"course\":\"" + course + "\", "
+                    + "\"grade\":\"" + StudentLogic.getGrade(l, course) + "\"}");
         }
         return new ResponseEntity<>(gr, HttpStatus.OK);
     }
