@@ -38,11 +38,7 @@ public class StudentGradeController {
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        float sum = 0;
-        for (Grade g : list) {
-            sum = sum + g.getMark();
-        }
-        sum = sum / list.size();
+        float sum = StudentLogic.getMean(list);
         return new ResponseEntity<>(sum, HttpStatus.OK);
     }
 
@@ -90,7 +86,6 @@ public class StudentGradeController {
                 passed.add(course);
             }
         }
-
         return new ResponseEntity<>(passed, HttpStatus.OK);
     }
 
@@ -143,7 +138,6 @@ public class StudentGradeController {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
             gr.add("{\"course\":\"" + course + "\", \"grade\":\"" + StudentLogic.getGrade(l, course) + "\"}");
         }
-
         return new ResponseEntity<>(gr, HttpStatus.OK);
     }
 
@@ -168,7 +162,6 @@ public class StudentGradeController {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
             gr.add("{\"course\":\"" + course + "\", \"grade\":\"" + 10 + "\"}");
         }
-
         return new ResponseEntity<>(gr, HttpStatus.OK);
     }
 
@@ -203,35 +196,4 @@ public class StudentGradeController {
         return new ResponseEntity<>(passRate, HttpStatus.OK);
     }
 
-    /**
-     * Test version of passingRate().
-     *
-     * @param course course code of the course
-     * @return the passing rate as a double in between 0.0-1.0
-     * @throws JSONException exception if json is wrong
-     */
-    @SuppressWarnings("PMD")
-    @GetMapping(path = "/passingRateTest")
-    @ResponseBody
-    public ResponseEntity<Double> passingRateTestMethod(@RequestParam String course)
-            throws JSONException {
-        List<String> students = gradeRepository.getStudentsTakingCourse(course);
-        if (students == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        double passCount = 0.0;
-        for (String netId : students) {
-            List<Grade> list =
-                    gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            if (list == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            double grade = 10.0;
-            if (grade > passingGrade) {
-                passCount++;
-            }
-        }
-        double passRate = passCount / students.size();
-        return new ResponseEntity<>(passRate, HttpStatus.OK);
-    }
 }

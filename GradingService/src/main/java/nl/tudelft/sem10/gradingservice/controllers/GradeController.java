@@ -40,7 +40,6 @@ public class GradeController {
         } else {
             gradeList = gradeRepository.getGradesByNetIdAndCourse(netid, courseCode);
         }
-
         return gradeList;
     }
 
@@ -106,7 +105,6 @@ public class GradeController {
                 numberCount++;
             }
         }
-
         String gradeType = obj.getString("grade_type");
         if (numberCount == 4) {
             String netid = obj.getString("netid");
