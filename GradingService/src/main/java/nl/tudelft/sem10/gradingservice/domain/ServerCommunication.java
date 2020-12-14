@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.gradingservice.controllers;
+package nl.tudelft.sem10.gradingservice.domain;
 
 import java.net.http.HttpClient;
 

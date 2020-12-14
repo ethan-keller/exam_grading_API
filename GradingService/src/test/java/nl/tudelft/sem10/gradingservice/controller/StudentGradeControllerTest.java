@@ -7,12 +7,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
-import nl.tudelft.sem10.gradingservice.controllers.ServerCommunication;
-import nl.tudelft.sem10.gradingservice.controllers.StudentGradeController;
-import nl.tudelft.sem10.gradingservice.entities.Grade;
+import nl.tudelft.sem10.gradingservice.application.StudentGradeController;
+import nl.tudelft.sem10.gradingservice.domain.Grade;
 import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;

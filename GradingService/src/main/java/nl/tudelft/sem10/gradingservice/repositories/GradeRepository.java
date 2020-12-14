@@ -2,8 +2,7 @@ package nl.tudelft.sem10.gradingservice.repositories;
 
 import java.util.List;
 import javax.transaction.Transactional;
-
-import nl.tudelft.sem10.gradingservice.entities.Grade;
+import nl.tudelft.sem10.gradingservice.domain.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,16 +46,6 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
     @Transactional
     @Query(value = "SELECT * FROM grade WHERE course_code = ?1", nativeQuery = true)
     List<Grade> getGradesByCourse(String course);
-
-    //Finds grades by course and grade type
-    @Transactional
-    @Query(value = "SELECT * FROM grade WHERE course_code = ?1 AND grade_type = ?2", nativeQuery = true)
-    List<Grade> getGradesByCourseAndType(String course, String gradeType);
-
-    //Finds grades by course, grade type and netid
-    @Transactional
-    @Query(value = "SELECT * FROM grade WHERE course_code = ?1 AND grade_type = ?2 AND netid = ?3", nativeQuery = true)
-    List<Grade> getGradesByCourseAndTypeAndNetid(String course, String gradeType, String netid);
 
     //Finds the courses a user takes
     @Modifying

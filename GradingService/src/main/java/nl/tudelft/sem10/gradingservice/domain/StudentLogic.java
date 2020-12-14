@@ -1,15 +1,10 @@
-package nl.tudelft.sem10.gradingservice.controllers;
+package nl.tudelft.sem10.gradingservice.domain;
 
-import java.util.ArrayList;
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.entities.Grade;
 import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 public class StudentLogic {

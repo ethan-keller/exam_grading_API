@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.tudelft.sem10.gradingservice.entities.Grade;
+import nl.tudelft.sem10.gradingservice.domain.Grade;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
