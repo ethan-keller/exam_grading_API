@@ -2,7 +2,7 @@ package nl.tudelft.sem10.gradingservice.application;
 
 import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
-import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

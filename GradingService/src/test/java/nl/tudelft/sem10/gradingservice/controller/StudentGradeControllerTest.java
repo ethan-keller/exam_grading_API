@@ -11,10 +11,9 @@ import java.util.List;
 
 import nl.tudelft.sem10.gradingservice.application.StudentGradeController;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
-import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.InjectMocks;

@@ -2,13 +2,20 @@ package nl.tudelft.sem10.gradingservice.application;
 
 import java.util.List;
 import java.util.Optional;
+
 import nl.tudelft.sem10.gradingservice.domain.Grade;
-import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/grade")
@@ -29,16 +36,21 @@ public class GradeController {
     @GetMapping("grade")
     @ResponseBody
     public List<Grade> getAllGrades(@RequestParam(required = false) String netid,
-                                    @RequestParam(required = false) String courseCode) {
+                                    @RequestParam(required = false) String courseCode,
+                                    @RequestParam(required = false) String gradeType) {
         List<Grade> gradeList;
-        if (netid == null && courseCode == null) {
+        if (netid == null && courseCode == null && gradeType == null) {
             gradeList = gradeRepository.findAll();
-        } else if (netid != null && courseCode == null) {
+        } else if (netid != null && courseCode == null && gradeType == null) {
             gradeList = gradeRepository.getGradesByNetId(netid);
-        } else if (netid == null) {
+        } else if (netid == null && courseCode != null && gradeType == null) {
             gradeList = gradeRepository.getGradesByCourse(courseCode);
-        } else {
+        } else if (netid == null && courseCode != null) {
+            gradeList = gradeRepository.getGradesByCourseAndType(courseCode, gradeType);
+        } else if (netid != null && courseCode != null && gradeType == null) {
             gradeList = gradeRepository.getGradesByNetIdAndCourse(netid, courseCode);
+        } else {
+            gradeList = gradeRepository.getGradesByCourseAndTypeAndNetid(courseCode, gradeType, netid);
         }
         return gradeList;
     }
@@ -46,8 +58,8 @@ public class GradeController {
     /**
      * return a grade from the database based on id of said grade in the database.
      *
-     * @throws IllegalAccessException if grade isn't in the database.
      * @return grade with pathvariable id
+     * @throws IllegalAccessException if grade isn't in the database.
      */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.GET)
     @ResponseBody
@@ -74,13 +86,13 @@ public class GradeController {
      * updates grade from database based on id if the updated value is higher than the previous one.
      *
      * @param jsonString body with the grade in it
-     * @param gradeId grade to be updated
+     * @param gradeId    grade to be updated
      * @throws JSONException if grade is not found in database
      */
     @RequestMapping(value = "/{gradeId}", method = RequestMethod.PUT)
     @ResponseBody
     public void updateGrade(@RequestBody String jsonString, @PathVariable final long gradeId)
-        throws JSONException {
+            throws JSONException {
         JSONObject obj = new JSONObject(jsonString);
         float mark = (float) obj.getDouble("mark");
 

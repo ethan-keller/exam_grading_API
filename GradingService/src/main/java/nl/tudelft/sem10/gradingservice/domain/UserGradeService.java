@@ -2,7 +2,7 @@ package nl.tudelft.sem10.gradingservice.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.repositories.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
