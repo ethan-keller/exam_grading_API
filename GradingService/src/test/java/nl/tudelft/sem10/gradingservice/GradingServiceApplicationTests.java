@@ -54,7 +54,7 @@ public class GradingServiceApplicationTests {
         // Test if an endpoint exists
         mockMvc.perform(get("/grade")
                 .contentType("application/json"))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class GradingServiceApplicationTests {
         objNew.put("course_code", "CSE2425");
         objNew.put("grade_type", "endterm");
 
-        mockMvc.perform(post("/grade")
+        mockMvc.perform(post("/teacher")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
@@ -107,22 +107,22 @@ public class GradingServiceApplicationTests {
         objNew.put("course_code", "CSE2425");
         objNew.put("grade_type", "endterm");
 
-        mockMvc.perform(post("/grade")
+        mockMvc.perform(post("/teacher")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
 
         // Delete element from DB and see if it's actually gone
-        mockMvc.perform(delete("/grade/1")
+        mockMvc.perform(delete("/teacher?courseCode=CSE2425&netid=testId&gradeType=endterm")
                 .accept("application/json"))
                 .andExpect(status().isOk());
 
         MvcResult result = mockMvc.perform(get("/grade")
                 .contentType("application/json"))
-                .andExpect(status().isOk())
+                .andExpect(status().is4xxClientError())
                 .andReturn();
 
-        String content = result.getResponse().getContentAsString();
+        String content = "[" + result.getResponse().getContentAsString() + "]";
 
         JSONArray jsonArray = new JSONArray(new JSONTokener(content));
         JSONException thrown = assertThrows(
@@ -145,7 +145,7 @@ public class GradingServiceApplicationTests {
         objNew.put("course_code", "CSE2425");
         objNew.put("grade_type", "endterm");
 
-        mockMvc.perform(post("/grade")
+        mockMvc.perform(post("/teacher")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
@@ -163,19 +163,19 @@ public class GradingServiceApplicationTests {
 
         // Update the grade in the DB with a smaller mark, check if the value stayed the same
         objNew.put("mark", 4.99);
-        mockMvc.perform(put("/grade/1")
+        mockMvc.perform(put("/teacher?courseCode=CSE2425&netid=testId&gradeType=endterm")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
 
         // Check get with an ID instead of getting all grades
-        result = mockMvc.perform(get("/grade/1")
+        result = mockMvc.perform(get("/grade?courseCode=CSE2425&netid=testId&gradeType=endterm")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
 
 
-        content = "[" + result.getResponse().getContentAsString() + "]";
+        content = result.getResponse().getContentAsString();
         jsonArray = new JSONArray(new JSONTokener(content));
 
         assertEquals(1, jsonArray.length());
@@ -195,7 +195,7 @@ public class GradingServiceApplicationTests {
         objNew.put("course_code", "CSE2425");
         objNew.put("grade_type", "endterm");
 
-        mockMvc.perform(post("/grade")
+        mockMvc.perform(post("/teacher")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
@@ -213,19 +213,19 @@ public class GradingServiceApplicationTests {
 
         // Update the grade in the DB with a higher mark, check if the value updated accordingly
         objNew.put("mark", 7.99);
-        mockMvc.perform(put("/grade/1")
+        mockMvc.perform(put("/teacher?courseCode=CSE2425&netid=testId&gradeType=endterm")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
 
         // Check get with an ID instead of getting all grades
-        result = mockMvc.perform(get("/grade/1")
+        result = mockMvc.perform(get("/grade?courseCode=CSE2425&netid=testId&gradeType=endterm")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
 
 
-        content = "[" + result.getResponse().getContentAsString() + "]";
+        content = result.getResponse().getContentAsString();
         jsonArray = new JSONArray(new JSONTokener(content));
 
         assertEquals(1, jsonArray.length());
@@ -259,15 +259,15 @@ public class GradingServiceApplicationTests {
         objNew3.put("course_code", "CSE2425");
         objNew3.put("grade_type", "midterm");
 
-        mockMvc.perform(post("/grade")
+        mockMvc.perform(post("/teacher")
                 .contentType("application/json")
                 .content(String.valueOf(objNew)))
                 .andExpect(status().isOk());
-        mockMvc.perform(post("/grade")
+        mockMvc.perform(post("/teacher")
                 .contentType("application/json")
                 .content(String.valueOf(objNew2)))
                 .andExpect(status().isOk());
-        mockMvc.perform(post("/grade")
+        mockMvc.perform(post("/teacher")
                 .contentType("application/json")
                 .content(String.valueOf(objNew3)))
                 .andExpect(status().isOk());

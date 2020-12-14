@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.gradingservice.application;
 
+import javassist.NotFoundException;
 import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
@@ -7,11 +8,9 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+@SuppressWarnings("unused")
 @Controller
 @RequestMapping("/teacher")
 public class TeacherGradeController {
@@ -52,6 +51,30 @@ public class TeacherGradeController {
     public ResponseEntity<String> meanAndVariance(@RequestParam String course)
             throws JSONException {
         return userService.meanAndVariance(course);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    @ResponseBody
+    public void updateGrade(@RequestParam String netid,
+                            @RequestParam String courseCode,
+                            @RequestParam String gradeType,
+                            @RequestBody String jsonString) throws JSONException, NotFoundException {
+        userService.updateGrade(netid, courseCode, gradeType, jsonString);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteGrade(@RequestParam String netid,
+                            @RequestParam String courseCode,
+                            @RequestParam String gradeType) throws NotFoundException {
+        userService.deleteGrade(netid, courseCode, gradeType);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
+    @SuppressWarnings("PMD")
+    public void insertGrade(@RequestBody String jsonString) throws JSONException {
+        userService.insertGrade(jsonString);
     }
 
 }

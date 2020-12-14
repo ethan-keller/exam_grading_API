@@ -2,8 +2,12 @@ package nl.tudelft.sem10.gradingservice.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import javassist.NotFoundException;
 import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,7 @@ public class UserGradeService {
 
     /**
      * TODO: some javadoc.
+     *
      * @param netId fhweu9ch
      * @return fweijfniw
      * @throws ResponseStatusException
@@ -115,7 +120,7 @@ public class UserGradeService {
         for (String netId : students) {
             List<Grade> list =
                     gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            if (list == null) {
+            if (list.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             double grade = StudentLogic.getGrade(list, course);
@@ -155,8 +160,67 @@ public class UserGradeService {
         }
         sum = sum / students.size();
         double variance = StudentLogic.getVariance(grades, sum);
-        String json =  "{\"mean\":\"" + sum + "\", \"variance\":\"" + variance + "\"}";
+        String json = "{\"mean\":\"" + sum + "\", \"variance\":\"" + variance + "\"}";
         return new ResponseEntity<>(json, HttpStatus.OK);
+    }
+
+    public void updateGrade(String netid, String courseCode, String gradeType, String jsonString) throws JSONException, NotFoundException {
+        ResponseEntity<List<Grade>> response = getAllGrades(netid, courseCode, gradeType);
+        if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+            throw new NotFoundException("Invalid arguments");
+        }
+        Grade grade = Objects.requireNonNull(Objects.requireNonNull(response.getBody())).get(0);
+        updateGrade(jsonString, grade.getId());
+    }
+
+    private void updateGrade(String jsonString, final long gradeId)
+            throws JSONException {
+        JSONObject obj = new JSONObject(jsonString);
+        float mark = (float) obj.getDouble("mark");
+        assert gradeRepository.findById(gradeId).isPresent();
+        Grade currGrade = gradeRepository.findById(gradeId).get();
+        if (currGrade.getMark() < mark) {
+            gradeRepository.updateGrade(gradeId, mark);
+        }
+    }
+
+    public ResponseEntity<List<Grade>> getAllGrades(String netid, String courseCode, String gradeType) {
+        List<Grade> gradeList;
+        if (netid == null && courseCode == null && gradeType == null) {
+            gradeList = gradeRepository.findAll();
+        } else if (netid != null && courseCode == null && gradeType == null) {
+            gradeList = gradeRepository.getGradesByNetId(netid);
+        } else if (netid == null && courseCode != null && gradeType == null) {
+            gradeList = gradeRepository.getGradesByCourse(courseCode);
+        } else if (netid == null && courseCode != null) {
+            gradeList = gradeRepository.getGradesByCourseAndType(courseCode, gradeType);
+        } else if (netid != null && courseCode != null && gradeType == null) {
+            gradeList = gradeRepository.getGradesByNetIdAndCourse(netid, courseCode);
+        } else {
+            gradeList = gradeRepository.getGradesByCourseAndTypeAndNetid(courseCode, gradeType, netid);
+        }
+        if (gradeList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(gradeList, HttpStatus.OK);
+    }
+
+    public void deleteGrade(String netid, String courseCode, String gradeType) throws NotFoundException {
+        ResponseEntity<List<Grade>> response = getAllGrades(netid, courseCode, gradeType);
+        if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+            throw new NotFoundException("Invalid arguments");
+        }
+        Grade grade = Objects.requireNonNull(response.getBody()).get(0);
+        gradeRepository.deleteGrade(grade.getId());
+    }
+
+    public void insertGrade(String jsonString) throws JSONException {
+        JSONObject obj = new JSONObject(jsonString);
+        String courseCode = obj.getString("course_code");
+        String gradeType = obj.getString("grade_type");
+        String netid = obj.getString("netid");
+        float mark = (float) obj.getDouble("mark");
+        gradeRepository.insertGrade(mark, netid, courseCode, gradeType);
     }
 
 }
