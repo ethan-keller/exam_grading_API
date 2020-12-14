@@ -1,7 +1,12 @@
 package nl.tudelft.sem10.gradingservice;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,8 +49,8 @@ public class GradingServiceApplicationTests {
 
     @Test
     @SuppressWarnings("PMD")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-    void testBuildingEndpoint() throws Exception {
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void testGradeEndpoint() throws Exception {
         // Test if an endpoint exists
         mockMvc.perform(get("/grade")
                 .contentType("application/json"))
@@ -54,7 +59,7 @@ public class GradingServiceApplicationTests {
 
     @Test
     @SuppressWarnings("PMD")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void insertTest() throws Exception {
         // Insert element into DB
         JSONObject objNew = new JSONObject();
@@ -92,7 +97,7 @@ public class GradingServiceApplicationTests {
 
     @Test
     @SuppressWarnings("PMD")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void deleteTest() throws Exception {
         // Insert an element, get it back and check if all values are correct
         JSONObject objNew = new JSONObject();
@@ -130,7 +135,7 @@ public class GradingServiceApplicationTests {
 
     @Test
     @SuppressWarnings("PMD")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void updateTestSmallerValue() throws Exception {
         // Insert first element into DB, check all values are correct
         JSONObject objNew = new JSONObject();
@@ -180,7 +185,7 @@ public class GradingServiceApplicationTests {
 
     @Test
     @SuppressWarnings("PMD")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void updateTestBiggerValue() throws Exception {
         // Insert first element into DB, check all values are correct
         JSONObject objNew = new JSONObject();
@@ -226,6 +231,122 @@ public class GradingServiceApplicationTests {
         assertEquals(1, jsonArray.length());
         assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
         assertEquals(7.99, jsonArray.getJSONObject(0).getDouble("mark"));
+    }
+
+    @Test
+    @SuppressWarnings("PMD")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void fancyGetTest() throws Exception {
+        // Insert 3 grade objects into the database
+        JSONObject objNew = new JSONObject();
+
+        objNew.put("mark", 5.98);
+        objNew.put("netid", "testId");
+        objNew.put("course_code", "CSE2425");
+        objNew.put("grade_type", "endterm");
+
+        JSONObject objNew2 = new JSONObject();
+
+        objNew2.put("mark", 7.587);
+        objNew2.put("netid", "testId2");
+        objNew2.put("course_code", "CSE4425");
+        objNew2.put("grade_type", "midterm");
+
+        JSONObject objNew3 = new JSONObject();
+
+        objNew3.put("mark", 1.3);
+        objNew3.put("netid", "testId");
+        objNew3.put("course_code", "CSE2425");
+        objNew3.put("grade_type", "midterm");
+
+        mockMvc.perform(post("/grade")
+                .contentType("application/json")
+                .content(String.valueOf(objNew)))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/grade")
+                .contentType("application/json")
+                .content(String.valueOf(objNew2)))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/grade")
+                .contentType("application/json")
+                .content(String.valueOf(objNew3)))
+                .andExpect(status().isOk());
+
+        // Test get with just netid
+        MvcResult result = mockMvc.perform(get("/grade?netid=testId")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        JSONArray jsonArray = new JSONArray(new JSONTokener(content));
+
+        assertEquals(2, jsonArray.length());
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+        assertEquals("testId", jsonArray.getJSONObject(1).getString("netid"));
+        assertEquals(1.3, jsonArray.getJSONObject(1).getDouble("mark"));
+
+        // Test get with course code
+        result = mockMvc.perform(get("/grade?courseCode=CSE2425")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        content = result.getResponse().getContentAsString();
+        jsonArray = new JSONArray(new JSONTokener(content));
+
+        assertEquals(2, jsonArray.length());
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+        assertEquals("testId", jsonArray.getJSONObject(1).getString("netid"));
+        assertEquals(1.3, jsonArray.getJSONObject(1).getDouble("mark"));
+
+        // Test get with course code and grade type
+        result = mockMvc.perform(get("/grade?courseCode=CSE2425&gradeType=endterm")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        content = result.getResponse().getContentAsString();
+        jsonArray = new JSONArray(new JSONTokener(content));
+
+        assertEquals(1, jsonArray.length());
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+
+        // Test get with course code, grade type and netid
+        result = mockMvc.perform(get("/grade?courseCode=CSE2425&gradeType=endterm&netid=testId")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        content = result.getResponse().getContentAsString();
+        jsonArray = new JSONArray(new JSONTokener(content));
+
+        assertEquals(1, jsonArray.length());
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+
+
+        // Test get with course code, grade type and netid
+        result = mockMvc.perform(get("/grade?courseCode=CSE2425&netid=testId")
+                .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        content = result.getResponse().getContentAsString();
+        jsonArray = new JSONArray(new JSONTokener(content));
+
+        assertEquals(2, jsonArray.length());
+        assertEquals("testId", jsonArray.getJSONObject(0).getString("netid"));
+        assertEquals(5.98, jsonArray.getJSONObject(0).getDouble("mark"));
+        assertEquals("endterm", jsonArray.getJSONObject(0).getString("gradeType"));
+
+        assertEquals("testId", jsonArray.getJSONObject(1).getString("netid"));
+        assertEquals(1.3, jsonArray.getJSONObject(1).getDouble("mark"));
+        assertEquals("midterm", jsonArray.getJSONObject(1).getString("gradeType"));
+
     }
 }
 
