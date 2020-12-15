@@ -1,9 +1,9 @@
 package nl.tudelft.sem10.courseservice;
 
 import java.util.Iterator;
-import nl.tudelft.sem10.courseservice.controllers.CourseController;
-import nl.tudelft.sem10.courseservice.entities.Course;
-import nl.tudelft.sem10.courseservice.repositories.CourseRepository;
+import nl.tudelft.sem10.courseservice.application.Course;
+import nl.tudelft.sem10.courseservice.domain.CourseRepository;
+import nl.tudelft.sem10.courseservice.framework.CourseController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -32,7 +32,6 @@ class CourseServiceApplicationTests {
      * Mock the repository so no database connection is required.
      */
     @BeforeAll
-    @SuppressWarnings("PMD")
     public void setup() throws ReflectiveOperationException {
         // Inject mock into controller
         // Yes this is really ugly but at least PMD will not complain

@@ -1,7 +1,7 @@
-package nl.tudelft.sem10.courseservice.controllers;
+package nl.tudelft.sem10.courseservice.framework;
 
-import nl.tudelft.sem10.courseservice.entities.Course;
-import nl.tudelft.sem10.courseservice.repositories.CourseRepository;
+import nl.tudelft.sem10.courseservice.application.Course;
+import nl.tudelft.sem10.courseservice.domain.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

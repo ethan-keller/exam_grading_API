@@ -1,7 +1,8 @@
-package nl.tudelft.sem10.courseservice.entities;
+package nl.tudelft.sem10.courseservice.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
+import nl.tudelft.sem10.courseservice.application.Category;
 
 /**
  * A composite key for {@link Category} objects used by the repository.

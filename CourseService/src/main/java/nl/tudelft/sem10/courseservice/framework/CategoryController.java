@@ -1,8 +1,8 @@
-package nl.tudelft.sem10.courseservice.controllers;
+package nl.tudelft.sem10.courseservice.framework;
 
-import nl.tudelft.sem10.courseservice.entities.Category;
-import nl.tudelft.sem10.courseservice.entities.CategoryId;
-import nl.tudelft.sem10.courseservice.repositories.CategoryRepository;
+import nl.tudelft.sem10.courseservice.application.Category;
+import nl.tudelft.sem10.courseservice.domain.CategoryId;
+import nl.tudelft.sem10.courseservice.domain.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

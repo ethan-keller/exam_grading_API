@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * Main class; application entry point.
  */
 @SpringBootApplication(scanBasePackages = {"nl.tudelft.sem10.courseservice"})
-@EnableJpaRepositories("nl.tudelft.sem10.courseservice.repositories")
+@EnableJpaRepositories("nl.tudelft.sem10.courseservice.domain")
 public class CourseServiceApplication {
     private static final float MIN_JAVA_VER = 52F;
 
