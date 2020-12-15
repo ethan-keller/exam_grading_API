@@ -1,10 +1,12 @@
 package nl.tudelft.sem10.authenticationservice.framework;
 
+import java.security.NoSuchAlgorithmException;
 import nl.tudelft.sem10.authenticationservice.application.User;
 import nl.tudelft.sem10.authenticationservice.domain.JwtRequest;
 import nl.tudelft.sem10.authenticationservice.domain.JwtResponse;
 import nl.tudelft.sem10.authenticationservice.domain.JwtTokenUtil;
 import nl.tudelft.sem10.authenticationservice.domain.UserDetailsImpl;
+import nl.tudelft.sem10.authenticationservice.domain.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,10 +40,12 @@ public class AuthenticationController {
      * @return ResponseEntity with response
      */
     @GetMapping("/getToken")
-    public ResponseEntity<JwtResponse> getToken(@RequestBody JwtRequest request) {
+    public ResponseEntity<JwtResponse> getToken(@RequestBody JwtRequest request)
+            throws NoSuchAlgorithmException {
         final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService
                 .loadUserByUsername(request.getNetId());
-        if (userDetails != null && userDetails.validate(request.getPassword())) {
+        if (userDetails != null
+                && passwordEncoder.matches(Utility.hash(request.getPassword()), userDetails.getPassword())) {
             final String token = jwtTokenUtil.generateToken(userDetails);
             return ResponseEntity.ok(new JwtResponse(token));
         }

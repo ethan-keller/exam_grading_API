@@ -168,6 +168,7 @@ public class UserController {
             }
             String password = json.getString("password");
             int type = json.getInt("type");
+            // TODO: password should be the encoded password not PLAIN TEXT!
             userRepository.updateUser(netId, password, type);
             User n = new User(netId, password, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.OK);
