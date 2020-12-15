@@ -10,10 +10,10 @@ import java.net.http.HttpResponse;
  */
 public class RequestHelper {
 
+    private static final String domainOfCourseService = "http://localhost:8081";
     private static String username;
     private static String password;
     private static Integer type;
-    private static final String domainOfCourseService = "http://localhost:8081";
 
     /**
      * Method that builds a getRequest to course service given a path.
@@ -29,17 +29,17 @@ public class RequestHelper {
         // + Base64.getEncoder().encodeToString(userAndPass.getBytes());
         //.header("Authorization", basicAuthPayload)
         return HttpRequest
-                .newBuilder()
-                .GET()
-                .uri(URI.create(reqPath))
-                .build();
+            .newBuilder()
+            .GET()
+            .uri(URI.create(reqPath))
+            .build();
     }
 
     /**
      * Method that sends the request to the server.
      *
      * @param request request that needs to be sent
-     * @param client client sending the request
+     * @param client  client sending the request
      * @return response of request
      */
     public static String sendRequest(HttpRequest request, HttpClient client) {
@@ -55,8 +55,6 @@ public class RequestHelper {
             return "Communication with server failed";
         }
     }
-
-
 
 
 }

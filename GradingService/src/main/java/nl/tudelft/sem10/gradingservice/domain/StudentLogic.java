@@ -56,10 +56,10 @@ public class StudentLogic {
     }
 
     /**
-     *Gets the variance given a list of grades and a mean of the grades.
+     * Gets the variance given a list of grades and a mean of the grades.
      *
      * @param grades list of grades
-     * @param mean mean of grades
+     * @param mean   mean of grades
      * @return variance of the grades
      */
     public static double getVariance(List<Double> grades, double mean) {

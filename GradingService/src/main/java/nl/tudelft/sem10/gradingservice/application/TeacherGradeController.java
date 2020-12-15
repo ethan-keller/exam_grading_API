@@ -8,7 +8,12 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @SuppressWarnings("unused")
 @Controller
@@ -49,17 +54,18 @@ public class TeacherGradeController {
     @GetMapping(path = "/statistics")
     @ResponseBody
     public ResponseEntity<String> meanAndVariance(@RequestParam String course)
-            throws JSONException {
+        throws JSONException {
         return userService.meanAndVariance(course);
     }
 
     /**
      * updates a grade in the database if the newly given mark is higher than the stored one.
-     * @param netid netid of student
+     *
+     * @param netid      netid of student
      * @param courseCode course where the grade is from
-     * @param gradeType type of grade (midterm, ...)
+     * @param gradeType  type of grade (midterm, ...)
      * @param jsonString body of request
-     * @throws JSONException if input format is wrong
+     * @throws JSONException     if input format is wrong
      * @throws NotFoundException if grade is not found in database
      */
     @RequestMapping(method = RequestMethod.PUT)
@@ -67,15 +73,17 @@ public class TeacherGradeController {
     public void updateGrade(@RequestParam String netid,
                             @RequestParam String courseCode,
                             @RequestParam String gradeType,
-                            @RequestBody String jsonString) throws JSONException, NotFoundException {
+                            @RequestBody String jsonString)
+        throws JSONException, NotFoundException {
         userService.updateGrade(netid, courseCode, gradeType, jsonString);
     }
 
     /**
      * deletes a grade from the database based on given params
-     * @param netid netid of student whose grade needs to be deleted
+     *
+     * @param netid      netid of student whose grade needs to be deleted
      * @param courseCode course from which grade needs to be deleted
-     * @param gradeType type of grades that needs to be deleted
+     * @param gradeType  type of grades that needs to be deleted
      * @throws NotFoundException if grade is not found in the database based on the given parameters
      */
     @RequestMapping(method = RequestMethod.DELETE)
@@ -88,6 +96,7 @@ public class TeacherGradeController {
 
     /**
      * inserts a grade into the database
+     *
      * @param jsonString body of post message
      * @throws JSONException if input format is wrong
      */

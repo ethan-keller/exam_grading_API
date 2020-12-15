@@ -2,27 +2,22 @@ package nl.tudelft.sem10.gradingservice.application;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.application.TeacherGradeController;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
 import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
 import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

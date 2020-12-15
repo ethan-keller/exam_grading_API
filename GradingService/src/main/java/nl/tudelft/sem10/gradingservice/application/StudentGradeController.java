@@ -22,7 +22,7 @@ public class StudentGradeController {
 
     static final double passingGrade = 5.75;
     // Grab an instance of StudentLogic so we can inject a mocked one.
-    private transient StudentLogic studentLogic = new StudentLogic();
+    private final transient StudentLogic studentLogic = new StudentLogic();
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 
@@ -66,7 +66,7 @@ public class StudentGradeController {
     @GetMapping(path = "/passed")
     @ResponseBody
     public ResponseEntity<List<String>> passedCourses(@RequestParam String netId)
-            throws JSONException {
+        throws JSONException {
         return userService.passedCourses(netId);
     }
 
