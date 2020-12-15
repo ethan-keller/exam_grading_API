@@ -99,6 +99,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/encode/**")
                 .permitAll()
+                .antMatchers("/validate/**")
+                .permitAll()
                 .antMatchers("/getToken")
                 .permitAll()
                 .antMatchers("/student").hasAnyAuthority("STUDENT")

@@ -1,5 +1,7 @@
 package nl.tudelft.sem10.authenticationservice.framework;
 
+import nl.tudelft.sem10.authenticationservice.application.RoleType;
+import nl.tudelft.sem10.authenticationservice.application.User;
 import nl.tudelft.sem10.authenticationservice.domain.JwtRequest;
 import nl.tudelft.sem10.authenticationservice.domain.JwtResponse;
 import nl.tudelft.sem10.authenticationservice.domain.JwtTokenUtil;
@@ -27,6 +29,8 @@ public class AuthenticationController {
     private transient UserDetailsService userDetailsService;
     @Autowired
     private transient PasswordEncoder passwordEncoder;
+    @Autowired
+    private transient RestService rest;
 
     /**
      * Authentication endpoint.
@@ -57,4 +61,26 @@ public class AuthenticationController {
         return ResponseEntity.ok(passwordEncoder.encode(hashedPassword));
     }
 
+    /**
+     * Endpoint to validate token.
+     *
+     * @param token the token
+     * @return name of the user's role if validated, else status code 400
+     */
+    @GetMapping("/validate/{token}")
+    public ResponseEntity<String> validateToken(@PathVariable final String token) {
+        String netId = jwtTokenUtil.getNetIdFromToken(token);
+        if (netId == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        User user = rest.getUserFromUserService(netId);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (user.getRole().getType() == RoleType.STUDENT) {
+            return ResponseEntity.ok(user.getRole().getName());
+        } else {
+            return ResponseEntity.ok(user.getRole().getName());
+        }
+    }
 }
