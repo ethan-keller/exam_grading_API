@@ -32,6 +32,7 @@ class CourseServiceApplicationTests {
      * Mock the repository so no database connection is required.
      */
     @BeforeAll
+    @SuppressWarnings("PMD")
     public void setup() throws ReflectiveOperationException {
         // Inject mock into controller
         // Yes this is really ugly but at least PMD will not complain
