@@ -1,7 +1,7 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +56,10 @@ public class StudentLogic {
     }
 
     /**
-     *Gets the variance given a list of grades and a mean of the grades.
+     * Gets the variance given a list of grades and a mean of the grades.
      *
      * @param grades list of grades
-     * @param mean mean of grades
+     * @param mean   mean of grades
      * @return variance of the grades
      */
     public static double getVariance(List<Double> grades, double mean) {

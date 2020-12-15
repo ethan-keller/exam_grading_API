@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Disabled;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
 import org.json.JSONArray;
@@ -31,6 +32,7 @@ import org.springframework.test.web.servlet.MvcResult;
  * BuildingController test.
  * test passes if path leads to a 200 OK response
  */
+@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("local")

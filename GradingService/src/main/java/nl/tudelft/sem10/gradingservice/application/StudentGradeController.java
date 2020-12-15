@@ -1,9 +1,8 @@
 package nl.tudelft.sem10.gradingservice.application;
 
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
-import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class StudentGradeController {
 
     static final double passingGrade = 5.75;
-    // Grab an instance of StudentLogic so we can inject a mocked one.
-    private transient StudentLogic studentLogic = new StudentLogic();
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 
@@ -66,7 +63,7 @@ public class StudentGradeController {
     @GetMapping(path = "/passed")
     @ResponseBody
     public ResponseEntity<List<String>> passedCourses(@RequestParam String netId)
-            throws JSONException {
+        throws JSONException {
         return userService.passedCourses(netId);
     }
 
