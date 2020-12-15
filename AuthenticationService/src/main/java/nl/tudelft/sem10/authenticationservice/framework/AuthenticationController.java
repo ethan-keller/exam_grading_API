@@ -77,10 +77,6 @@ public class AuthenticationController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (user.getRole().getType() == RoleType.STUDENT) {
-            return ResponseEntity.ok(user.getRole().getName());
-        } else {
-            return ResponseEntity.ok(user.getRole().getName());
-        }
+        return ResponseEntity.ok(user.getRole().getName());
     }
 }
