@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {"nl.tudelft.sem10.gradingservice"})
-@EnableJpaRepositories("nl.tudelft.sem10.gradingservice.repositories")
+@EnableJpaRepositories("nl.tudelft.sem10.gradingservice.framework")
 public class GradingServiceApplication {
 
     public static void main(String[] args) {
