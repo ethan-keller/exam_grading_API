@@ -5,14 +5,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
-import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
-import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
-import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

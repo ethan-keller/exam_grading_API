@@ -137,8 +137,8 @@ class UserGradeServiceTest {
 
     @Test
     void allGradesNonExistent() throws JSONException {
-        when(gradeRepository.getCoursesOfStudent(anyString())).thenReturn(Collections.emptyList());
-        ResponseEntity<List<String>> response = userGradeService.allGrades(netId);
+        when(gradeRepository.getCoursesOfStudent(anyString())).thenReturn(null);
+        ResponseEntity<List<String>> response = userGradeService.allGrades(NON_EXISTENT);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -148,25 +148,10 @@ class UserGradeServiceTest {
     @Test
     void passingRate() {
     }
-
+    // Disabled because it needs server communication
     @Disabled
     @Test
     void meanAndVariance() {
     }
 
-    @Test
-    void updateGrade() {
-    }
-
-    @Test
-    void getAllGrades() {
-    }
-
-    @Test
-    void deleteGrade() {
-    }
-
-    @Test
-    void insertGrade() {
-    }
 }

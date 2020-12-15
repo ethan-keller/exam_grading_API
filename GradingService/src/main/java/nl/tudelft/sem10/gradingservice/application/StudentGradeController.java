@@ -1,7 +1,6 @@
 package nl.tudelft.sem10.gradingservice.application;
 
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;

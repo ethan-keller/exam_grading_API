@@ -1,7 +1,6 @@
 package nl.tudelft.sem10.gradingservice.application;
 
 import javassist.NotFoundException;
-import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.json.JSONException;
@@ -78,7 +77,7 @@ public class TeacherGradeController {
     }
 
     /**
-     * deletes a grade from the database based on given params
+     * Deletes a grade from the database based on given params.
      *
      * @param netid      netid of student whose grade needs to be deleted
      * @param courseCode course from which grade needs to be deleted
@@ -94,7 +93,7 @@ public class TeacherGradeController {
     }
 
     /**
-     * inserts a grade into the database
+     * Inserts a grade into the database.
      *
      * @param jsonString body of post message
      * @throws JSONException if input format is wrong
