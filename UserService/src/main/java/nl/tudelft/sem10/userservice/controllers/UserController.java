@@ -1,6 +1,5 @@
 package nl.tudelft.sem10.userservice.controllers;
 
-import java.util.List;
 import nl.tudelft.sem10.userservice.entities.User;
 import nl.tudelft.sem10.userservice.repositories.UserRepository;
 import org.json.JSONException;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 
@@ -75,7 +75,7 @@ public class UserController {
     @PostMapping("")
     @Modifying
     @ResponseBody
-    public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
+    public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException, NoSuchAlgorithmException {
         JSONObject json = new JSONObject(jsonString);
         if (json.has(netIdStr) && json.has("password") && json.has("type")) {
             String netId = json.getString(netIdStr);
@@ -84,6 +84,7 @@ public class UserController {
                 return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
             }
             String password = json.getString("password");
+            //Hash the password
             int type = json.getInt("type");
             userRepository.insertUser(netId, password, type);
             User n = new User(netId, password, type);
