@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.gradingservice.framework;
+package nl.tudelft.sem10.gradingservice.framework.repositories;
 
 import java.util.List;
 import javax.transaction.Transactional;

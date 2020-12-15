@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

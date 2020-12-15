@@ -3,7 +3,7 @@ package nl.tudelft.sem10.gradingservice.application;
 import java.util.List;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
-import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
+import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
