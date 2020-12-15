@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class StudentGradeController {
 
     static final double passingGrade = 5.75;
-    // Grab an instance of StudentLogic so we can inject a mocked one.
-    private final transient StudentLogic studentLogic = new StudentLogic();
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 

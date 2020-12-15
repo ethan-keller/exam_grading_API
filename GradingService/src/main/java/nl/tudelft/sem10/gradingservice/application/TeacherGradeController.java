@@ -24,7 +24,6 @@ public class TeacherGradeController {
     private GradeRepository gradeRepository; // NOPMD
     @Autowired
     private transient UserGradeService userService;
-    private transient StudentLogic studentLogic;
 
     /**
      * NOT REAL JAVADOC

@@ -67,7 +67,7 @@ class UserGradeServiceTest {
     void getMeanNonExistent() {
         when(gradeRepository.getGradesByNetId(anyString()))
             .thenReturn(Collections.emptyList());
-        
+
         ResponseStatusException exception =
             assertThrows(ResponseStatusException.class, () -> userGradeService.getMean(
                 "42"));
@@ -76,6 +76,7 @@ class UserGradeServiceTest {
 
     @Test
     void getGrade() {
+
     }
 
     @Test
