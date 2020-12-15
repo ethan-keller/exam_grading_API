@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.courseservice.application;
+package nl.tudelft.sem10.courseservice.domain.model;
 
 import java.util.Objects;
 import javax.persistence.Column;

@@ -1,7 +1,7 @@
 package nl.tudelft.sem10.courseservice;
 
-import nl.tudelft.sem10.courseservice.application.Category;
-import nl.tudelft.sem10.courseservice.domain.CategoryId;
+import nl.tudelft.sem10.courseservice.domain.model.Category;
+import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.courseservice.domain;
+package nl.tudelft.sem10.courseservice.application;
 
 import java.util.Objects;
 import javax.sql.DataSource;

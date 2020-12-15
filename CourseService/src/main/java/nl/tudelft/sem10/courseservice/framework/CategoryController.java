@@ -1,8 +1,8 @@
 package nl.tudelft.sem10.courseservice.framework;
 
-import nl.tudelft.sem10.courseservice.application.Category;
-import nl.tudelft.sem10.courseservice.domain.CategoryId;
-import nl.tudelft.sem10.courseservice.domain.CategoryRepository;
+import nl.tudelft.sem10.courseservice.application.CategoryService;
+import nl.tudelft.sem10.courseservice.domain.model.Category;
+import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class CategoryController {
     private static final String RESPONSE_TYPE = "application/json";
 
     @Autowired
-    private CategoryRepository categoryRepository; //NOPMD
+    private CategoryService categoryService; //NOPMD
 
     /**
      * Get all available course categories.
@@ -32,7 +32,7 @@ public class CategoryController {
      */
     @GetMapping(path = "/categories", produces = RESPONSE_TYPE)
     public ResponseEntity<Iterable<Category>> getAllCategories() {
-        return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.get(), HttpStatus.OK);
     }
 
     /**
@@ -46,12 +46,9 @@ public class CategoryController {
     public ResponseEntity<Category> getCategory(@RequestParam String courseCode,
                                                 @RequestParam String categoryName) {
 
-        // Get a course category by course code and name or null if no such category exists
-        Category category = categoryRepository
-                .findById(new CategoryId(courseCode, categoryName))
-                .orElse(null);
+        Category category = categoryService.get(new CategoryId(courseCode, categoryName));
 
-        // Return the category if it exists or a 404 error
+        // The resource does not exist
         if (category == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -68,17 +65,14 @@ public class CategoryController {
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
-        CategoryId id = new CategoryId(category.getCourse(), category.getName());
+        Category result = categoryService.add(category);
 
-        // Duplicate category
-        if (categoryRepository.existsById(id)) {
+        // The resource already exists
+        if (result == null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        // Save the category
-        categoryRepository.save(category);
-
-        return new ResponseEntity<>(category, HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     /**
@@ -91,18 +85,13 @@ public class CategoryController {
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
     public ResponseEntity<Category> removeCategory(@RequestParam String courseCode,
                                                    @RequestParam String categoryName) {
-        CategoryId id = new CategoryId(courseCode, categoryName);
-        Category category = categoryRepository.findById(id).orElse(null);
+        Category result = categoryService.remove(new CategoryId(courseCode, categoryName));
 
-        // No such category
-        if (category == null) {
+        // The resource does not exist
+        if (result == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        // Delete the category
-        categoryRepository.deleteById(id);
-
-        // Return the deleted category
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

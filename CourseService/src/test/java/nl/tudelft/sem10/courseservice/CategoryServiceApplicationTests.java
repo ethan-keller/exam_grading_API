@@ -1,9 +1,10 @@
 package nl.tudelft.sem10.courseservice;
 
 import java.util.Iterator;
-import nl.tudelft.sem10.courseservice.application.Category;
-import nl.tudelft.sem10.courseservice.domain.CategoryId;
-import nl.tudelft.sem10.courseservice.domain.CategoryRepository;
+import nl.tudelft.sem10.courseservice.application.CategoryServiceImpl;
+import nl.tudelft.sem10.courseservice.domain.model.Category;
+import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
+import nl.tudelft.sem10.courseservice.domain.repository.CategoryRepository;
 import nl.tudelft.sem10.courseservice.framework.CategoryController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 /**
  * Tests for all {@link CategoryController} endpoints.
+ * Note that these tests assume the implementation {@link CategoryServiceImpl} is used.
  */
 @SpringBootTest(classes = CourseServiceApplication.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -31,12 +33,20 @@ class CategoryServiceApplicationTests {
 
     /**
      * Mock the repository so no database connection is required.
+     * We assume the controller and its service are autowired correctly.
      */
     @BeforeAll
     public void setup() throws ReflectiveOperationException {
+        Object service = Util.getField(CategoryController.class, "categoryService").get(controller);
+
+        // Only for the CourseService implementation do we inject a mock repository
+        if (!(service instanceof CategoryServiceImpl)) {
+            return;
+        }
+
         // Inject mock into controller
         // Yes this is really ugly but at least PMD will not complain
-        Util.setField(controller,
+        Util.setField(service,
                 "categoryRepository",
                 Util.repositoryMock(
                         CategoryRepository.class,
@@ -48,19 +58,10 @@ class CategoryServiceApplicationTests {
     }
 
     /**
-     * Test if the controller is created.
-     */
-    @Test
-    @Order(1)
-    public void contextLoads() {
-        Assertions.assertNotNull(controller);
-    }
-
-    /**
      * Test /category/get/ response for a non existent category.
      */
     @Test
-    @Order(2)
+    @Order(1)
     public void testGetNonExistent() {
         ResponseEntity<Category> response = controller.getCategory(c0.getCourse(), c0.getName());
 
@@ -71,7 +72,7 @@ class CategoryServiceApplicationTests {
      * Test /category/add/ response adding a new category.
      */
     @Test
-    @Order(3)
+    @Order(2)
     public void testAdd() {
         // Note that we assume no such category exists,
         // as the test will delete the test category too
@@ -85,7 +86,7 @@ class CategoryServiceApplicationTests {
      * Test /category/add/ response adding a category with duplicate ID.
      */
     @Test
-    @Order(4)
+    @Order(3)
     public void testAddDuplicate() {
         ResponseEntity<Category> response = controller.addCategory(c0);
 
@@ -96,7 +97,7 @@ class CategoryServiceApplicationTests {
      * Test /category/get/ response for an existing category.
      */
     @Test
-    @Order(5)
+    @Order(4)
     public void testGet() {
         // Note that this entity should exist, as we inserted it in a previous test
         ResponseEntity<Category> response = controller.getCategory(c0.getCourse(), c0.getName());
@@ -109,7 +110,7 @@ class CategoryServiceApplicationTests {
      * Test /category/categories/ response for an existing category.
      */
     @Test
-    @Order(6)
+    @Order(5)
     public void testGetAll() {
         // Note that only one entity (c0) should exist, as we inserted it in a previous test
         ResponseEntity<Iterable<Category>> response = controller.getAllCategories();
@@ -134,7 +135,7 @@ class CategoryServiceApplicationTests {
      * Test /category/remove/ response for an existing category.
      */
     @Test
-    @Order(7)
+    @Order(6)
     public void testRemove() {
         // Note that this entity should exist, as we inserted it in a previous test
         ResponseEntity<Category> response = controller.removeCategory(c0.getCourse(), c0.getName());
@@ -147,7 +148,7 @@ class CategoryServiceApplicationTests {
      * Test /category/remove/ response for a non existent category.
      */
     @Test
-    @Order(8)
+    @Order(7)
     public void testRemoveNonExisting() {
         ResponseEntity<Category> response = controller.removeCategory(c0.getCourse(), c0.getName());
 

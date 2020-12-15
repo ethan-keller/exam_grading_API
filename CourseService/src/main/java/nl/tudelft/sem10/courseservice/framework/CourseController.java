@@ -1,7 +1,7 @@
 package nl.tudelft.sem10.courseservice.framework;
 
-import nl.tudelft.sem10.courseservice.application.Course;
-import nl.tudelft.sem10.courseservice.domain.CourseRepository;
+import nl.tudelft.sem10.courseservice.application.CourseService;
+import nl.tudelft.sem10.courseservice.domain.model.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class CourseController {
     private static final String RESPONSE_TYPE = "application/json";
 
     @Autowired
-    private CourseRepository courseRepository; //NOPMD
+    private CourseService courseService; //NOPMD
 
     /**
      * Get all available courses.
@@ -31,7 +31,7 @@ public class CourseController {
      */
     @GetMapping(path = "/courses", produces = RESPONSE_TYPE)
     public ResponseEntity<Iterable<Course>> getAllCourses() {
-        return new ResponseEntity<>(courseRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.get(), HttpStatus.OK);
     }
 
     /**
@@ -42,11 +42,9 @@ public class CourseController {
      */
     @GetMapping(path = "/get", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> getCourse(@RequestParam String courseCode) {
+        Course course = courseService.get(courseCode);
 
-        // Get a course by ID or null if no such course exists
-        Course course = courseRepository.findById(courseCode).orElse(null);
-
-        // Return the course if it exists or a 404 error
+        // The resource does not exist
         if (course == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -62,16 +60,14 @@ public class CourseController {
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> addCourse(@RequestBody Course course) {
+        Course result = courseService.add(course);
 
-        // Duplicate course
-        if (courseRepository.existsById(course.getCode())) {
+        // The resource already exists
+        if (result == null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        // Save the course
-        courseRepository.save(course);
-
-        return new ResponseEntity<>(course, HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     /**
@@ -82,17 +78,13 @@ public class CourseController {
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> removeCourse(@RequestParam String courseCode) {
-        Course course = courseRepository.findById(courseCode).orElse(null);
+        Course result = courseService.remove(courseCode);
 
-        // No such course
-        if (course == null) {
+        // The resource does not exist
+        if (result == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        // Delete the course
-        courseRepository.deleteById(courseCode);
-
-        // Return the deleted course
-        return new ResponseEntity<>(course, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

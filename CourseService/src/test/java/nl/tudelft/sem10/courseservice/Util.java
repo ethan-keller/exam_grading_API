@@ -78,6 +78,22 @@ public class Util {
     }
 
     /**
+     * Get a field using reflection.
+     * The field will be accessible immediately.
+     *
+     * @param clazz - Class&lt;?&gt; Class to get a field from.
+     * @param fieldName - String Field name.
+     * @return the field.
+     * @throws ReflectiveOperationException If something goes wrong.
+     */
+    public static Field getField(Class<?> clazz,
+                                 String fieldName) throws ReflectiveOperationException {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field;
+    }
+
+    /**
      * Set a field value using reflection.
      *
      * @param instance - Object Instance to set a field for.
@@ -88,8 +104,7 @@ public class Util {
     public static void setField(Object instance,
                                 String fieldName,
                                 Object value) throws ReflectiveOperationException {
-        Field field = instance.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
+        Field field = getField(instance.getClass(), fieldName);
         field.set(instance, value);
     }
 }

@@ -1,6 +1,6 @@
 package nl.tudelft.sem10.courseservice;
 
-import nl.tudelft.sem10.courseservice.application.Course;
+import nl.tudelft.sem10.courseservice.domain.model.Course;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
