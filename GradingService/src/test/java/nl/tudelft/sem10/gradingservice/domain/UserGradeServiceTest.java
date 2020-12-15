@@ -11,15 +11,20 @@ import static org.mockito.Mockito.when;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +34,11 @@ class UserGradeServiceTest {
     private static final transient String CSE_2 = "CSE2";
     private static final transient String FINAL = "Final";
     private static final transient String MIDTERM = "Midterm";
+    private static final transient String NON_EXISTENT = "42";
+    private static final transient Grade GRADE_1 = new Grade(1, 10.0F, netId, CSE_1, MIDTERM);
+    private static final transient Grade GRADE_2 = new Grade(2, 5.8F, netId, CSE_2, MIDTERM);
+    private static final transient Grade GRADE_3 = new Grade(3, 5.75F, netId, CSE_1, FINAL);
+    private static final transient Grade GRADE_4 = new Grade(4, 8.5F, netId, CSE_2, MIDTERM);
 
     @InjectMocks
     private transient UserGradeService userGradeService;
@@ -40,15 +50,10 @@ class UserGradeServiceTest {
     @BeforeEach
     void setUp() {
         this.grades = new ArrayList<>();
-
-        Grade grade1 = new Grade(1, 10.0F, netId, CSE_1, MIDTERM);
-        grades.add(grade1);
-        Grade grade2 = new Grade(2, 5.8F, netId, CSE_2, MIDTERM);
-        grades.add(grade2);
-        Grade grade3 = new Grade(3, 5.75F, netId, CSE_1, FINAL);
-        grades.add(grade3);
-        Grade grade4 = new Grade(4, 8.5F, netId, CSE_2, MIDTERM);
-        grades.add(grade4);
+        grades.add(GRADE_1);
+        grades.add(GRADE_2);
+        grades.add(GRADE_3);
+        grades.add(GRADE_4);
 
     }
 
@@ -70,17 +75,44 @@ class UserGradeServiceTest {
 
         ResponseStatusException exception =
             assertThrows(ResponseStatusException.class, () -> userGradeService.getMean(
-                "42"));
+                NON_EXISTENT));
         assertTrue(exception.getStatus().is4xxClientError());
     }
 
+    // TODO: Find way to mock server communication
+    @Disabled
     @Test
     void getGrade() {
 
     }
 
+    @Disabled
     @Test
-    void passedCourses() {
+    void getGradeNonExistent() {
+
+    }
+
+    @Test
+    void passedCourses() throws JSONException {
+        List<String> coursesOfStudent = Arrays.asList(CSE_1, CSE_2);
+        List<Grade> gradesForCourse1 = Arrays.asList(GRADE_1, GRADE_3);
+        List<Grade> gradesForCourse2 = Arrays.asList(GRADE_2, GRADE_4);
+        when(gradeRepository.getCoursesOfStudent(netId)).thenReturn(coursesOfStudent);
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(gradesForCourse1);
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(gradesForCourse2);
+
+        ResponseEntity<List<String>> response = userGradeService.passedCourses(netId);
+
+        assertEquals(coursesOfStudent, response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void passedCoursesNonExistent() throws JSONException {
+        when(gradeRepository.getCoursesOfStudent(anyString())).thenReturn(Collections.emptyList());
+        ResponseEntity<List<String>> response = userGradeService.passedCourses(netId);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
