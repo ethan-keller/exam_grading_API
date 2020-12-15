@@ -1,6 +1,5 @@
 package nl.tudelft.sem10.authenticationservice.framework;
 
-import nl.tudelft.sem10.authenticationservice.application.RoleType;
 import nl.tudelft.sem10.authenticationservice.application.User;
 import nl.tudelft.sem10.authenticationservice.domain.JwtRequest;
 import nl.tudelft.sem10.authenticationservice.domain.JwtResponse;
