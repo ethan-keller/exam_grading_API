@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.userservice.entities;
+package nl.tudelft.sem10.userservice.application;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

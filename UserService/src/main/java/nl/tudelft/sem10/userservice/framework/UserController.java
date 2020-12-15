@@ -1,8 +1,9 @@
-package nl.tudelft.sem10.userservice.controllers;
+package nl.tudelft.sem10.userservice.framework;
 
 import java.util.List;
-import nl.tudelft.sem10.userservice.entities.User;
-import nl.tudelft.sem10.userservice.repositories.UserRepository;
+import nl.tudelft.sem10.userservice.domain.Utility;
+import nl.tudelft.sem10.userservice.application.User;
+import nl.tudelft.sem10.userservice.domain.repositories.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 
 /**
@@ -25,17 +32,30 @@ public class UserController {
 
 
     @Autowired
-    private UserRepository userRepository; //NOPMD
+    private transient UserRepository userRepository;
+
+    @Autowired
+    private transient RestTemplate restTemplate;
 
     // To adhere to the lovely PMD rules
-    private transient final String netIdStr = "netId";
+    private final transient  String netIdStr = "netId";
 
     /**
      * Setter for the userRepository, mainly used for testing purposes.
+     *
      * @param userRepository  of type UserRepository
      */
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    /**
+     * Setter for the restTemplate, mainly used for testing purposes.
+     *
+     * @param restTemplate  of type RestTemplate
+     */
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -84,12 +104,12 @@ public class UserController {
                 return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
             }
             String password = json.getString("password");
+            String encrypted = Utility.getEncryptedPassword(password, restTemplate);
             int type = json.getInt("type");
-            userRepository.insertUser(netId, password, type);
-            User n = new User(netId, password, type);
+            userRepository.insertUser(netId, encrypted, type);
+            User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
-        }
-        else{
+        } else {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }
@@ -114,8 +134,7 @@ public class UserController {
                 userRepository.deleteUser(netId);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
-        }
-        else{
+        } else {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }
@@ -137,13 +156,13 @@ public class UserController {
             if (u == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            String password = json.getString("password");
             int type = json.getInt("type");
-            userRepository.updateUser(netId, password, type);
-            User n = new User(netId, password, type);
+            String password = json.getString("password");
+            String encrypted = Utility.getEncryptedPassword(password, restTemplate);
+            userRepository.updateUser(netId, encrypted, type);
+            User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.OK);
-        }
-        else{
+        } else {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }

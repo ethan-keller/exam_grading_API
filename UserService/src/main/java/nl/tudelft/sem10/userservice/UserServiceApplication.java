@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {"nl.tudelft.sem10.userservice"})
-@EnableJpaRepositories("nl.tudelft.sem10.userservice.repositories")
+@EnableJpaRepositories("nl.tudelft.sem10.userservice.domain.repositories")
 public class UserServiceApplication {
 
     public static void main(String[] args) {
