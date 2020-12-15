@@ -194,7 +194,8 @@ class UserControllerTest {
    * If the user doesn't exist, Response Entity must contain status code 404.
    */
   @Test
-  void changeDetails() {
+  void changeDetails() throws NoSuchAlgorithmException {
+    when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.encrypt("newPass"))).thenReturn("encryptedPassword");
     when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
     User changedUser = new User("student1","newPass",0);
     String  jsonStr = changedUser.toString();
@@ -207,6 +208,7 @@ class UserControllerTest {
     User n = new User(netId, password, type);
 
     verify(userRepository,times(1)).updateUser(anyString(),anyString(),anyInt());
+    changedUser.setPassword("encryptedPassword");
     assertEquals(n, changedUser);
     assertEquals(response.getStatusCode(),HttpStatus.OK);
 

@@ -1,6 +1,5 @@
 package nl.tudelft.sem10.userservice.controllers;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import nl.tudelft.sem10.userservice.domain.Utility;
 import nl.tudelft.sem10.userservice.entities.User;
@@ -105,16 +104,7 @@ public class UserController {
                 return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
             }
             String password = json.getString("password");
-            //Hash the password
-            String hashed = "";
-            try {
-                hashed += Utility.encrypt(password);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            //Send it to authentication service and receive the encrypted password
-            String url = "http://localhost:8080/encode/{password}";
-            String encrypted = restTemplate.getForObject(url, String.class, hashed);
+            String encrypted = Utility.getEncryptedPassword(password, restTemplate);
             int type = json.getInt("type");
             userRepository.insertUser(netId, encrypted, type);
             User n = new User(netId, encrypted, type);
@@ -166,11 +156,11 @@ public class UserController {
             if (u == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            String password = json.getString("password");
             int type = json.getInt("type");
-            // TODO: password should be the encoded password not PLAIN TEXT!
-            userRepository.updateUser(netId, password, type);
-            User n = new User(netId, password, type);
+            String password = json.getString("password");
+            String encrypted = Utility.getEncryptedPassword(password, restTemplate);
+            userRepository.updateUser(netId, encrypted, type);
+            User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
