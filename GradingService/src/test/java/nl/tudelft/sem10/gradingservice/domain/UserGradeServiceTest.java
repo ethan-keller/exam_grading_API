@@ -1,6 +1,12 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -11,10 +17,10 @@ import nl.tudelft.sem10.gradingservice.framework.GradeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class UserGradeServiceTest {
@@ -44,19 +50,28 @@ class UserGradeServiceTest {
         Grade grade4 = new Grade(4, 8.5F, netId, CSE_2, MIDTERM);
         grades.add(grade4);
 
-        when(gradeRepository.getGradesByNetId(netId)).thenReturn(grades);
-        when(gradeRepository.getGradesByNetId(not(netId))).thenReturn(
-            Collections.emptyList());
     }
 
     @Test
     void getMean() {
+        when(gradeRepository.getGradesByNetId(anyString()))
+            .thenReturn(Collections.emptyList());
+        when(gradeRepository.getGradesByNetId(netId)).thenReturn(grades);
 
+        float result = userGradeService.getMean(netId);
+        float expected = (10.0F + 5.8F + 5.75F + 8.5F) / 4;
+        assertEquals(expected, result, 0.001f);
     }
 
     @Test
     void getMeanNonExistent() {
-
+        when(gradeRepository.getGradesByNetId(anyString()))
+            .thenReturn(Collections.emptyList());
+        
+        ResponseStatusException exception =
+            assertThrows(ResponseStatusException.class, () -> userGradeService.getMean(
+                "42"));
+        assertTrue(exception.getStatus().is4xxClientError());
     }
 
     @Test
