@@ -1,19 +1,21 @@
 package nl.tudelft.sem10.gradingservice.application;
 
 import javassist.NotFoundException;
+import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
+import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller containing all endpoints available to user of type TEACHER only
+ */
 @SuppressWarnings("unused")
 @Controller
 @RequestMapping("/teacher")
@@ -23,22 +25,31 @@ public class TeacherGradeController {
     private GradeRepository gradeRepository; // NOPMD
     @Autowired
     private transient UserGradeService userService;
+    private transient StudentLogic studentLogic;
 
     /**
-     * NOT REAL JAVADOC
-     * This method is currently just a copy of the passing rate method in student controller.
-     * Right now kept here since it works.
-     * TODO: improve code quality (no copy paste methods)
+     * Method that returns passing rates of a course if user requesting for it is a teacher.
      *
-     * @param course ...
-     * @return ...
-     * @throws JSONException ...
+     * @param course course whose passing rate is needed
+     * @return passing rate as a double
+     * @throws JSONException jsonexception if json cannot be parsed
      */
     @SuppressWarnings("PMD")
     @GetMapping(path = "/passingRate")
     @ResponseBody
-    public ResponseEntity<Double> passingRate(@RequestParam String course) throws JSONException {
-        return userService.passingRate(course);
+    public ResponseEntity<Double> passingRate(@RequestHeader("Authorization")
+                                                      String token, @RequestParam String course)
+            throws JSONException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains("TEACHER")) {
+                return userService.passingRate(course, token);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -51,9 +62,20 @@ public class TeacherGradeController {
     @SuppressWarnings("PMD")
     @GetMapping(path = "/statistics")
     @ResponseBody
-    public ResponseEntity<String> meanAndVariance(@RequestParam String course)
-        throws JSONException {
-        return userService.meanAndVariance(course);
+    public ResponseEntity<String> meanAndVariance(@RequestHeader("Authorization")
+                                                          String token,
+                                                  @RequestParam String course)
+            throws JSONException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains("TEACHER")) {
+                return userService.meanAndVariance(course, token);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -68,16 +90,28 @@ public class TeacherGradeController {
      */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
-    public void updateGrade(@RequestParam String netid,
-                            @RequestParam String courseCode,
-                            @RequestParam String gradeType,
-                            @RequestBody String jsonString)
-        throws JSONException, NotFoundException {
-        userService.updateGrade(netid, courseCode, gradeType, jsonString);
+    public ResponseEntity<String> updateGrade(@RequestHeader("Authorization")
+                                                      String token,
+                                              @RequestParam String netid,
+                                              @RequestParam String courseCode,
+                                              @RequestParam String gradeType,
+                                              @RequestBody String jsonString) throws JSONException,
+            NotFoundException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains("TEACHER")) {
+                userService.updateGrade(netid, courseCode, gradeType, jsonString);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
-     * Deletes a grade from the database based on given params.
+     * deletes a grade from the database based on given params.
      *
      * @param netid      netid of student whose grade needs to be deleted
      * @param courseCode course from which grade needs to be deleted
@@ -86,14 +120,27 @@ public class TeacherGradeController {
      */
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
-    public void deleteGrade(@RequestParam String netid,
-                            @RequestParam String courseCode,
-                            @RequestParam String gradeType) throws NotFoundException {
-        userService.deleteGrade(netid, courseCode, gradeType);
+    public ResponseEntity<String> deleteGrade(@RequestHeader("Authorization")
+                                                      String token,
+                                              @RequestParam String netid,
+                                              @RequestParam String courseCode,
+                                              @RequestParam String gradeType)
+            throws NotFoundException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains("TEACHER")) {
+                userService.deleteGrade(netid, courseCode, gradeType);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
-     * Inserts a grade into the database.
+     * inserts a grade into the database.
      *
      * @param jsonString body of post message
      * @throws JSONException if input format is wrong
@@ -101,8 +148,20 @@ public class TeacherGradeController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @SuppressWarnings("PMD")
-    public void insertGrade(@RequestBody String jsonString) throws JSONException {
-        userService.insertGrade(jsonString);
+    public ResponseEntity<String> insertGrade(@RequestHeader("Authorization")
+                                                      String token,
+                                              @RequestBody String jsonString) throws JSONException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains("TEACHER")) {
+                userService.insertGrade(jsonString);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

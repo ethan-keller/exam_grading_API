@@ -16,10 +16,24 @@ public class ServerCommunication {
      * @param categoryName the specific category whose weight is needed
      * @return JSON of the category and its weight
      */
-    public static String getCourseWeights(String courseCode, String categoryName) {
+    public static String getCourseWeights(String courseCode, String categoryName, String token) {
         String str = RequestHelper.sendRequest(
-            RequestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
-                + "&categoryName=" + categoryName), client);
+                RequestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
+                        + "&categoryName=" + categoryName, token), client);
+        return str;
+    }
+
+    /**
+     * Communicates with the authentication microservice
+     * and returns if a given token is valid and in the case it is valid
+     * the type of the user who sent the token.
+     *
+     * @param token token user sends
+     * @return type of user if applicable
+     */
+    public static String validate(String token) {
+        String str = RequestHelper.sendRequest(
+                RequestHelper.validateToken(token), client);
         return str;
     }
 

@@ -37,10 +37,12 @@ public class StudentLogic {
      * @throws JSONException exception if json is wrong
      */
     @SuppressWarnings("PMD")
-    public static double getGrade(List<Grade> list, String courseCode) throws JSONException {
+    public static double getGrade(List<Grade> list, String courseCode, String token)
+            throws JSONException {
         double g = 0.0;
         for (Grade grade : list) {
-            String str = ServerCommunication.getCourseWeights(courseCode, grade.getGradeType());
+            String str = ServerCommunication.getCourseWeights(courseCode,
+                    grade.getGradeType(), token);
             if (str == null) {
                 return 0.0;
             }

@@ -11,9 +11,7 @@ import java.net.http.HttpResponse;
 public class RequestHelper {
 
     private static final String domainOfCourseService = "http://localhost:8081";
-    private static String username;
-    private static String password;
-    private static Integer type;
+    private static final String domainOfAuthenticationService = "http://localhost:8080";
 
     /**
      * Method that builds a getRequest to course service given a path.
@@ -21,7 +19,7 @@ public class RequestHelper {
      * @param path path of the endpoint
      * @return the httprequest that has to be sent
      */
-    public static HttpRequest getRequest(String path) {
+    public static HttpRequest getRequest(String path, String token) {
 
         String reqPath = domainOfCourseService + path;
         //String userAndPass = username + ":" + password;
@@ -29,10 +27,26 @@ public class RequestHelper {
         // + Base64.getEncoder().encodeToString(userAndPass.getBytes());
         //.header("Authorization", basicAuthPayload)
         return HttpRequest
-            .newBuilder()
-            .GET()
-            .uri(URI.create(reqPath))
-            .build();
+                .newBuilder()
+                .GET()
+                .header("Authorization", token)
+                .uri(URI.create(reqPath))
+                .build();
+    }
+
+    /**
+     * Method that builds a get request to authentication service /validate.
+     *
+     * @param token token user sends
+     * @return hhtprequest to send
+     */
+    public static HttpRequest validateToken(String token) {
+        String reqPath = domainOfAuthenticationService;
+        return HttpRequest
+                .newBuilder()
+                .GET()
+                .uri(URI.create(reqPath + "/validate/" + token))
+                .build();
     }
 
     /**
@@ -56,6 +70,4 @@ public class RequestHelper {
         }
     }
 
-
 }
-

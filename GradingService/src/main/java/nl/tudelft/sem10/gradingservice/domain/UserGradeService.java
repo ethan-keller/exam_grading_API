@@ -17,22 +17,22 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class UserGradeService {
 
-    static final double passingGrade = 5.75;
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
+    static final double passingGrade = 5.75;
 
     /**
      * TODO: some javadoc.
      *
      * @param netId fhweu9ch
      * @return fweijfniw
-     * @throws ResponseStatusException
+     * @throws ResponseStatusException response exception
      */
     public Float getMean(String netId) throws ResponseStatusException {
         List<Grade> list = gradeRepository.getGradesByNetId(netId);
         if (list.isEmpty()) {
             throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Grades not here!");
+                    HttpStatus.NOT_FOUND, "Grades not here!");
         }
         return StudentLogic.getMean(list);
     }
@@ -46,13 +46,14 @@ public class UserGradeService {
      * @throws JSONException exception if json is wrong
      */
     public ResponseEntity<Double> getGrade(String netId,
-                                           String courseCode) throws JSONException {
+                                           String courseCode,
+                                           String token) throws JSONException {
         List<Grade> list =
-            gradeRepository.getGradesByNetIdAndCourse(netId, courseCode);
+                gradeRepository.getGradesByNetIdAndCourse(netId, courseCode);
         if (list.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        double grade = StudentLogic.getGrade(list, courseCode);
+        double grade = StudentLogic.getGrade(list, courseCode, token);
         return new ResponseEntity<>(grade, HttpStatus.OK);
     }
 
@@ -63,8 +64,8 @@ public class UserGradeService {
      * @return A list of strings that are the course codes
      * @throws JSONException exception if json is wrong
      */
-    public ResponseEntity<List<String>> passedCourses(String netId)
-        throws JSONException {
+    public ResponseEntity<List<String>> passedCourses(String netId, String token)
+            throws JSONException {
         List<String> list = gradeRepository.getCoursesOfStudent(netId);
         if (list.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -72,7 +73,7 @@ public class UserGradeService {
         List<String> passed = new ArrayList<>();
         for (String course : list) {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            double grade = StudentLogic.getGrade(l, course);
+            double grade = StudentLogic.getGrade(l, course, token);
             if (grade >= passingGrade) {
                 passed.add(course);
             }
@@ -88,7 +89,8 @@ public class UserGradeService {
      * @return List of json objects
      * @throws JSONException exception if json is wrong
      */
-    public ResponseEntity<List<String>> allGrades(String netId) throws JSONException {
+    public ResponseEntity<List<String>> allGrades(String netId, String token)
+            throws JSONException {
         List<String> list = gradeRepository.getCoursesOfStudent(netId);
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -97,7 +99,7 @@ public class UserGradeService {
         for (String course : list) {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
             gr.add("{\"course\":\"" + course + "\", "
-                + "\"grade\":\"" + StudentLogic.getGrade(l, course) + "\"}");
+                    + "\"grade\":\"" + StudentLogic.getGrade(l, course, token) + "\"}");
         }
         return new ResponseEntity<>(gr, HttpStatus.OK);
     }
@@ -110,7 +112,8 @@ public class UserGradeService {
      * @throws JSONException exception if json is wrong
      */
     @SuppressWarnings("PMD")
-    public ResponseEntity<Double> passingRate(String course) throws JSONException {
+    public ResponseEntity<Double> passingRate(String course, String token)
+            throws JSONException {
         List<String> students = gradeRepository.getStudentsTakingCourse(course);
         if (students == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -118,11 +121,11 @@ public class UserGradeService {
         double passCount = 0.0;
         for (String netId : students) {
             List<Grade> list =
-                gradeRepository.getGradesByNetIdAndCourse(netId, course);
+                    gradeRepository.getGradesByNetIdAndCourse(netId, course);
             if (list.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            double grade = StudentLogic.getGrade(list, course);
+            double grade = StudentLogic.getGrade(list, course, token);
             if (grade > passingGrade) {
                 passCount++;
             }
@@ -139,8 +142,8 @@ public class UserGradeService {
      * @throws JSONException json exception if wrong json
      */
     @SuppressWarnings("PMD")
-    public ResponseEntity<String> meanAndVariance(String course)
-        throws JSONException {
+    public ResponseEntity<String> meanAndVariance(String course, String token)
+            throws JSONException {
         List<String> students = gradeRepository.getStudentsTakingCourse(course);
         if (students == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -149,11 +152,11 @@ public class UserGradeService {
         double sum = 0.0;
         for (String netId : students) {
             List<Grade> list =
-                gradeRepository.getGradesByNetIdAndCourse(netId, course);
+                    gradeRepository.getGradesByNetIdAndCourse(netId, course);
             if (list == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            double g = StudentLogic.getGrade(list, course);
+            double g = StudentLogic.getGrade(list, course, token);
             grades.add(g);
             sum = sum + g;
         }
@@ -173,8 +176,9 @@ public class UserGradeService {
      * @throws JSONException     if input format is wrong
      * @throws NotFoundException if grade is not found in database
      */
-    public void updateGrade(String netid, String courseCode, String gradeType, String jsonString)
-        throws JSONException, NotFoundException {
+    public void updateGrade(String netid, String courseCode,
+                            String gradeType, String jsonString)
+            throws JSONException, NotFoundException {
         ResponseEntity<List<Grade>> response = getAllGrades(netid, courseCode, gradeType);
         if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
             throw new NotFoundException("Invalid arguments");
@@ -184,14 +188,14 @@ public class UserGradeService {
     }
 
     /**
-     * method to update grade that does actual database call
+     * method to update grade that does actual database call.
      *
      * @param jsonString body of request containing new mark
      * @param gradeId    database id of grade to be updated
      * @throws JSONException if input format is wrong
      */
     private void updateGrade(String jsonString, final long gradeId)
-        throws JSONException {
+            throws JSONException {
         JSONObject obj = new JSONObject(jsonString);
         float mark = (float) obj.getDouble("mark");
         assert gradeRepository.findById(gradeId).isPresent();
@@ -202,15 +206,15 @@ public class UserGradeService {
     }
 
     /**
-     * returns all grades with several query options
+     * returns all grades with several query options.
      *
      * @param netid      netid of student whose grades are wanted
      * @param courseCode course from which grades are wanted
      * @param gradeType  type of grades that are wanted
      * @return list of grades adhering to the query
      */
-    public ResponseEntity<List<Grade>> getAllGrades(String netid, String courseCode,
-                                                    String gradeType) {
+    public ResponseEntity<List<Grade>> getAllGrades(String netid,
+                                                    String courseCode, String gradeType) {
         List<Grade> gradeList;
         if (netid == null && courseCode == null && gradeType == null) {
             gradeList = gradeRepository.findAll();
@@ -223,8 +227,8 @@ public class UserGradeService {
         } else if (netid != null && courseCode != null && gradeType == null) {
             gradeList = gradeRepository.getGradesByNetIdAndCourse(netid, courseCode);
         } else {
-            gradeList =
-                gradeRepository.getGradesByCourseAndTypeAndNetid(courseCode, gradeType, netid);
+            gradeList = gradeRepository.getGradesByCourseAndTypeAndNetid(courseCode,
+                    gradeType, netid);
         }
         if (gradeList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -233,15 +237,16 @@ public class UserGradeService {
     }
 
     /**
-     * deletes a grade from the database based on given params
+     * deletes a grade from the database based on given params.
      *
      * @param netid      netid of student whose grade needs to be deleted
      * @param courseCode course from which grade needs to be deleted
      * @param gradeType  type of grades that needs to be deleted
-     * @throws NotFoundException if grade is not found in the database based on the given parameters
+     * @throws NotFoundException if grade is not found in the
+     * database based on the given parameters
      */
     public void deleteGrade(String netid, String courseCode, String gradeType)
-        throws NotFoundException {
+            throws NotFoundException {
         ResponseEntity<List<Grade>> response = getAllGrades(netid, courseCode, gradeType);
         if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
             throw new NotFoundException("Invalid arguments");
@@ -251,7 +256,7 @@ public class UserGradeService {
     }
 
     /**
-     * inserts a grade into the database
+     * inserts a grade into the database.
      *
      * @param jsonString body of post message
      * @throws JSONException if input format is wrong

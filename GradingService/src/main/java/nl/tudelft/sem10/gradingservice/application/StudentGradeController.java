@@ -1,6 +1,8 @@
 package nl.tudelft.sem10.gradingservice.application;
 
 import java.util.List;
+import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
+import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
@@ -8,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -19,12 +18,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @SuppressWarnings("unused")
 public class StudentGradeController {
 
-    static final double passingGrade = 5.75;
+    // Grab an instance of StudentLogic so we can inject a mocked one.
+    private transient StudentLogic studentLogic = new StudentLogic();
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 
     @Autowired
     private transient UserGradeService userService;
+
+    private transient final String headerName = "Authorization";
+    private transient String userType = "STUDENT";
 
     /**
      * Method to get mean grade of a student.
@@ -34,8 +37,19 @@ public class StudentGradeController {
      */
     @GetMapping(path = "/mean")
     @ResponseBody
-    public ResponseEntity<Float> getMean(@RequestParam String netId) {
-        return new ResponseEntity<>(userService.getMean(netId), HttpStatus.OK);
+    public ResponseEntity<Float> getMean(@RequestHeader(headerName)
+                                                 String token,
+                                         @RequestParam String netId) {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains(userType)) {
+                return new ResponseEntity<>(userService.getMean(netId), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -48,9 +62,21 @@ public class StudentGradeController {
      */
     @GetMapping(path = "/grade")
     @ResponseBody
-    public ResponseEntity<Double> getGrade(@RequestParam String netId,
+    public ResponseEntity<Double> getGrade(@RequestHeader(headerName)
+                                                   String token,
+                                           @RequestParam String netId,
                                            @RequestParam String courseCode) throws JSONException {
-        return userService.getGrade(netId, courseCode);
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains(userType)) {
+                return userService.getGrade(netId, courseCode, token);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     /**
@@ -62,9 +88,20 @@ public class StudentGradeController {
      */
     @GetMapping(path = "/passed")
     @ResponseBody
-    public ResponseEntity<List<String>> passedCourses(@RequestParam String netId)
-        throws JSONException {
-        return userService.passedCourses(netId);
+    public ResponseEntity<List<String>> passedCourses(@RequestHeader(headerName)
+                                                              String token,
+                                                      @RequestParam String netId)
+            throws JSONException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains(userType)) {
+                return userService.passedCourses(netId, token);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 
@@ -77,8 +114,19 @@ public class StudentGradeController {
      */
     @GetMapping(path = "/allGrades")
     @ResponseBody
-    public ResponseEntity<List<String>> allGrades(@RequestParam String netId) throws JSONException {
-        return userService.allGrades(netId);
+    public ResponseEntity<List<String>> allGrades(@RequestHeader(headerName)
+                                                          String token,
+                                                  @RequestParam String netId) throws JSONException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains(userType)) {
+                return userService.allGrades(netId, token);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -91,8 +139,19 @@ public class StudentGradeController {
     @SuppressWarnings("PMD")
     @GetMapping(path = "/passingRate")
     @ResponseBody
-    public ResponseEntity<Double> passingRate(@RequestParam String course) throws JSONException {
-        return userService.passingRate(course);
+    public ResponseEntity<Double> passingRate(@RequestHeader(headerName)
+                                                      String token,
+                                              @RequestParam String course) throws JSONException {
+        try {
+            String str = ServerCommunication.validate(token.substring(7));
+            if (str.contains(userType)) {
+                return userService.passingRate(course, token);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception MissingRequestHeaderException) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
