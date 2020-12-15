@@ -8,8 +8,8 @@ import java.util.Objects;
  */
 public class CategoryId implements Serializable {
     private static final long serialVersionUID = 7238060586464531770L;
-    private String course;
-    private String name;
+    private String course; //NOPMD
+    private String name; //NOPMD
 
     /**
      * No-args constructor for internal use.
@@ -27,43 +27,6 @@ public class CategoryId implements Serializable {
     public CategoryId(String course, String name) {
         this.course = course;
         this.name = name;
-    }
-
-    /**
-     * Get the course code.
-     *
-     * @return the course code.
-     */
-    public String getCourse() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Set the course code.
-     *
-     * @param course - String Course code.
-     */
-    public void setCourse(String course) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Get the category name.
-     *
-     * @return the category name.
-     */
-    public String getName() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Set the category name.
-     *
-     * @param name - String category name.
-     * @return the category name.
-     */
-    public String setName(String name) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
