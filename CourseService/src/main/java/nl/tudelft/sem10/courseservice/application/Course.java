@@ -13,12 +13,12 @@ import javax.persistence.Table;
 @Table(name = "course")
 public class Course {
 
-    @Column(name = "course_name")
-    private String name;
-
     @Id
     @Column(name = "course_code")
     private String code;
+
+    @Column(name = "course_name")
+    private String name;
 
     /**
      * No-args constructor for internal use.
@@ -30,29 +30,11 @@ public class Course {
     /**
      * Create a course object with given name and course code.
      *
-     * @param name - String Course name.
      * @param code - String Course code.
+     * @param name - String Course name.
      */
-    public Course(String name, String code) {
-        this.name = name;
+    public Course(String code, String name) {
         this.code = code;
-    }
-
-    /**
-     * Get the current course name.
-     *
-     * @return the course name (may be null).
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set a new course name.
-     *
-     * @param name - String New course name.
-     */
-    public void setName(String name) {
         this.name = name;
     }
 
@@ -72,6 +54,24 @@ public class Course {
      */
     public void setCode(String code) {
         this.code = code;
+    }
+
+    /**
+     * Get the current course name.
+     *
+     * @return the course name (may be null).
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set a new course name.
+     *
+     * @param name - String New course name.
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

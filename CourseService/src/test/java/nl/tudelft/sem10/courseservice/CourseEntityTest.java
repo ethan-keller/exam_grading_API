@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 public class CourseEntityTest {
     private final transient String courseName = "TEST_COURSE";
     private final transient String courseCode = "CSE9999";
-    private final transient Course c0 = new Course(courseName, courseCode);
-    private final transient Course c1 = new Course(courseName, courseCode);
-    private final transient Course c2 = new Course("TEST_COURSE_2", courseCode);
+    private final transient Course c0 = new Course(courseCode, courseName);
+    private final transient Course c1 = new Course(courseCode, courseName);
+    private final transient Course c2 = new Course(courseCode, "TEST_COURSE_2");
     private final transient Course nullCourse = null;
 
     /**
@@ -28,7 +28,7 @@ public class CourseEntityTest {
      */
     @Test
     public void testSetName() {
-        Course course = new Course(courseName, courseCode);
+        Course course = new Course(courseCode, courseName);
         course.setName("NewCourseName");
 
         // We assume the getter works as intended, as it is tested in a separate method.
@@ -48,7 +48,7 @@ public class CourseEntityTest {
      */
     @Test
     public void testSetCode() {
-        Course course = new Course(courseName, courseCode);
+        Course course = new Course(courseCode, courseName);
         course.setCode("NewCourseCode");
 
         // We assume the getter works as intended, as it is tested in a separate method.
