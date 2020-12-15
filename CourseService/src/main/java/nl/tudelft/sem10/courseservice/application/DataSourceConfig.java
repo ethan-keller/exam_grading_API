@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.courseservice.config;
+package nl.tudelft.sem10.courseservice.application;
 
 import java.util.Objects;
 import javax.sql.DataSource;
@@ -12,11 +12,9 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableJpaRepositories
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
 @SuppressWarnings("unused")
-
 public class DataSourceConfig {
 
     @Autowired

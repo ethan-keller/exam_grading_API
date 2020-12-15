@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.courseservice.entities;
+package nl.tudelft.sem10.courseservice.domain.model;
 
 import java.util.Objects;
 import javax.persistence.Column;
@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
+import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 
 /**
  * A course category object.

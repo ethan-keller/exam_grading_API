@@ -1,7 +1,7 @@
 package nl.tudelft.sem10.courseservice;
 
-import nl.tudelft.sem10.courseservice.entities.Category;
-import nl.tudelft.sem10.courseservice.entities.CategoryId;
+import nl.tudelft.sem10.courseservice.domain.model.Category;
+import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,60 +15,6 @@ public class CategoryIdTest {
     private final transient CategoryId c1 = new CategoryId(courseCode, categoryName);
     private final transient CategoryId c2 = new CategoryId("CSE0000", categoryName);
     private final transient Category nullCategoryId = null;
-
-    /**
-     * Test {@link CategoryId#getCourse()}.
-     * Note that this class does not need field accessors
-     * and that the fields cannot be transient because
-     * they need to be serializable.
-     * They just exist to keep PMD happy.
-     * This is why no implementation is expected.
-     */
-    @Test
-    public void testGetCourse() {
-        Assertions.assertThrows(UnsupportedOperationException.class, c0::getCourse);
-    }
-
-    /**
-     * Test {@link CategoryId#setCourse(String)}.
-     * Note that this class does not need field accessors
-     * and that the fields cannot be transient because
-     * they need to be serializable.
-     * They just exist to keep PMD happy.
-     * This is why no implementation is expected.
-     */
-    @Test
-    public void testSetCourse() {
-        Assertions.assertThrows(UnsupportedOperationException.class,
-                () -> c0.setCourse("NewCourseCode"));
-    }
-
-    /**
-     * Test {@link CategoryId#getName()}.
-     * Note that this class does not need field accessors
-     * and that the fields cannot be transient because
-     * they need to be serializable.
-     * They just exist to keep PMD happy.
-     * This is why no implementation is expected.
-     */
-    @Test
-    public void testGetName() {
-        Assertions.assertThrows(UnsupportedOperationException.class, c0::getName);
-    }
-
-    /**
-     * Test {@link CategoryId#setName(String)}.
-     * Note that this class does not need field accessors
-     * and that the fields cannot be transient because
-     * they need to be serializable.
-     * They just exist to keep PMD happy.
-     * This is why no implementation is expected.
-     */
-    @Test
-    public void testSetName() {
-        Assertions.assertThrows(UnsupportedOperationException.class,
-                () -> c0.setName("NewCategoryName"));
-    }
 
     /**
      * Test {@link CategoryId#hashCode()}.

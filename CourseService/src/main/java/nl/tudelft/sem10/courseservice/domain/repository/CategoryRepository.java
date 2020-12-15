@@ -1,7 +1,6 @@
-package nl.tudelft.sem10.courseservice.repositories;
+package nl.tudelft.sem10.courseservice.domain.repository;
 
-import nl.tudelft.sem10.courseservice.entities.Category;
-import nl.tudelft.sem10.courseservice.entities.CategoryId;
+import nl.tudelft.sem10.courseservice.domain.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
