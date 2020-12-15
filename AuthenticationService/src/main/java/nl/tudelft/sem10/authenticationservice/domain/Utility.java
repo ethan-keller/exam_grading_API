@@ -14,7 +14,7 @@ public class Utility {
      *
      * @param input of type String - the String to hash
      * @return hashText of type String - hashed representation of the string.
-     * @throws NoSuchAlgorithmException
+     * @throws NoSuchAlgorithmException if chosen algorithm does not exist
      */
     public static String hash(String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-512");

@@ -98,46 +98,6 @@ class AuthenticationControllerTest {
     }
 
     /**
-     * NetId exists, but user credentials do not match.
-     *
-     * @throws Exception if http communication fails
-     */
-    @Test
-    void invalidatedUsername() throws Exception {
-        when(service.loadUserByUsername(user.getNetId())).thenReturn(userDetails);
-        when(userDetails.validate(user.getPassword())).thenReturn(false);
-
-        mvc.perform(MockMvcRequestBuilders
-                .get(GET_TOKEN_ENDPOINT)
-                .content(asJsonString(user))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).doesNotExist());
-    }
-
-    /**
-     * NetId exists and user credentials match.
-     *
-     * @throws Exception if http communication fails
-     */
-    @Test
-    void validatedUsername() throws Exception {
-        when(service.loadUserByUsername(user.getNetId())).thenReturn(userDetails);
-        when(userDetails.validate(user.getPassword())).thenReturn(true);
-        when(tokenUtil.generateToken(userDetails)).thenReturn("token");
-
-        mvc.perform(MockMvcRequestBuilders
-                .get(GET_TOKEN_ENDPOINT)
-                .content(asJsonString(
-                        new JwtRequest(user.getNetId(), user.getPassword(), user.getRoleInteger())
-                ))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).exists())
-                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).isNotEmpty());
-    }
-
-    /**
      * Tests if encoding matches the password.
      */
     @Test

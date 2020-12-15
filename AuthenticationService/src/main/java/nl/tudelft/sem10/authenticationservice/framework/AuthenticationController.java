@@ -44,8 +44,8 @@ public class AuthenticationController {
             throws NoSuchAlgorithmException {
         final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService
                 .loadUserByUsername(request.getNetId());
-        if (userDetails != null
-                && passwordEncoder.matches(Utility.hash(request.getPassword()), userDetails.getPassword())) {
+        if (userDetails != null && passwordEncoder
+                .matches(Utility.hash(request.getPassword()), userDetails.getPassword())) {
             final String token = jwtTokenUtil.generateToken(userDetails);
             return ResponseEntity.ok(new JwtResponse(token));
         }
