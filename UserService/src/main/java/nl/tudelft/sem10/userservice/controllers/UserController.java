@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.userservice.controllers;
 
+import nl.tudelft.sem10.userservice.domain.Utility;
 import nl.tudelft.sem10.userservice.entities.User;
 import nl.tudelft.sem10.userservice.repositories.UserRepository;
 import org.json.JSONException;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -27,6 +29,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository; //NOPMD
 
+    @Autowired
+    private RestTemplate restTemplate; //NOPMD
+
     // To adhere to the lovely PMD rules
     private transient final String netIdStr = "netId";
 
@@ -36,6 +41,14 @@ public class UserController {
      */
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    /**
+     * Setter for the restTemplate, mainly used for testing purposes.
+     * @param restTemplate  of type RestTemplate
+     */
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     /**
@@ -85,9 +98,13 @@ public class UserController {
             }
             String password = json.getString("password");
             //Hash the password
+            String hashed = Utility.encrypt(password);
+            //Send it to authentication service and receive the encrypted password
+            String url = "http://localhost:8080/encode/{password}";
+            String encrypted = restTemplate.getForObject(url, String.class, hashed);
             int type = json.getInt("type");
-            userRepository.insertUser(netId, password, type);
-            User n = new User(netId, password, type);
+            userRepository.insertUser(netId, encrypted, type);
+            User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
         }
         else{
