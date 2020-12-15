@@ -106,9 +106,9 @@ public class UserController {
             }
             String password = json.getString("password");
             //Hash the password
-            String hashed = null;
+            String hashed = "";
             try {
-                hashed = Utility.encrypt(password);
+                hashed += Utility.encrypt(password);
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
