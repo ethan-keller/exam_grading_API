@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MvcResult;
  * BuildingController test.
  * test passes if path leads to a 200 OK response
  */
+@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("local")
