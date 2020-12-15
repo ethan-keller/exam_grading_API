@@ -164,6 +164,16 @@ public class UserGradeService {
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
+    /**
+     * updates a grade in the database if the newly given mark is higher than the stored one.
+     *
+     * @param netid      netid of student
+     * @param courseCode course where the grade is from
+     * @param gradeType  type of grade (midterm, ...)
+     * @param jsonString body of request
+     * @throws JSONException     if input format is wrong
+     * @throws NotFoundException if grade is not found in database
+     */
     public void updateGrade(String netid, String courseCode, String gradeType, String jsonString) throws JSONException, NotFoundException {
         ResponseEntity<List<Grade>> response = getAllGrades(netid, courseCode, gradeType);
         if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -173,6 +183,13 @@ public class UserGradeService {
         updateGrade(jsonString, grade.getId());
     }
 
+    /**
+     * method to update grade that does actual database call
+     *
+     * @param jsonString body of request containing new mark
+     * @param gradeId    database id of grade to be updated
+     * @throws JSONException if input format is wrong
+     */
     private void updateGrade(String jsonString, final long gradeId)
             throws JSONException {
         JSONObject obj = new JSONObject(jsonString);
@@ -184,6 +201,14 @@ public class UserGradeService {
         }
     }
 
+    /**
+     * returns all grades with several query options
+     *
+     * @param netid      netid of student whose grades are wanted
+     * @param courseCode course from which grades are wanted
+     * @param gradeType  type of grades that are wanted
+     * @return list of grades adhering to the query
+     */
     public ResponseEntity<List<Grade>> getAllGrades(String netid, String courseCode, String gradeType) {
         List<Grade> gradeList;
         if (netid == null && courseCode == null && gradeType == null) {
@@ -205,6 +230,14 @@ public class UserGradeService {
         return new ResponseEntity<>(gradeList, HttpStatus.OK);
     }
 
+    /**
+     * deletes a grade from the database based on given params
+     *
+     * @param netid      netid of student whose grade needs to be deleted
+     * @param courseCode course from which grade needs to be deleted
+     * @param gradeType  type of grades that needs to be deleted
+     * @throws NotFoundException if grade is not found in the database based on the given parameters
+     */
     public void deleteGrade(String netid, String courseCode, String gradeType) throws NotFoundException {
         ResponseEntity<List<Grade>> response = getAllGrades(netid, courseCode, gradeType);
         if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -214,6 +247,12 @@ public class UserGradeService {
         gradeRepository.deleteGrade(grade.getId());
     }
 
+    /**
+     * inserts a grade into the database
+     *
+     * @param jsonString body of post message
+     * @throws JSONException if input format is wrong
+     */
     public void insertGrade(String jsonString) throws JSONException {
         JSONObject obj = new JSONObject(jsonString);
         String courseCode = obj.getString("course_code");

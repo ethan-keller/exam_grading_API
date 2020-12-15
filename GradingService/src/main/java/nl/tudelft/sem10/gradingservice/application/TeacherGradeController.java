@@ -53,6 +53,15 @@ public class TeacherGradeController {
         return userService.meanAndVariance(course);
     }
 
+    /**
+     * updates a grade in the database if the newly given mark is higher than the stored one.
+     * @param netid netid of student
+     * @param courseCode course where the grade is from
+     * @param gradeType type of grade (midterm, ...)
+     * @param jsonString body of request
+     * @throws JSONException if input format is wrong
+     * @throws NotFoundException if grade is not found in database
+     */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     public void updateGrade(@RequestParam String netid,
@@ -62,6 +71,13 @@ public class TeacherGradeController {
         userService.updateGrade(netid, courseCode, gradeType, jsonString);
     }
 
+    /**
+     * deletes a grade from the database based on given params
+     * @param netid netid of student whose grade needs to be deleted
+     * @param courseCode course from which grade needs to be deleted
+     * @param gradeType type of grades that needs to be deleted
+     * @throws NotFoundException if grade is not found in the database based on the given parameters
+     */
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
     public void deleteGrade(@RequestParam String netid,
@@ -70,6 +86,11 @@ public class TeacherGradeController {
         userService.deleteGrade(netid, courseCode, gradeType);
     }
 
+    /**
+     * inserts a grade into the database
+     * @param jsonString body of post message
+     * @throws JSONException if input format is wrong
+     */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @SuppressWarnings("PMD")

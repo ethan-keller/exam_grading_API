@@ -50,12 +50,14 @@ public interface GradeRepository extends JpaRepository<Grade, Long> {
 
     //Finds grades by course and grade type
     @Transactional
-    @Query(value = "SELECT * FROM grade WHERE course_code = ?1 AND grade_type = ?2", nativeQuery = true)
+    @Query(value = "SELECT * FROM grade WHERE course_code = ?1 AND grade_type = ?2",
+            nativeQuery = true)
     List<Grade> getGradesByCourseAndType(String course, String gradeType);
 
     //Finds grades by course, grade type and netid
     @Transactional
-    @Query(value = "SELECT * FROM grade WHERE course_code = ?1 AND grade_type = ?2 AND netid = ?3", nativeQuery = true)
+    @Query(value = "SELECT * FROM grade WHERE course_code = ?1 AND grade_type = ?2 AND netid = ?3",
+            nativeQuery = true)
     List<Grade> getGradesByCourseAndTypeAndNetid(String course, String gradeType, String netid);
 
     //Finds the courses a user takes
