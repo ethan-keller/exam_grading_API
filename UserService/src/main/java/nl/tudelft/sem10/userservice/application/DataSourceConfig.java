@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.userservice.config;
+package nl.tudelft.sem10.userservice.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;

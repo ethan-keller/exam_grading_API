@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.userservice.entities;
+package nl.tudelft.sem10.userservice.application;
 
 import java.util.Objects;
 import javax.persistence.Column;

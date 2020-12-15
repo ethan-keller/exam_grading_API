@@ -1,9 +1,9 @@
-package nl.tudelft.sem10.userservice.controllers;
+package nl.tudelft.sem10.userservice.framework;
 
 import java.util.List;
 import nl.tudelft.sem10.userservice.domain.Utility;
-import nl.tudelft.sem10.userservice.entities.User;
-import nl.tudelft.sem10.userservice.repositories.UserRepository;
+import nl.tudelft.sem10.userservice.application.User;
+import nl.tudelft.sem10.userservice.domain.repositories.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

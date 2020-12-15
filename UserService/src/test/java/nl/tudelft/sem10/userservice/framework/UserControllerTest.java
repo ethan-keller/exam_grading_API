@@ -1,8 +1,12 @@
-package nl.tudelft.sem10.userservice.controllers;
+package nl.tudelft.sem10.userservice.framework;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import nl.tudelft.sem10.userservice.application.User;
+import nl.tudelft.sem10.userservice.domain.repositories.UserRepository;
 import nl.tudelft.sem10.userservice.domain.Utility;
-import nl.tudelft.sem10.userservice.entities.User;
-import nl.tudelft.sem10.userservice.repositories.UserRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,11 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
