@@ -27,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CategoryServiceApplicationTests {
     private final transient Category c0 = new Category("CSE9999", "MIDTERM", 0.5D);
+    private final transient String validToken = "MyTeacherToken";
 
     @Autowired
     private transient CategoryController controller;
@@ -55,6 +56,9 @@ class CategoryServiceApplicationTests {
                         category -> {
                             return new CategoryId(category.getCourse(), category.getName());
                         }));
+
+        // Inject auth mock
+        Util.setField(controller, "auth", Util.mockAuth());
     }
 
     /**
@@ -76,7 +80,7 @@ class CategoryServiceApplicationTests {
     public void testAdd() {
         // Note that we assume no such category exists,
         // as the test will delete the test category too
-        ResponseEntity<Category> response = controller.addCategory(c0);
+        ResponseEntity<Category> response = controller.addCategory(validToken, c0);
 
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Assertions.assertEquals(c0, response.getBody());
@@ -88,7 +92,7 @@ class CategoryServiceApplicationTests {
     @Test
     @Order(3)
     public void testAddDuplicate() {
-        ResponseEntity<Category> response = controller.addCategory(c0);
+        ResponseEntity<Category> response = controller.addCategory(validToken, c0);
 
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
@@ -138,7 +142,9 @@ class CategoryServiceApplicationTests {
     @Order(6)
     public void testRemove() {
         // Note that this entity should exist, as we inserted it in a previous test
-        ResponseEntity<Category> response = controller.removeCategory(c0.getCourse(), c0.getName());
+        ResponseEntity<Category> response = controller.removeCategory(validToken,
+                c0.getCourse(),
+                c0.getName());
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(c0, response.getBody());
@@ -150,8 +156,58 @@ class CategoryServiceApplicationTests {
     @Test
     @Order(7)
     public void testRemoveNonExisting() {
-        ResponseEntity<Category> response = controller.removeCategory(c0.getCourse(), c0.getName());
+        ResponseEntity<Category> response = controller.removeCategory(validToken,
+                c0.getCourse(),
+                c0.getName());
 
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    /**
+     * Test /category/add/ response for a non-teacher user.
+     */
+    @Test
+    @Order(8)
+    public void testAddWrongUser() {
+        ResponseEntity<Category> response = controller.addCategory("MyNonTeacherToken", c0);
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    /**
+     * Test /category/add/ response for an unknown user.
+     */
+    @Test
+    @Order(9)
+    public void testAddInvalidUser() {
+        ResponseEntity<Category> response = controller.addCategory("MyInvalidToken", c0);
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    /**
+     * Test /category/remove/ response for a non-teacher user.
+     */
+    @Test
+    @Order(10)
+    public void testRemoveWrongUser() {
+        ResponseEntity<Category> response = controller.removeCategory("MyNonTeacherToken",
+                "CSE9999",
+                "MIDTERM");
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    /**
+     * Test /category/remove/ response for an unknown user.
+     */
+    @Test
+    @Order(11)
+    public void testRemoveInvalidUser() {
+        ResponseEntity<Category> response = controller.removeCategory("MyInvalidToken",
+                "CSE9999",
+                "MIDTERM");
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }

@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CourseServiceApplicationTests {
     private final transient Course c0 = new Course("TEST_COURSE", "CSE9999");
+    private final transient String validToken = "MyTeacherToken";
 
     @Autowired
     private transient CourseController controller;
@@ -52,6 +53,9 @@ class CourseServiceApplicationTests {
                         Course.class,
                         String.class,
                         Course::getCode));
+
+        // Inject auth mock
+        Util.setField(controller, "auth", Util.mockAuth());
     }
 
     /**
@@ -72,7 +76,7 @@ class CourseServiceApplicationTests {
     @Order(2)
     public void testAdd() {
         // Note that we assume no such course exists, as the test will delete the test course too
-        ResponseEntity<Course> response = controller.addCourse(c0);
+        ResponseEntity<Course> response = controller.addCourse(validToken, c0);
 
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Assertions.assertEquals(c0, response.getBody());
@@ -84,7 +88,7 @@ class CourseServiceApplicationTests {
     @Test
     @Order(3)
     public void testAddDuplicate() {
-        ResponseEntity<Course> response = controller.addCourse(c0);
+        ResponseEntity<Course> response = controller.addCourse(validToken, c0);
 
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
@@ -134,7 +138,7 @@ class CourseServiceApplicationTests {
     @Order(6)
     public void testRemove() {
         // Note that this entity should exist, as we inserted it in a previous test
-        ResponseEntity<Course> response = controller.removeCourse(c0.getCode());
+        ResponseEntity<Course> response = controller.removeCourse(validToken, c0.getCode());
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(c0, response.getBody());
@@ -146,8 +150,52 @@ class CourseServiceApplicationTests {
     @Test
     @Order(7)
     public void testRemoveNonExisting() {
-        ResponseEntity<Course> response = controller.removeCourse(c0.getCode());
+        ResponseEntity<Course> response = controller.removeCourse(validToken, c0.getCode());
 
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    /**
+     * Test /course/add/ response for a non-teacher user.
+     */
+    @Test
+    @Order(8)
+    public void testAddWrongUser() {
+        ResponseEntity<Course> response = controller.addCourse("MyNonTeacherToken", c0);
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    /**
+     * Test /course/add/ response for an unknown user.
+     */
+    @Test
+    @Order(9)
+    public void testAddInvalidUser() {
+        ResponseEntity<Course> response = controller.addCourse("MyInvalidToken", c0);
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    /**
+     * Test /course/remove/ response for a non-teacher user.
+     */
+    @Test
+    @Order(10)
+    public void testRemoveWrongUser() {
+        ResponseEntity<Course> response = controller.removeCourse("MyNonTeacherToken", "CSE9999");
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    /**
+     * Test /course/remove/ response for an unknown user.
+     */
+    @Test
+    @Order(11)
+    public void testRemoveInvalidUser() {
+        ResponseEntity<Course> response = controller.removeCourse("MyInvalidToken", "CSE9999");
+
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }

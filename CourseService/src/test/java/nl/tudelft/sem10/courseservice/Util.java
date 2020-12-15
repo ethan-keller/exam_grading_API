@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import nl.tudelft.sem10.courseservice.application.AuthService;
 import org.mockito.Mockito;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,6 +17,33 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public class Util {
     private Util() {
         // Nothing
+    }
+
+    /**
+     * Create a mocked authentication service.
+     * This gives:
+     *  - {@link AuthService.UserType#TEACHER} type for "MyTeacherToken"
+     *  - {@link AuthService.UserType#OTHER} type for "MyNonTeacherToken"
+     *  - {@link AuthService.UserType#UNKNOWN} type for any other token
+     *
+     * @return the mocked service.
+     */
+    public static AuthService mockAuth() {
+        AuthService mock = Mockito.mock(AuthService.class);
+
+        // Mock #getUser(String)
+        Mockito.doAnswer(invocation -> {
+            String token = invocation.getArgument(0);
+            if (token.equals("MyTeacherToken")) {
+                return AuthService.UserType.TEACHER;
+            }
+            if (token.equals("MyNonTeacherToken")) {
+                return AuthService.UserType.OTHER;
+            }
+            return AuthService.UserType.UNKNOWN;
+        }).when(mock).getUser(Mockito.anyString());
+
+        return mock;
     }
 
     /**
