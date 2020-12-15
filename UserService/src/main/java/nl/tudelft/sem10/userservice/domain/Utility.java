@@ -10,9 +10,11 @@ import java.security.NoSuchAlgorithmException;
 public class Utility {
 
   /**
-   * Ecrypts the given text using SHA-512 algorithm.
+   * Encrypts the given text using SHA-512 algorithm.
+   *
    * @param input of type String - the String to hash
    * @return hashText of type String - hashed representation of the string.
+   *
    * @throws NoSuchAlgorithmException
    */
   public static String encrypt(String input) throws NoSuchAlgorithmException {

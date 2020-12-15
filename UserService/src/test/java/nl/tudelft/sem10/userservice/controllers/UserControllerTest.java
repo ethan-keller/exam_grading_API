@@ -46,9 +46,6 @@ class UserControllerTest {
   @MockBean
   private transient RestTemplate restTemplate;
 
-  // The following fields were created to adhere to the PMD rules.
-  private transient String netId;
-  private transient String password;
   private transient String student1;
   private transient String n;
   private transient String pass;
@@ -78,8 +75,7 @@ class UserControllerTest {
     userController = new UserController();
     userController.setUserRepository(userRepository);
     userController.setRestTemplate(restTemplate);
-    netId = "netId";
-    password = "password";
+    // The following fields were created to adhere to the PMD rules.
     student1 = "student1";
     n = "{";
     pass = "\"password\":\"pass\", ";

@@ -1,5 +1,7 @@
 package nl.tudelft.sem10.userservice.controllers;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import nl.tudelft.sem10.userservice.domain.Utility;
 import nl.tudelft.sem10.userservice.entities.User;
 import nl.tudelft.sem10.userservice.repositories.UserRepository;
@@ -19,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 
 /**
@@ -39,10 +39,11 @@ public class UserController {
     private transient RestTemplate restTemplate;
 
     // To adhere to the lovely PMD rules
-    private transient final String netIdStr = "netId";
+    private final transient  String netIdStr = "netId";
 
     /**
      * Setter for the userRepository, mainly used for testing purposes.
+     *
      * @param userRepository  of type UserRepository
      */
     public void setUserRepository(UserRepository userRepository) {
@@ -51,6 +52,7 @@ public class UserController {
 
     /**
      * Setter for the restTemplate, mainly used for testing purposes.
+     *
      * @param restTemplate  of type RestTemplate
      */
     public void setRestTemplate(RestTemplate restTemplate) {
@@ -94,7 +96,7 @@ public class UserController {
     @PostMapping("")
     @Modifying
     @ResponseBody
-    public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException, NoSuchAlgorithmException {
+    public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
         JSONObject json = new JSONObject(jsonString);
         if (json.has(netIdStr) && json.has("password") && json.has("type")) {
             String netId = json.getString(netIdStr);
@@ -104,7 +106,12 @@ public class UserController {
             }
             String password = json.getString("password");
             //Hash the password
-            String hashed = Utility.encrypt(password);
+            String hashed = null;
+            try {
+                hashed = Utility.encrypt(password);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
             //Send it to authentication service and receive the encrypted password
             String url = "http://localhost:8080/encode/{password}";
             String encrypted = restTemplate.getForObject(url, String.class, hashed);
@@ -112,8 +119,7 @@ public class UserController {
             userRepository.insertUser(netId, encrypted, type);
             User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
-        }
-        else{
+        } else {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }
@@ -138,8 +144,7 @@ public class UserController {
                 userRepository.deleteUser(netId);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
-        }
-        else{
+        } else {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }
@@ -166,8 +171,7 @@ public class UserController {
             userRepository.updateUser(netId, password, type);
             User n = new User(netId, password, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.OK);
-        }
-        else{
+        } else {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
     }
