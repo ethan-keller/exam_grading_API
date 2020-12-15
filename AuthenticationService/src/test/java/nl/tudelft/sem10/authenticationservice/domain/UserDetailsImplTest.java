@@ -2,8 +2,8 @@ package nl.tudelft.sem10.authenticationservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import nl.tudelft.sem10.authenticationservice.application.Role;
 import nl.tudelft.sem10.authenticationservice.application.RoleType;
 import nl.tudelft.sem10.authenticationservice.application.User;

@@ -36,7 +36,7 @@ public class RestService {
         }
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
                 + "/" + netId;
-        ResponseEntity<User> response = this.restTemplate.getForEntity(url, User.class);
+        ResponseEntity<User> response = restTemplate.getForEntity(url, User.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
         } else {
