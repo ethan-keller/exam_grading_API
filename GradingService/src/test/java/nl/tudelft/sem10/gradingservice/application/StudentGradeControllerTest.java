@@ -32,12 +32,6 @@ public class StudentGradeControllerTest {
     private transient StudentGradeController studentGradeController;
 
     @Mock
-    private transient GradeRepository gradeRepository;
-
-    @Mock
-    private transient StudentLogic studentLogic;
-
-    @Mock
     private transient UserGradeService userGradeService;
 
 

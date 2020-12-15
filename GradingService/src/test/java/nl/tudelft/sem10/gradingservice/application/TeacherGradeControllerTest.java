@@ -27,19 +27,13 @@ public class TeacherGradeControllerTest {
     private static final String USER_1 = "user1";
     private static final String CSE_1 = "CSE1";
 
-    @Mock
-    private static transient ServerCommunication serverCommunication;
+
     @InjectMocks
     private transient TeacherGradeController teacherGradeController;
 
     @Mock
     private transient UserGradeService userGradeService;
 
-    @Mock
-    private transient GradeRepository gradeRepository;
-
-    @Mock
-    private transient StudentLogic studentLogic;
 
     private transient String netId;
     private transient String courseCode;
