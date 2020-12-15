@@ -3,12 +3,8 @@ package nl.tudelft.sem10.gradingservice.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,11 +34,15 @@ class UserGradeServiceTest {
     private static final transient Grade GRADE_1 = new Grade(1, 10.0F, netId, CSE_1, MIDTERM);
     private static final transient Grade GRADE_2 = new Grade(2, 5.8F, netId, CSE_2, MIDTERM);
     private static final transient Grade GRADE_3 = new Grade(3, 5.75F, netId, CSE_1, FINAL);
+    private static final transient List<Grade> GRADES_FOR_COURSE_1 =
+        Arrays.asList(GRADE_1, GRADE_3);
     private static final transient Grade GRADE_4 = new Grade(4, 8.5F, netId, CSE_2, MIDTERM);
+    private static final transient List<Grade> GRADES_FOR_COURSE_2 =
+        Arrays.asList(GRADE_2, GRADE_4);
+    private static final transient List<String> STUDENT_COURSES = Arrays.asList(CSE_1, CSE_2);
 
     @InjectMocks
     private transient UserGradeService userGradeService;
-
     @Mock
     private transient GradeRepository gradeRepository;
     private transient List<Grade> grades;
@@ -86,25 +86,29 @@ class UserGradeServiceTest {
 
     }
 
-    @Disabled
     @Test
-    void getGradeNonExistent() {
+    void getGradeNonExistent() throws JSONException {
+        when(gradeRepository.getGradesByNetIdAndCourse(anyString(), anyString()))
+            .thenReturn(Collections.emptyList());
+        ResponseEntity<Double> response = userGradeService.getGrade(NON_EXISTENT, CSE_1);
 
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    // TODO: Find way to mock server communication
+    @Disabled
     @Test
     void passedCourses() throws JSONException {
-        List<String> coursesOfStudent = Arrays.asList(CSE_1, CSE_2);
-        List<Grade> gradesForCourse1 = Arrays.asList(GRADE_1, GRADE_3);
-        List<Grade> gradesForCourse2 = Arrays.asList(GRADE_2, GRADE_4);
-        when(gradeRepository.getCoursesOfStudent(netId)).thenReturn(coursesOfStudent);
-        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(gradesForCourse1);
-        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(gradesForCourse2);
+        when(gradeRepository.getCoursesOfStudent(netId)).thenReturn(STUDENT_COURSES);
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
+            GRADES_FOR_COURSE_1);
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(
+            GRADES_FOR_COURSE_2);
 
         ResponseEntity<List<String>> response = userGradeService.passedCourses(netId);
 
-        assertEquals(coursesOfStudent, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(STUDENT_COURSES, response.getBody());
     }
 
     @Test
@@ -115,14 +119,37 @@ class UserGradeServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    // TODO: Find way to mock server communication
+    @Disabled
     @Test
-    void allGrades() {
+    void allGrades() throws JSONException {
+        when(gradeRepository.getCoursesOfStudent(netId)).thenReturn(STUDENT_COURSES);
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
+            GRADES_FOR_COURSE_1);
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(
+            GRADES_FOR_COURSE_2);
+
+        ResponseEntity<List<String>> response = userGradeService.allGrades(netId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(STUDENT_COURSES, response.getBody());
     }
 
+    @Test
+    void allGradesNonExistent() throws JSONException {
+        when(gradeRepository.getCoursesOfStudent(anyString())).thenReturn(Collections.emptyList());
+        ResponseEntity<List<String>> response = userGradeService.allGrades(netId);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    // Disabled because it needs server communication
+    @Disabled
     @Test
     void passingRate() {
     }
 
+    @Disabled
     @Test
     void meanAndVariance() {
     }
