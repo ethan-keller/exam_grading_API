@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestService {
 
     private static final int USER_SERVICE_PORT = 8083;
-    private static final String GET_USER_ENDPOINT = "/userByNetId";
+    private static final String GET_USER_ENDPOINT = "/user";
     private final transient RestTemplate restTemplate;
 
 
@@ -35,7 +35,7 @@ public class RestService {
             return null;
         }
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
-                + "?netId=" + netId;
+                + "/" + netId;
         ResponseEntity<User> response = this.restTemplate.getForEntity(url, User.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();

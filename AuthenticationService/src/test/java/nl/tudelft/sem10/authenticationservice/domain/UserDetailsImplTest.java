@@ -1,10 +1,9 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import nl.tudelft.sem10.authenticationservice.application.Role;
 import nl.tudelft.sem10.authenticationservice.application.RoleType;
 import nl.tudelft.sem10.authenticationservice.application.User;
@@ -53,33 +52,6 @@ class UserDetailsImplTest {
                 new SimpleGrantedAuthority(new Role(RoleType.TEACHER).getName());
         assertTrue(userDetails2.getAuthorities().contains(role));
         assertEquals(1, userDetails2.getAuthorities().size());
-    }
-
-    /**
-     * Checks if null password is correctly handled.
-     */
-    @Test
-    void validateNullPassword() {
-        String password = null;
-        assertFalse(userDetails1.validate(password));
-    }
-
-    /**
-     * Checks if correct password is correctly handled.
-     */
-    @Test
-    void validateCorrectPassword() {
-        String password = u1.getPassword();
-        assertTrue(userDetails1.validate(password));
-    }
-
-    /**
-     * Checks if incorrect password is correctly handled.
-     */
-    @Test
-    void validateIncorrectPassword() {
-        String password = "incorrect_password";
-        assertFalse(userDetails1.validate(password));
     }
 
     /**
