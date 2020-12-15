@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -39,6 +40,8 @@ class AuthenticationControllerTest {
     private transient MockMvc mvc;
     @Autowired
     private transient AuthenticationController controller;
+    @Autowired
+    private transient PasswordEncoder passwordEncoder;
 
     /**
      * Set up and inject mock of user details service.
@@ -115,6 +118,15 @@ class AuthenticationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).exists())
                 .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).isNotEmpty());
+    }
+
+    /**
+     * Tests if encoding matches the password.
+     */
+    @Test
+    void encodePassword() {
+        String result = controller.encodePassword(user.getPassword()).getBody();
+        passwordEncoder.matches(user.getPassword(), result);
     }
 
     /**

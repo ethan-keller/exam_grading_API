@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -23,6 +25,8 @@ public class AuthenticationController {
     private transient JwtTokenUtil jwtTokenUtil;
     @Autowired
     private transient UserDetailsService userDetailsService;
+    @Autowired
+    private transient PasswordEncoder passwordEncoder;
 
     /**
      * Authentication endpoint.
@@ -40,4 +44,17 @@ public class AuthenticationController {
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+    /**
+     * Endpoint for password encoding.
+     * The received password gets encoded and sent back
+     *
+     * @param hashedPassword the hashed password
+     * @return the encoded representation of the hashed password
+     */
+    @GetMapping("/encode/{hashedPassword}")
+    public ResponseEntity<String> encodePassword(@PathVariable final String hashedPassword) {
+        return ResponseEntity.ok(passwordEncoder.encode(hashedPassword));
+    }
+
 }
