@@ -40,20 +40,20 @@ class UserControllerTest {
 
   @Autowired
   @MockBean
-  UserRepository userRepository; //NOPMD
+  private transient UserRepository userRepository;
 
   @Autowired
   @MockBean
-  private RestTemplate restTemplate; //NOPMD
+  private transient RestTemplate restTemplate;
 
   // The following fields were created to adhere to the PMD rules.
-  transient String netId;
-  transient String password;
-  transient String student1;
-  transient String n;
-  transient String pass;
-  transient String type0;
-  transient String parenthesis;
+  private transient String netId;
+  private transient String password;
+  private transient String student1;
+  private transient String n;
+  private transient String pass;
+  private transient String type0;
+  private transient String parenthesis;
 
 
   /**
