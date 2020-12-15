@@ -60,7 +60,7 @@ public class CourseEntityTest {
      */
     @Test
     public void testHashCode() {
-        Assertions.assertEquals(-596525586, c0.hashCode());
+        Assertions.assertEquals(-1027667660, c0.hashCode());
     }
 
     /**
@@ -115,6 +115,6 @@ public class CourseEntityTest {
      */
     @Test
     public void testToString() {
-        Assertions.assertEquals("Course[name=TEST_COURSE, code=CSE9999]", c0.toString());
+        Assertions.assertEquals("Course[code=CSE9999, name=TEST_COURSE]", c0.toString());
     }
 }

@@ -76,7 +76,7 @@ public class Course {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, code);
+        return Objects.hash(code, name);
     }
 
     @Override
@@ -88,17 +88,17 @@ public class Course {
             return false;
         }
         Course course = (Course) o;
-        return Objects.equals(name, course.name)
-                && Objects.equals(code, course.code);
+        return Objects.equals(code, course.code)
+                && Objects.equals(name, course.name);
     }
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("Course[name=")
-                .append(name)
-                .append(", code=")
+                .append("Course[code=")
                 .append(code)
+                .append(", name=")
+                .append(name)
                 .append("]")
                 .toString();
     }
