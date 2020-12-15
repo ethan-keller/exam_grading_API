@@ -131,7 +131,7 @@ class UserControllerTest {
    */
   @Test
   void createUser() throws NoSuchAlgorithmException {
-    when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.encrypt("pass"))).thenReturn("encryptedPassword");
+    when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.hash("pass"))).thenReturn("encryptedPassword");
     when(userRepository.getUserByNetId(anyString())).thenReturn(null);
     User newUser = new User("newUser","pass",0);
     String  jsonStr = newUser.toString();
@@ -195,7 +195,7 @@ class UserControllerTest {
    */
   @Test
   void changeDetails() throws NoSuchAlgorithmException {
-    when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.encrypt("newPass"))).thenReturn("encryptedPassword");
+    when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.hash("newPass"))).thenReturn("encryptedPassword");
     when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
     User changedUser = new User("student1","newPass",0);
     String  jsonStr = changedUser.toString();

@@ -18,7 +18,7 @@ public class Utility {
      *
      * @throws NoSuchAlgorithmException - no such algorithm
      */
-    public static String encrypt(String input) throws NoSuchAlgorithmException {
+    public static String hash(String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         byte[] messageDigest = md.digest(input.getBytes());
         BigInteger sg = new BigInteger(1, messageDigest);
@@ -41,7 +41,7 @@ public class Utility {
         //Hash the password
         String hashed = "";
         try {
-            hashed += Utility.encrypt(password);
+            hashed += Utility.hash(password);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
