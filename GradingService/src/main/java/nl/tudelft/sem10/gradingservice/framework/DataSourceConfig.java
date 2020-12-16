@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.gradingservice.config;
+package nl.tudelft.sem10.gradingservice.framework;
 
 import java.util.Objects;
 import javax.sql.DataSource;

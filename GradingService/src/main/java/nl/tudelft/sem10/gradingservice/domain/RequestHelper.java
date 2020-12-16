@@ -1,20 +1,17 @@
-package nl.tudelft.sem10.gradingservice.controllers;
+package nl.tudelft.sem10.gradingservice.domain;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Base64;
 
 /**
  * Simplify cross microservice communication.
  */
 public class RequestHelper {
 
-    private static String username;
-    private static String password;
-    private static Integer type;
     private static final String domainOfCourseService = "http://localhost:8081";
+    private static final String domainOfAuthenticationService = "http://localhost:8080";
 
     /**
      * Method that builds a getRequest to course service given a path.
@@ -22,7 +19,7 @@ public class RequestHelper {
      * @param path path of the endpoint
      * @return the httprequest that has to be sent
      */
-    public static HttpRequest getRequest(String path) {
+    public static HttpRequest getRequest(String path, String token) {
 
         String reqPath = domainOfCourseService + path;
         //String userAndPass = username + ":" + password;
@@ -32,7 +29,23 @@ public class RequestHelper {
         return HttpRequest
                 .newBuilder()
                 .GET()
+                .header("Authorization", token)
                 .uri(URI.create(reqPath))
+                .build();
+    }
+
+    /**
+     * Method that builds a get request to authentication service /validate.
+     *
+     * @param token token user sends
+     * @return hhtprequest to send
+     */
+    public static HttpRequest validateToken(String token) {
+        String reqPath = domainOfAuthenticationService;
+        return HttpRequest
+                .newBuilder()
+                .GET()
+                .uri(URI.create(reqPath + "/validate/" + token))
                 .build();
     }
 
@@ -40,7 +53,7 @@ public class RequestHelper {
      * Method that sends the request to the server.
      *
      * @param request request that needs to be sent
-     * @param client client sending the request
+     * @param client  client sending the request
      * @return response of request
      */
     public static String sendRequest(HttpRequest request, HttpClient client) {
@@ -57,8 +70,4 @@ public class RequestHelper {
         }
     }
 
-
-
-
 }
-

@@ -1,4 +1,4 @@
-package nl.tudelft.sem10.gradingservice.entities;
+package nl.tudelft.sem10.gradingservice.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
