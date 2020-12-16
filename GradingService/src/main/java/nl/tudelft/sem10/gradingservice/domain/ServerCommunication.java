@@ -6,6 +6,9 @@ import java.net.http.HttpClient;
  * Simple class to streamline communication with other services.
  */
 public class ServerCommunication {
+
+    public ServerCommunication() {}
+
     private static final HttpClient client = HttpClient.newBuilder().build();
 
     /**
@@ -16,7 +19,7 @@ public class ServerCommunication {
      * @param categoryName the specific category whose weight is needed
      * @return JSON of the category and its weight
      */
-    public static String getCourseWeights(String courseCode, String categoryName, String token) {
+    public String getCourseWeights(String courseCode, String categoryName, String token) {
         String str = RequestHelper.sendRequest(
                 RequestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
                         + "&categoryName=" + categoryName, token), client);
@@ -31,7 +34,7 @@ public class ServerCommunication {
      * @param token token user sends
      * @return type of user if applicable
      */
-    public static String validate(String token) {
+    public String validate(String token) {
         String str = RequestHelper.sendRequest(
                 RequestHelper.validateToken(token), client);
         return str;

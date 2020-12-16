@@ -2,7 +2,6 @@ package nl.tudelft.sem10.gradingservice.application;
 
 import java.util.List;
 import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
-import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
@@ -10,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -18,16 +21,30 @@ import org.springframework.web.bind.annotation.*;
 @SuppressWarnings("unused")
 public class StudentGradeController {
 
-    // Grab an instance of StudentLogic so we can inject a mocked one.
-    private transient StudentLogic studentLogic = new StudentLogic();
+    private transient final String headerName = "Authorization";
+
+    public void setGradeRepository(
+        GradeRepository gradeRepository) {
+        this.gradeRepository = gradeRepository;
+    }
+
+    public void setUserService(UserGradeService userService) {
+        this.userService = userService;
+    }
+
+
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
-
     @Autowired
     private transient UserGradeService userService;
 
-    private transient final String headerName = "Authorization";
     private transient String userType = "STUDENT";
+    private transient ServerCommunication serverCommunication = new ServerCommunication();
+
+    public void setServerCommunication(
+        ServerCommunication serverCommunication) {
+        this.serverCommunication = serverCommunication;
+    }
 
     /**
      * Method to get mean grade of a student.
@@ -38,10 +55,10 @@ public class StudentGradeController {
     @GetMapping(path = "/mean")
     @ResponseBody
     public ResponseEntity<Float> getMean(@RequestHeader(headerName)
-                                                 String token,
+                                             String token,
                                          @RequestParam String netId) {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains(userType)) {
                 return new ResponseEntity<>(userService.getMean(netId), HttpStatus.OK);
             } else {
@@ -63,11 +80,11 @@ public class StudentGradeController {
     @GetMapping(path = "/grade")
     @ResponseBody
     public ResponseEntity<Double> getGrade(@RequestHeader(headerName)
-                                                   String token,
+                                               String token,
                                            @RequestParam String netId,
                                            @RequestParam String courseCode) throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains(userType)) {
                 return userService.getGrade(netId, courseCode, token);
             } else {
@@ -89,11 +106,11 @@ public class StudentGradeController {
     @GetMapping(path = "/passed")
     @ResponseBody
     public ResponseEntity<List<String>> passedCourses(@RequestHeader(headerName)
-                                                              String token,
+                                                          String token,
                                                       @RequestParam String netId)
-            throws JSONException {
+        throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains(userType)) {
                 return userService.passedCourses(netId, token);
             } else {
@@ -115,10 +132,10 @@ public class StudentGradeController {
     @GetMapping(path = "/allGrades")
     @ResponseBody
     public ResponseEntity<List<String>> allGrades(@RequestHeader(headerName)
-                                                          String token,
+                                                      String token,
                                                   @RequestParam String netId) throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains(userType)) {
                 return userService.allGrades(netId, token);
             } else {
@@ -140,10 +157,10 @@ public class StudentGradeController {
     @GetMapping(path = "/passingRate")
     @ResponseBody
     public ResponseEntity<Double> passingRate(@RequestHeader(headerName)
-                                                      String token,
+                                                  String token,
                                               @RequestParam String course) throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains(userType)) {
                 return userService.passingRate(course, token);
             } else {

@@ -25,7 +25,8 @@ public class TeacherGradeController {
     private GradeRepository gradeRepository; // NOPMD
     @Autowired
     private transient UserGradeService userService;
-    private transient StudentLogic studentLogic;
+    // For dependency injection
+    private static final ServerCommunication serverCommunication = new ServerCommunication();
 
     /**
      * Method that returns passing rates of a course if user requesting for it is a teacher.
@@ -41,13 +42,13 @@ public class TeacherGradeController {
                                                       String token, @RequestParam String course)
             throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 return userService.passingRate(course, token);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -67,7 +68,7 @@ public class TeacherGradeController {
                                                   @RequestParam String course)
             throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 return userService.meanAndVariance(course, token);
             } else {
@@ -98,7 +99,7 @@ public class TeacherGradeController {
                                               @RequestBody String jsonString) throws JSONException,
             NotFoundException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 userService.updateGrade(netid, courseCode, gradeType, jsonString);
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -127,7 +128,7 @@ public class TeacherGradeController {
                                               @RequestParam String gradeType)
             throws NotFoundException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 userService.deleteGrade(netid, courseCode, gradeType);
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -152,7 +153,7 @@ public class TeacherGradeController {
                                                       String token,
                                               @RequestBody String jsonString) throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 userService.insertGrade(jsonString);
                 return new ResponseEntity<>(HttpStatus.OK);

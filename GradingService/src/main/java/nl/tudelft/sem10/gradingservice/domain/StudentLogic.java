@@ -12,6 +12,10 @@ public class StudentLogic {
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 
+    // For testability
+    private static final ServerCommunication serverCommunication =
+        new ServerCommunication();
+
     /**
      * Logic to get the mean of a list of grades.
      *
@@ -41,7 +45,7 @@ public class StudentLogic {
             throws JSONException {
         double g = 0.0;
         for (Grade grade : list) {
-            String str = ServerCommunication.getCourseWeights(courseCode,
+            String str = serverCommunication.getCourseWeights(courseCode,
                     grade.getGradeType(), token);
             if (str == null) {
                 return 0.0;
