@@ -5,6 +5,7 @@ import java.util.Locale;
 /**
  * An authentication service to validate tokens.
  */
+@FunctionalInterface
 public interface AuthService {
     /**
      * User types.

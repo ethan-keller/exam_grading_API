@@ -2,7 +2,6 @@ package nl.tudelft.sem10.courseservice.framework;
 
 import nl.tudelft.sem10.courseservice.application.AuthService;
 import nl.tudelft.sem10.courseservice.application.CourseService;
-import nl.tudelft.sem10.courseservice.domain.model.Category;
 import nl.tudelft.sem10.courseservice.domain.model.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +37,7 @@ public class CourseController {
      */
     @GetMapping(path = "/courses", produces = RESPONSE_TYPE)
     public ResponseEntity<Iterable<Course>> getAllCourses() {
-        return new ResponseEntity<>(courseService.get(), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.get());
     }
 
     /**
@@ -53,10 +52,10 @@ public class CourseController {
 
         // The resource does not exist
         if (course == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return new ResponseEntity<>(course, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(course);
     }
 
     /**
@@ -66,8 +65,10 @@ public class CourseController {
      * @return the added course or a 409 error if a course with the same ID already exists.
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
-    public ResponseEntity<Course> addCourse(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
-                                            @RequestBody Course course) {
+    public ResponseEntity<Course> addCourse(@RequestHeader(HttpHeaders.AUTHORIZATION)
+                                                        String authorization,
+                                            @RequestBody
+                                                    Course course) {
         // Auth
         ResponseEntity<Course> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -78,10 +79,10 @@ public class CourseController {
 
         // The resource already exists
         if (result == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     /**
@@ -91,8 +92,10 @@ public class CourseController {
      * @return the deleted course or a 204 error.
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
-    public ResponseEntity<Course> removeCourse(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
-                                               @RequestParam String courseCode) {
+    public ResponseEntity<Course> removeCourse(@RequestHeader(HttpHeaders.AUTHORIZATION)
+                                                           String authorization,
+                                               @RequestParam
+                                                       String courseCode) {
         // Auth
         ResponseEntity<Course> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -103,10 +106,10 @@ public class CourseController {
 
         // The resource does not exist
         if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**
@@ -118,15 +121,16 @@ public class CourseController {
      * @return the response or null if the token is valid.
      */
     private <T> ResponseEntity<T> authResponse(String token) {
-        AuthService.UserType type = auth.getUser(token);
+        AuthService.UserType type = auth.getUser(token.substring(7));
         switch (type) {
             case TEACHER:
                 return null;
             case UNKNOWN:
-                // TODO: Return WWW-Authenticate header as required by RFC 7235
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer")
+                        .build();
             default:
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         }
     }
