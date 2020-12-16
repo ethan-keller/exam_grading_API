@@ -22,11 +22,11 @@ public class UserGradeService {
     static final double passingGrade = 5.75;
 
     /**
-     * TODO: some javadoc.
+     * Method to get the mean grade for a student.
      *
-     * @param netId fhweu9ch
-     * @return fweijfniw
-     * @throws ResponseStatusException response exception
+     * @param netId The student's netid.
+     * @return The mean grade for the student.
+     * @throws ResponseStatusException If the grades cannot be found.
      */
     public Float getMean(String netId) throws ResponseStatusException {
         List<Grade> list = gradeRepository.getGradesByNetId(netId);
