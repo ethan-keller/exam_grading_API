@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/student")
 @SuppressWarnings("unused")
 public class StudentGradeController {
+    public StudentGradeController() {};
 
     private transient final String headerName = "Authorization";
 
@@ -63,9 +65,10 @@ public class StudentGradeController {
             if (str.contains(userType) && correctUser) {
                 return new ResponseEntity<>(userService.getMean(netId), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -86,12 +89,13 @@ public class StudentGradeController {
                                            @RequestParam String courseCode) throws JSONException {
         try {
             String str = serverCommunication.validate(token.substring(7));
-            if (str.contains(userType)) {
+            boolean correctUser = serverCommunication.validateUser(token.substring(7), netId);
+            if (str.contains(userType) && correctUser) {
                 return userService.getGrade(netId, courseCode, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -112,10 +116,11 @@ public class StudentGradeController {
         throws JSONException {
         try {
             String str = serverCommunication.validate(token.substring(7));
-            if (str.contains(userType)) {
+            boolean correctUser = serverCommunication.validateUser(token.substring(7), netId);
+            if (str.contains(userType) && correctUser) {
                 return userService.passedCourses(netId, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception MissingRequestHeaderException) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -137,12 +142,13 @@ public class StudentGradeController {
                                                   @RequestParam String netId) throws JSONException {
         try {
             String str = serverCommunication.validate(token.substring(7));
-            if (str.contains(userType)) {
+            boolean correctUser = serverCommunication.validateUser(token.substring(7), netId);
+            if (str.contains(userType) && correctUser) {
                 return userService.allGrades(netId, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -165,7 +171,7 @@ public class StudentGradeController {
             if (str.contains(userType)) {
                 return userService.passingRate(course, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception MissingRequestHeaderException) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
