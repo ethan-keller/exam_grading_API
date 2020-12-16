@@ -1,10 +1,16 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -48,7 +54,7 @@ class UserGradeServiceTest {
     @Mock
     private transient GradeRepository gradeRepository;
     private transient List<Grade> grades;
-    private transient String token = "bearer token";
+    private static final String token = "bearer token";
 
     @Mock
     private transient ServerCommunication serverCommunication;
@@ -112,8 +118,6 @@ class UserGradeServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    // TODO: Find way to mock server communication
-    @Disabled
     @Test
     void passedCourses() throws JSONException {
         when(gradeRepository.getCoursesOfStudent(netId)).thenReturn(STUDENT_COURSES);
@@ -121,6 +125,8 @@ class UserGradeServiceTest {
             GRADES_FOR_COURSE_1);
         when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(
             GRADES_FOR_COURSE_2);
+        when(studentLogic.getGrade(anyList(), anyString(), anyString()))
+            .thenReturn(5.8D);
 
         ResponseEntity<List<String>> response = userGradeService.passedCourses(netId, token);
 
@@ -162,15 +168,94 @@ class UserGradeServiceTest {
     }
 
     // Disabled because it needs server communication
-    @Disabled
     @Test
-    void passingRate() {
+    void passingRate() throws JSONException {
+        when(gradeRepository.getStudentsTakingCourse(any(String.class))).thenReturn(Collections.singletonList(netId));
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
+            GRADES_FOR_COURSE_1);
+        when(studentLogic.getGrade(anyList(), anyString(), anyString()))
+            .thenReturn((10.0D + 5.75D) / 2.0D);
+
+        ResponseEntity<Double> response = userGradeService.passingRate("CSE1", token);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1.0D, response.getBody());
     }
 
-    // Disabled because it needs server communication
-    @Disabled
     @Test
-    void meanAndVariance() {
+    void passingRateNoStudents() throws JSONException {
+        when(gradeRepository.getStudentsTakingCourse(any(String.class))).thenReturn(null);
+
+        ResponseEntity<Double> response = userGradeService.passingRate("CSE1", token);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void passingRateImpossible() throws JSONException {
+        when(gradeRepository.getStudentsTakingCourse(any(String.class)))
+            .thenReturn(Collections.singletonList(netId));
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
+            Collections.emptyList());
+
+        ResponseEntity<Double> response = userGradeService.passingRate("CSE1", token);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void meanAndVariance() throws JSONException {
+        when(gradeRepository.getStudentsTakingCourse(any(String.class)))
+            .thenReturn(Collections.singletonList(netId));
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
+            GRADES_FOR_COURSE_1);
+        when(studentLogic.getGrade(anyList(), anyString(), anyString()))
+            .thenReturn((10.0D + 5.75D) / 2.0D);
+
+        ResponseEntity<String> response = userGradeService.meanAndVariance(CSE_1, token);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void meanAndVarianceNoStudents() throws JSONException {
+        when(gradeRepository.getStudentsTakingCourse(any(String.class)))
+            .thenReturn(null);
+
+        ResponseEntity<String> response = userGradeService.meanAndVariance(CSE_1, token);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void meanAndVarianceImpossible() throws JSONException {
+        when(gradeRepository.getStudentsTakingCourse(any(String.class)))
+            .thenReturn(Collections.singletonList(netId));
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
+            null);
+
+        ResponseEntity<String> response = userGradeService.meanAndVariance(CSE_1, token);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void insertGrade() {
+        String json = "{\n"
+            + "  \"course_code\": \"CSE1\",\n"
+            + "  \"grade_type\": \"A\",\n"
+            + "  \"netid\": \"1234567\",\n"
+            + "  \"mark\": \"10.0\"\n"
+            + "}";
+
+        try {
+            userGradeService.insertGrade(json);
+        } catch (JSONException e) {
+            fail();
+        }
+        verify(gradeRepository, atMostOnce()).insertGrade(10.0f, netId, CSE_1, "A");
+    }
+
+    @Test
+    void insertGradeException() {
+        String json = "not valid blah blah blah";
+
+        assertThrows(JSONException.class, () -> userGradeService.insertGrade(json));
+        verify(gradeRepository, never()).insertGrade(10.0f, netId, CSE_1, "A");
     }
 
 }
