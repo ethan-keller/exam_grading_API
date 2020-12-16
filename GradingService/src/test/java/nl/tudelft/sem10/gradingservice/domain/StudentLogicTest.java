@@ -16,8 +16,8 @@ class StudentLogicTest {
 
     private transient StudentLogic studentLogic;
     private transient ServerCommunication serverCommunication;
-    List<Grade> grades;
-    Grade test, test1;
+    private transient List<Grade> grades;
+    private transient Grade test, test1;
 
     @BeforeEach
     void setUp() {

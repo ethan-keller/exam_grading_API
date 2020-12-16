@@ -17,7 +17,8 @@ class ServerCommunicationTest {
 
     private transient ServerCommunication serverCommunication;
 
-    RequestHelper requestHelper;
+    private transient RequestHelper requestHelper;
+    private transient String SENT = "SENT";
 
     @BeforeEach
     void setUp() {
@@ -30,23 +31,23 @@ class ServerCommunicationTest {
     @Test
     void getCourseWeights() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
-                .thenReturn("SENT");
+                .thenReturn(SENT);
         when(requestHelper.getRequest(any(String.class), any(String.class))).thenCallRealMethod();
 
         String str = serverCommunication.getCourseWeights("CSE1", "Test", "bearer myToken");
 
-        assertEquals("SENT", str);
+        assertEquals(SENT, str);
     }
 
     @Test
     void validate() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
-                .thenReturn("SENT");
+                .thenReturn(SENT);
         when(requestHelper.validateToken(any(String.class))).thenCallRealMethod();
 
         String str = serverCommunication.validate("token");
 
-        assertEquals("SENT", str);
+        assertEquals(SENT, str);
     }
 
     @Test

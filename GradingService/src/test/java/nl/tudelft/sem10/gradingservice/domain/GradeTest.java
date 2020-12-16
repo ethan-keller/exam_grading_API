@@ -8,14 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@SuppressWarnings("PMD")
 public class GradeTest {
 
-    Grade test;
-    Grade test2;
-    Grade test3;
-    Grade test4;
-    Grade test5;
-    Grade test6;
+    private transient Grade test;
+    private transient Grade test2;
+    private transient Grade test3;
+    private transient Grade test4;
+    private transient Grade test5;
+    private transient Grade test6;
 
     @BeforeEach
     void setup(){

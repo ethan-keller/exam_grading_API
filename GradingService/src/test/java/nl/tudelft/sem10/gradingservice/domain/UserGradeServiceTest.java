@@ -48,6 +48,7 @@ class UserGradeServiceTest {
     @Mock
     private transient GradeRepository gradeRepository;
     private transient List<Grade> grades;
+    private transient String token = "bearer token";
 
     @Mock
     private transient ServerCommunication serverCommunication;
@@ -96,7 +97,7 @@ class UserGradeServiceTest {
                 .thenReturn(10.0);
 
         ResponseEntity<Double> result = userGradeService.getGrade("Test",
-                "CSE1", "bearer token");
+                "CSE1", token);
 
         assertEquals(10.0, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -106,7 +107,7 @@ class UserGradeServiceTest {
     void getGradeNonExistent() throws JSONException {
         when(gradeRepository.getGradesByNetIdAndCourse(anyString(), anyString()))
             .thenReturn(Collections.emptyList());
-        ResponseEntity<Double> response = userGradeService.getGrade(NON_EXISTENT, CSE_1, "bearer token");
+        ResponseEntity<Double> response = userGradeService.getGrade(NON_EXISTENT, CSE_1, token);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -121,7 +122,7 @@ class UserGradeServiceTest {
         when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(
             GRADES_FOR_COURSE_2);
 
-        ResponseEntity<List<String>> response = userGradeService.passedCourses(netId, "bearer Token");
+        ResponseEntity<List<String>> response = userGradeService.passedCourses(netId, token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(STUDENT_COURSES, response.getBody());
@@ -130,7 +131,7 @@ class UserGradeServiceTest {
     @Test
     void passedCoursesNonExistent() throws JSONException {
         when(gradeRepository.getCoursesOfStudent(anyString())).thenReturn(Collections.emptyList());
-        ResponseEntity<List<String>> response = userGradeService.passedCourses(netId, "bearer Token");
+        ResponseEntity<List<String>> response = userGradeService.passedCourses(netId, token);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -146,7 +147,7 @@ class UserGradeServiceTest {
         when(studentLogic.getGrade(any(List.class), any(String.class), any(String.class)))
                 .thenReturn(10.0);
 
-        ResponseEntity<List<String>> response = userGradeService.allGrades(netId, "bearer Token");
+        ResponseEntity<List<String>> response = userGradeService.allGrades(netId, token);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotEquals(0, response.getBody().size());
@@ -155,7 +156,7 @@ class UserGradeServiceTest {
     @Test
     void allGradesNonExistent() throws JSONException {
         when(gradeRepository.getCoursesOfStudent(anyString())).thenReturn(null);
-        ResponseEntity<List<String>> response = userGradeService.allGrades(NON_EXISTENT, "bearer Token");
+        ResponseEntity<List<String>> response = userGradeService.allGrades(NON_EXISTENT, token);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }

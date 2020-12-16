@@ -25,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+@SuppressWarnings("PMD")
 @ExtendWith(MockitoExtension.class)
 public class TeacherGradeControllerTest {
     private transient TeacherGradeController teacherGradeController;
