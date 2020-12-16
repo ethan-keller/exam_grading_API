@@ -9,12 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class StudentLogic {
 
-    @Autowired
-    private GradeRepository gradeRepository; // NOPMD
 
     // For testability
-    private static final ServerCommunication serverCommunication =
+    private transient ServerCommunication serverCommunication =
         new ServerCommunication();
+
+    public void setServerCommunication(ServerCommunication serverCommunication) {
+        this.serverCommunication = serverCommunication;
+    }
+
+    public StudentLogic(){
+    }
 
     /**
      * Logic to get the mean of a list of grades.
@@ -41,7 +46,7 @@ public class StudentLogic {
      * @throws JSONException exception if json is wrong
      */
     @SuppressWarnings("PMD")
-    public static double getGrade(List<Grade> list, String courseCode, String token)
+    public double getGrade(List<Grade> list, String courseCode, String token)
             throws JSONException {
         double g = 0.0;
         for (Grade grade : list) {

@@ -14,18 +14,20 @@ public class RequestHelper {
     private static final String domainOfAuthenticationService = "http://localhost:8080";
 
     /**
+     * Basic constructor.
+     */
+    public RequestHelper(){
+    }
+
+    /**
      * Method that builds a getRequest to course service given a path.
      *
      * @param path path of the endpoint
      * @return the httprequest that has to be sent
      */
-    public static HttpRequest getRequest(String path, String token) {
+    public HttpRequest getRequest(String path, String token) {
 
         String reqPath = domainOfCourseService + path;
-        //String userAndPass = username + ":" + password;
-        //String basicAuthPayload = "Basic "
-        // + Base64.getEncoder().encodeToString(userAndPass.getBytes());
-        //.header("Authorization", basicAuthPayload)
         return HttpRequest
                 .newBuilder()
                 .GET()
@@ -40,7 +42,7 @@ public class RequestHelper {
      * @param token token user sends
      * @return hhtprequest to send
      */
-    public static HttpRequest validateToken(String token) {
+    public  HttpRequest validateToken(String token) {
         String reqPath = domainOfAuthenticationService;
         return HttpRequest
                 .newBuilder()
@@ -56,7 +58,7 @@ public class RequestHelper {
      * @param client  client sending the request
      * @return response of request
      */
-    public static String sendRequest(HttpRequest request, HttpClient client) {
+    public String sendRequest(HttpRequest request, HttpClient client) {
         try {
             HttpResponse<String> response;
             response = client.send(request, HttpResponse.BodyHandlers.ofString());

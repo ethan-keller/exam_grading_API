@@ -11,6 +11,12 @@ public class ServerCommunication {
 
     private static final HttpClient client = HttpClient.newBuilder().build();
 
+    private transient RequestHelper requestHelper = new RequestHelper();
+
+    public void setRequestHelper(RequestHelper requestHelper) {
+        this.requestHelper = requestHelper;
+    }
+
     /**
      * Communicates to the course microservice and finds
      * the weights of grading categories of a course.
@@ -20,8 +26,8 @@ public class ServerCommunication {
      * @return JSON of the category and its weight
      */
     public String getCourseWeights(String courseCode, String categoryName, String token) {
-        String str = RequestHelper.sendRequest(
-                RequestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
+        String str = requestHelper.sendRequest(
+                requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
                         + "&categoryName=" + categoryName, token), client);
         return str;
     }
@@ -35,8 +41,8 @@ public class ServerCommunication {
      * @return type of user if applicable
      */
     public String validate(String token) {
-        String str = RequestHelper.sendRequest(
-                RequestHelper.validateToken(token), client);
+        String str = requestHelper.sendRequest(
+                requestHelper.validateToken(token), client);
         return str;
     }
 

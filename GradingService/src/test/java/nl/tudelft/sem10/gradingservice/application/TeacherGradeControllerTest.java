@@ -1,88 +1,213 @@
-//package nl.tudelft.sem10.gradingservice.application;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.fail;
-//import static org.mockito.Mockito.verify;
-//import static org.mockito.Mockito.when;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import nl.tudelft.sem10.gradingservice.domain.Grade;
-//import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
-//import org.json.JSONException;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//
-//@ExtendWith(MockitoExtension.class)
-//public class TeacherGradeControllerTest {
-//    private static final String USER_1 = "user1";
-//    private static final String CSE_1 = "CSE1";
-//
-//
-//    @InjectMocks
-//    private transient TeacherGradeController teacherGradeController;
-//
-//    @Mock
-//    private transient UserGradeService userGradeService;
-//
-//
-//    private transient String netId;
-//    private transient String courseCode;
-//    private transient List<Grade> allGradesOfUser;
-//    private transient List<Grade> gradesOfCourse;
-//    private transient List<Grade> gradesOfCourse2;
-//    private transient List<String> coursesOfTeacher;
-//    private transient Grade grade1;
-//    private transient Grade grade2;
-//    private transient Grade grade3;
-//    private transient Grade grade4;
-//
-//    /**
-//     * Sets up grades used in the test.
-//     */
-//    @Test
-//    public void setUp() {
-//        netId = USER_1;
-//        courseCode = CSE_1;
-//        grade1 = new Grade(1, 10, USER_1, CSE_1, "A");
-//        grade2 = new Grade(2, 10, USER_1, CSE_1, "B");
-//        grade3 = new Grade(3, 5, USER_1, "CSE2", "A");
-//        grade4 = new Grade(4, 5, USER_1, "CSE2", "B");
-//        allGradesOfUser = new ArrayList<>();
-//        allGradesOfUser.add(grade1);
-//        allGradesOfUser.add(grade2);
-//        allGradesOfUser.add(grade3);
-//        allGradesOfUser.add(grade4);
-//        gradesOfCourse = new ArrayList<>();
-//        gradesOfCourse.add(grade1);
-//        gradesOfCourse.add(grade2);
-//        gradesOfCourse2 = new ArrayList<>();
-//        gradesOfCourse2.add(grade3);
-//        gradesOfCourse2.add(grade4);
-//        coursesOfTeacher = new ArrayList<>();
-//        coursesOfTeacher.add(CSE_1);
-//        coursesOfTeacher.add("CSE2");
-//    }
-//
-//    @Test
-//    public void testGetPassingRate() throws JSONException {
-//        when(userGradeService.passingRate(courseCode)).thenReturn(ResponseEntity.ok(1.0d));
-//
-//        try {
-//            ResponseEntity<Double> response = teacherGradeController.passingRate(courseCode);
-//            verify(userGradeService).passingRate(courseCode);
-//            assertEquals(HttpStatus.OK, response.getStatusCode());
-//            assertEquals(1.0D, response.getBody(), 0.0001d);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            fail();
-//        }
-//    }
-//
-//
-//}
+package nl.tudelft.sem10.gradingservice.application;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javassist.NotFoundException;
+import nl.tudelft.sem10.gradingservice.domain.Grade;
+import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
+import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
+import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
+import org.json.JSONException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+@ExtendWith(MockitoExtension.class)
+public class TeacherGradeControllerTest {
+    private transient TeacherGradeController teacherGradeController;
+
+    private transient List<Grade> grades;
+    private static final String NETID = "jdoe";
+    private static final String NETID2 = "kreeves";
+
+
+    @Autowired
+    @MockBean
+    private transient GradeRepository gradeRepository;
+
+    @Autowired
+    @MockBean
+    private transient UserGradeService userGradeService;
+
+    private transient ServerCommunication serverCommunication;
+
+    @BeforeEach
+    void setUp() {
+        this.grades = new ArrayList<>();
+        this.gradeRepository = mock(GradeRepository.class);
+        this.userGradeService = mock(UserGradeService.class);
+        this.serverCommunication = mock(ServerCommunication.class);
+
+        grades.add(new Grade(1, 10.0f, NETID, "CSE1", "A"));
+        grades.add(new Grade(2, 5.8f, NETID2, "CSE1", "A"));
+
+        this.teacherGradeController = new TeacherGradeController();
+        this.teacherGradeController.setGradeRepository(gradeRepository);
+        this.teacherGradeController.setServerCommunication(serverCommunication);
+        this.teacherGradeController.setUserService(userGradeService);
+    }
+
+    @Test
+    void passingRate() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("TEACHER");
+        when(userGradeService.passingRate(any(String.class), any(String.class)))
+                .thenReturn(ResponseEntity.ok(1.0));
+
+        ResponseEntity<Double> result = teacherGradeController.passingRate("bearer token", "CSE1");
+
+        assertEquals(1.0, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void passingRateUnauthorized() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("NOTAVALIDUSER");
+
+        ResponseEntity<Double> result = teacherGradeController.passingRate("bearer token", "CSE1");
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void passingRateInvalid() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<Double> result = teacherGradeController.passingRate("bearer token", "CSE1");
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    void meanAndVar() throws JSONException {
+        String test = "{}";
+        when(serverCommunication.validate(any(String.class))).thenReturn("TEACHER");
+        when(userGradeService.meanAndVariance(any(String.class), any(String.class)))
+                .thenReturn(ResponseEntity.ok(test));
+
+        ResponseEntity<String> result = teacherGradeController.meanAndVariance("Bearer token", "CSE1");
+
+        assertEquals(test, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void meanAndVarUnauthorized() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+
+        ResponseEntity<String> result = teacherGradeController.meanAndVariance("Bearer token", "CSE1");
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void meanAndVarInvalid() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<String> result = teacherGradeController.meanAndVariance("Bearer token", "CSE1");
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    void updateGrade() throws NotFoundException, JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("TEACHER");
+
+        ResponseEntity<String> result = teacherGradeController.updateGrade("Bearer token", "Silverhand",
+                "CSE1", "A", "imagine a json here");
+
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void updateGradeUnauthorized() throws NotFoundException, JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+
+        ResponseEntity<String> result = teacherGradeController.updateGrade("Bearer token", "Silverhand",
+                "CSE1", "A", "imagine a json here");
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void updateGradeInvalid() throws NotFoundException, JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<String> result = teacherGradeController.updateGrade("Bearer token", "Silverhand",
+                "CSE1", "A", "imagine a json here");
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    void deleteGrade() throws NotFoundException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("TEACHER");
+
+        ResponseEntity<String> result = teacherGradeController.deleteGrade("Bearer token", "Silverhand",
+                "CSE1", "A");
+
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void deleteGradeUnauthorized() throws NotFoundException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+
+        ResponseEntity<String> result = teacherGradeController.deleteGrade("Bearer token", "Silverhand",
+                "CSE1", "A");
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void deleteGradeInvalid() throws NotFoundException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<String> result = teacherGradeController.deleteGrade("Bearer token", "Silverhand",
+                "CSE1", "A");
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    void insertGrade() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("TEACHER");
+
+        ResponseEntity<String> result = teacherGradeController.insertGrade("bearer token",
+                "JSON");
+
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void insertGradeUnauthorized() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+
+        ResponseEntity<String> result = teacherGradeController.insertGrade("bearer token",
+                "JSON");
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void insertGradeInvalid() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<String> result = teacherGradeController.insertGrade("bearer token",
+                "JSON");
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+}

@@ -34,6 +34,10 @@ public class StudentGradeController {
         this.userService = userService;
     }
 
+    public void setServerCommunication(
+            ServerCommunication serverCommunication) {
+        this.serverCommunication = serverCommunication;
+    }
 
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
@@ -43,10 +47,6 @@ public class StudentGradeController {
     private transient String userType = "STUDENT";
     private transient ServerCommunication serverCommunication = new ServerCommunication();
 
-    public void setServerCommunication(
-        ServerCommunication serverCommunication) {
-        this.serverCommunication = serverCommunication;
-    }
 
     /**
      * Method to get mean grade of a student.
@@ -68,7 +68,6 @@ public class StudentGradeController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

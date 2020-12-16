@@ -22,7 +22,21 @@ public class GradeController {
     @Autowired
     private transient UserGradeService userService;
 
-    private static final ServerCommunication serverCommunication = new ServerCommunication();
+    private static ServerCommunication serverCommunication = new ServerCommunication();
+
+    public void setGradeRepository(
+            GradeRepository gradeRepository) {
+        this.gradeRepository = gradeRepository;
+    }
+
+    public void setUserService(UserGradeService userService) {
+        this.userService = userService;
+    }
+
+    public void setServerCommunication(
+            ServerCommunication serverCommunication) {
+        this.serverCommunication = serverCommunication;
+    }
 
     /**
      * Returns a list of all grade entities in the database.
@@ -43,10 +57,10 @@ public class GradeController {
                                                                 String gradeType) {
         try {
             String str = serverCommunication.validate(token.substring(7));
-            if (str.contains("STUDENT")) {
+            if (str.contains("TEACHER")) {
                 return userService.getAllGrades(netid, courseCode, gradeType);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception MissingRequestHeaderException) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

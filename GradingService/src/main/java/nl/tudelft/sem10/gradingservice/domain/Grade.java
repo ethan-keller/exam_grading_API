@@ -62,9 +62,10 @@ public class Grade {
         }
         Grade grade = (Grade) o;
         return id == grade.id
-            && Float.compare(grade.mark, mark) == 0
-            && Objects.equals(netid, grade.netid)
-            && Objects.equals(courseCode, grade.courseCode);
+                && Float.compare(grade.mark, mark) == 0
+                && Objects.equals(netid, grade.netid)
+                && Objects.equals(courseCode, grade.courseCode)
+                && Objects.equals(gradeType, grade.gradeType);
     }
 
     public long getId() {

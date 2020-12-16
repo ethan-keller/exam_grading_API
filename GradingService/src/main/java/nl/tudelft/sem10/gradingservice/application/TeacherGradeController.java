@@ -26,7 +26,21 @@ public class TeacherGradeController {
     @Autowired
     private transient UserGradeService userService;
     // For dependency injection
-    private static final ServerCommunication serverCommunication = new ServerCommunication();
+    private static ServerCommunication serverCommunication = new ServerCommunication();
+
+    public void setGradeRepository(
+            GradeRepository gradeRepository) {
+        this.gradeRepository = gradeRepository;
+    }
+
+    public void setUserService(UserGradeService userService) {
+        this.userService = userService;
+    }
+
+    public void setServerCommunication(
+            ServerCommunication serverCommunication) {
+        this.serverCommunication = serverCommunication;
+    }
 
     /**
      * Method that returns passing rates of a course if user requesting for it is a teacher.
@@ -46,7 +60,7 @@ public class TeacherGradeController {
             if (str.contains("TEACHER")) {
                 return userService.passingRate(course, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -72,7 +86,7 @@ public class TeacherGradeController {
             if (str.contains("TEACHER")) {
                 return userService.meanAndVariance(course, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception MissingRequestHeaderException) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -104,7 +118,7 @@ public class TeacherGradeController {
                 userService.updateGrade(netid, courseCode, gradeType, jsonString);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception MissingRequestHeaderException) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -133,7 +147,7 @@ public class TeacherGradeController {
                 userService.deleteGrade(netid, courseCode, gradeType);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception MissingRequestHeaderException) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -158,7 +172,7 @@ public class TeacherGradeController {
                 userService.insertGrade(jsonString);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } catch (Exception MissingRequestHeaderException) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

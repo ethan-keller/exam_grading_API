@@ -120,14 +120,124 @@ class StudentGradeControllerTest {
     }
 
     @Test
-    void passedCourses() {
+    void getGradeUnauthorized() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(false);
+
+        ResponseEntity<Double> result = studentGradeController.getGrade("Bearer token", NETID,
+                "CSE1");
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
     }
 
     @Test
-    void allGrades() {
+    void getGradeInvalid() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<Double> result = studentGradeController.getGrade("Bearer token", NETID,
+                "CSE1");
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 
     @Test
-    void passingRate() {
+    void passedCourses() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+
+        List<String> passed = new ArrayList<>();
+        passed.add("CSE1");
+
+        when(userGradeService.passedCourses(any(String.class), any(String.class)))
+                .thenReturn(ResponseEntity.ok(passed));
+
+        ResponseEntity<List<String>> result = studentGradeController.passedCourses("Bearer token", NETID);
+
+        assertEquals(passed, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void passedCoursesUnauthorized() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(false);
+
+        ResponseEntity<List<String>> result = studentGradeController.passedCourses("Bearer token", NETID);
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void passedCoursesInvalid() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<List<String>> result = studentGradeController.passedCourses("Bearer token", NETID);
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    void allGrades() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+
+        List<String> allGrades = new ArrayList<>();
+        allGrades.add("{test}");
+
+        when(userGradeService.allGrades(any(String.class), any(String.class)))
+                .thenReturn(ResponseEntity.ok(allGrades));
+
+        ResponseEntity<List<String>> result = studentGradeController.allGrades("Bearer token", NETID);
+
+        assertEquals(allGrades, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void allGradesUnauthorized() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(false);
+
+        ResponseEntity<List<String>> result = studentGradeController.allGrades("Bearer token", NETID);
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void allGradesInvalid() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<List<String>> result = studentGradeController.allGrades("Bearer token", NETID);
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    void passingRate() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+        when(userGradeService.passingRate(any(String.class), any(String.class)))
+                .thenReturn(ResponseEntity.ok(1.0));
+
+        ResponseEntity<Double> result = studentGradeController.passingRate("bearer token", "CSE1");
+
+        assertEquals(1.0, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void passingRateUnauthorized() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn("NOTAVALIDUSER");
+
+        ResponseEntity<Double> result = studentGradeController.passingRate("bearer token", "CSE1");
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    @Test
+    void passingRateInvalid() throws JSONException {
+        when(serverCommunication.validate(any(String.class))).thenReturn(null);
+
+        ResponseEntity<Double> result = studentGradeController.passingRate("bearer token", "CSE1");
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 }

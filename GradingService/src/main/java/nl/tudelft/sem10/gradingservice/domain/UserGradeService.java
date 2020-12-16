@@ -20,6 +20,10 @@ public class UserGradeService {
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
     static final double passingGrade = 5.75;
+    private transient StudentLogic studentLogic = new StudentLogic();
+    private transient ServerCommunication serverCommunication = new ServerCommunication();
+
+
 
     /**
      * Method to get the mean grade for a student.
@@ -53,7 +57,7 @@ public class UserGradeService {
         if (list.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        double grade = StudentLogic.getGrade(list, courseCode, token);
+        double grade = studentLogic.getGrade(list, courseCode, token);
         return new ResponseEntity<>(grade, HttpStatus.OK);
     }
 
@@ -73,7 +77,7 @@ public class UserGradeService {
         List<String> passed = new ArrayList<>();
         for (String course : list) {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
-            double grade = StudentLogic.getGrade(l, course, token);
+            double grade = studentLogic.getGrade(l, course, token);
             if (grade >= passingGrade) {
                 passed.add(course);
             }
@@ -99,7 +103,7 @@ public class UserGradeService {
         for (String course : list) {
             List<Grade> l = gradeRepository.getGradesByNetIdAndCourse(netId, course);
             gr.add("{\"course\":\"" + course + "\", "
-                    + "\"grade\":\"" + StudentLogic.getGrade(l, course, token) + "\"}");
+                    + "\"grade\":\"" + studentLogic.getGrade(l, course, token) + "\"}");
         }
         return new ResponseEntity<>(gr, HttpStatus.OK);
     }
@@ -125,7 +129,7 @@ public class UserGradeService {
             if (list.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            double grade = StudentLogic.getGrade(list, course, token);
+            double grade = studentLogic.getGrade(list, course, token);
             if (grade > passingGrade) {
                 passCount++;
             }
@@ -156,7 +160,7 @@ public class UserGradeService {
             if (list == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            double g = StudentLogic.getGrade(list, course, token);
+            double g = studentLogic.getGrade(list, course, token);
             grades.add(g);
             sum = sum + g;
         }
