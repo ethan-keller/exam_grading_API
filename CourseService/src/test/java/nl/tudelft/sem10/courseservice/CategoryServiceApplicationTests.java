@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 /**
  * Tests for all {@link CategoryController} endpoints.
  * Note that these tests assume the implementation {@link CategoryServiceImpl} is used.
+ * Since the controller wraps all {@link nl.tudelft.sem10.courseservice.application.CategoryService}
+ * methods its implementation is also fully tested.
  */
 @SpringBootTest(classes = CourseServiceApplication.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

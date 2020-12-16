@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 /**
  * Tests for all {@link CourseController} endpoints.
  * Note that these tests assume the implementation {@link CourseServiceImpl} is used.
+ * Since the controller wraps all {@link nl.tudelft.sem10.courseservice.application.CourseService}
+ * methods its implementation is also fully tested.
  */
 @SpringBootTest(classes = CourseServiceApplication.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

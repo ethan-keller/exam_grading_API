@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 /**
  * An {@link AuthService} implementation.
  * Makes a validate request to the authentication service.
+ * TODO: Tests
+ * TODO: Make endpoint configurable
  */
 @Component
 public class AuthServiceImpl implements AuthService {
