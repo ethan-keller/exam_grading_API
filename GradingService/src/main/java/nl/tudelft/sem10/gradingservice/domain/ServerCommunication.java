@@ -40,4 +40,11 @@ public class ServerCommunication {
         return str;
     }
 
+    /*
+    TODO: add real logic
+     */
+    public boolean validateUser(String token, String netId) {
+        //Needs to add stuff here
+        return true;
+    }
 }

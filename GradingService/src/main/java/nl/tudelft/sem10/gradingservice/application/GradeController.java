@@ -22,6 +22,8 @@ public class GradeController {
     @Autowired
     private transient UserGradeService userService;
 
+    private static final ServerCommunication serverCommunication = new ServerCommunication();
+
     /**
      * Returns a list of all grade entities in the database.
      * Possibility of filtering on either netid, course, both or none.
@@ -40,7 +42,7 @@ public class GradeController {
                                                     @RequestParam(required = false)
                                                                 String gradeType) {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("STUDENT")) {
                 return userService.getAllGrades(netid, courseCode, gradeType);
             } else {

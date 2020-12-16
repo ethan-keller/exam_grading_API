@@ -59,7 +59,8 @@ public class StudentGradeController {
                                          @RequestParam String netId) {
         try {
             String str = serverCommunication.validate(token.substring(7));
-            if (str.contains(userType)) {
+            boolean correctUser = serverCommunication.validateUser(token.substring(7), netId);
+            if (str.contains(userType) && correctUser) {
                 return new ResponseEntity<>(userService.getMean(netId), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
