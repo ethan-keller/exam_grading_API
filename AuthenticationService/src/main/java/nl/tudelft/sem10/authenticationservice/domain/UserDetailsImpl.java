@@ -6,9 +6,15 @@ import java.util.List;
 import java.util.Objects;
 import nl.tudelft.sem10.authenticationservice.application.Role;
 import nl.tudelft.sem10.authenticationservice.application.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Custom implementation for user details.
@@ -39,19 +45,6 @@ public class UserDetailsImpl implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role.getName()));
         return authorities;
-    }
-
-    /**
-     * Checks if a password is correct.
-     *
-     * @param password the password
-     * @return true if match, false otherwise
-     */
-    public boolean validate(final String password) {
-        if (password == null) {
-            return false;
-        }
-        return password.equals(getPassword());
     }
 
     /**

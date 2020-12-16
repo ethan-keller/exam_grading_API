@@ -1,7 +1,12 @@
-package nl.tudelft.sem10.userservice.controllers;
+package nl.tudelft.sem10.userservice.framework;
 
-import nl.tudelft.sem10.userservice.entities.User;
-import nl.tudelft.sem10.userservice.repositories.UserRepository;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import nl.tudelft.sem10.userservice.application.User;
+import nl.tudelft.sem10.userservice.domain.repositories.UserRepository;
+import nl.tudelft.sem10.userservice.domain.Utility;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -36,16 +39,17 @@ class UserControllerTest {
 
   @Autowired
   @MockBean
-  UserRepository userRepository; //NOPMD
+  private transient UserRepository userRepository;
 
-  // The following fields were created to adhere to the PMD rules.
-  transient String netId;
-  transient String password;
-  transient String student1;
-  transient String n;
-  transient String pass;
-  transient String type0;
-  transient String parenthesis;
+  @Autowired
+  @MockBean
+  private transient RestTemplate restTemplate;
+
+  private transient String student1;
+  private transient String n;
+  private transient String pass;
+  private transient String type0;
+  private transient String parenthesis;
 
 
   /**
@@ -54,6 +58,7 @@ class UserControllerTest {
   @BeforeEach
   void setUp() {
     this.userRepository = mock(UserRepository.class);
+    this.restTemplate = mock(RestTemplate.class);
     this.students = new ArrayList<>();
     this.teachers = new ArrayList<>();
     this.user1 = new User("student1","pass",0);
@@ -68,8 +73,8 @@ class UserControllerTest {
 
     userController = new UserController();
     userController.setUserRepository(userRepository);
-    netId = "netId";
-    password = "password";
+    userController.setRestTemplate(restTemplate);
+    // The following fields were created to adhere to the PMD rules.
     student1 = "student1";
     n = "{";
     pass = "\"password\":\"pass\", ";
@@ -124,7 +129,8 @@ class UserControllerTest {
    *
    */
   @Test
-  void createUser() {
+  void createUser() throws NoSuchAlgorithmException {
+    when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.hash("pass"))).thenReturn("encryptedPassword");
     when(userRepository.getUserByNetId(anyString())).thenReturn(null);
     User newUser = new User("newUser","pass",0);
     String  jsonStr = newUser.toString();
@@ -137,6 +143,7 @@ class UserControllerTest {
     User n = new User(netId, password, type);
 
     verify(userRepository,times(1)).insertUser(anyString(),anyString(),anyInt());
+    newUser.setPassword("encryptedPassword");
     assertEquals(n, newUser);
     assertEquals(response.getStatusCode(),HttpStatus.CREATED);
 
@@ -186,7 +193,8 @@ class UserControllerTest {
    * If the user doesn't exist, Response Entity must contain status code 404.
    */
   @Test
-  void changeDetails() {
+  void changeDetails() throws NoSuchAlgorithmException {
+    when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.hash("newPass"))).thenReturn("encryptedPassword");
     when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
     User changedUser = new User("student1","newPass",0);
     String  jsonStr = changedUser.toString();
@@ -199,6 +207,7 @@ class UserControllerTest {
     User n = new User(netId, password, type);
 
     verify(userRepository,times(1)).updateUser(anyString(),anyString(),anyInt());
+    changedUser.setPassword("encryptedPassword");
     assertEquals(n, changedUser);
     assertEquals(response.getStatusCode(),HttpStatus.OK);
 

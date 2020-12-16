@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 class RestServiceTest {
 
     private static final int USER_SERVICE_PORT = 8083;
-    private static final String GET_USER_ENDPOINT = "/userByNetId";
+    private static final String GET_USER_ENDPOINT = "/user";
     private final transient RestService rest = new RestService();
     private final transient RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
     private final transient User user = new User("jSnow", "pass123#", 0);
@@ -51,7 +51,7 @@ class RestServiceTest {
     @Test
     void validNetIdBadCommunication() {
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
-                + "?netId=" + user.getNetId();
+                + "/" + user.getNetId();
 
         // TODO: check what response status code in case of failure
         ResponseEntity<User> response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,7 +66,7 @@ class RestServiceTest {
     @Test
     void validNetIdGoodCommunication() {
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
-                + "?netId=" + user.getNetId();
+                + "/" + user.getNetId();
 
         ResponseEntity<User> response = new ResponseEntity<>(user, HttpStatus.OK);
         when(restTemplate.getForEntity(url, User.class)).thenReturn(response);
