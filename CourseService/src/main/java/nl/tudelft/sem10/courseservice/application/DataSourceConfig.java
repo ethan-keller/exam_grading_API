@@ -34,4 +34,14 @@ public class DataSourceConfig {
 
         return dataSource;
     }
+
+    /**
+     * Get the URL the authentication service connects to to validate tokens.
+     *
+     * @return the validation endpoint.
+     */
+    @Bean
+    public String validateUrl() {
+        return environment.getProperty("authservice.url");
+    }
 }
