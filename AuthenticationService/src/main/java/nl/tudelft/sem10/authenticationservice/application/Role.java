@@ -28,8 +28,10 @@ public class Role implements Serializable {
     public String getName() {
         if (type == RoleType.STUDENT) {
             return "STUDENT";
-        } else {
+        } else if (type == RoleType.TEACHER) {
             return "TEACHER";
+        } else {
+            return "UNKNOWN";
         }
     }
 

@@ -31,8 +31,11 @@ public class User implements Serializable {
         this.password = password;
         if (type == 0) {
             this.role = new Role(RoleType.STUDENT);
-        } else {
+        } else if (type == 1) {
             this.role = new Role(RoleType.TEACHER);
+        } else {
+            // if not an existing role, set role with lowest permissions
+            this.role = new Role(RoleType.STUDENT);
         }
     }
 

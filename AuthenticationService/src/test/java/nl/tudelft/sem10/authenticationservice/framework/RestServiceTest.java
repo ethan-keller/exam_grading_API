@@ -53,7 +53,6 @@ class RestServiceTest {
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
                 + "/" + user.getNetId();
 
-        // TODO: check what response status code in case of failure
         ResponseEntity<User> response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.getForEntity(url, User.class)).thenReturn(response);
 
