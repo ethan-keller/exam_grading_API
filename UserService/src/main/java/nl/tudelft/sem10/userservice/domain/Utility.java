@@ -12,6 +12,7 @@ public class Utility {
 
     /**
      * Encrypts the given text using SHA-512 algorithm.
+     * source : https://www.geeksforgeeks.org/sha-512-hash-in-java/
      *
      * @param input of type String - the String to hash
      * @return hashText of type String - hashed representation of the string.
@@ -24,7 +25,7 @@ public class Utility {
         BigInteger sg = new BigInteger(1, messageDigest);
         String hashText = sg.toString(16);
 
-        while (hashText.length() < 32) {
+        while (hashText.length() < 128) {
             hashText = "0" + hashText;
         }
         return hashText;
