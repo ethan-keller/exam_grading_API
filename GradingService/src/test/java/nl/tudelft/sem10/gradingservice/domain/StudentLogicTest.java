@@ -1,23 +1,24 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
-import org.json.JSONException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class StudentLogicTest {
 
     private transient StudentLogic studentLogic;
     private transient ServerCommunication serverCommunication;
     private transient List<Grade> grades;
-    private transient Grade test, test1;
+    private transient Grade test;
+    private transient Grade test1;
 
     @BeforeEach
     void setUp() {
@@ -39,10 +40,11 @@ class StudentLogicTest {
 
     @Test
     void getGrade() throws JSONException {
-        when(serverCommunication.getCourseWeights(any(String.class), any(String.class), any(String.class)))
-                .thenReturn("{\n" +
-                        "  \"weight\": \"0.5\"\n" +
-                        "}");
+        when(serverCommunication
+            .getCourseWeights(any(String.class), any(String.class), any(String.class)))
+            .thenReturn("{\n"
+                + "  \"weight\": \"0.5\"\n"
+                + "}");
         double result = studentLogic.getGrade(grades, "CSE1", "Bearer token");
 
         assertEquals(5.0, result);
@@ -50,8 +52,9 @@ class StudentLogicTest {
 
     @Test
     void getGradeNull() throws JSONException {
-        when(serverCommunication.getCourseWeights(any(String.class), any(String.class), any(String.class)))
-                .thenReturn(null);
+        when(serverCommunication
+            .getCourseWeights(any(String.class), any(String.class), any(String.class)))
+            .thenReturn(null);
         double result = studentLogic.getGrade(grades, "CSE1", "Bearer token");
 
         assertEquals(0.0, result);
@@ -59,10 +62,12 @@ class StudentLogicTest {
 
     @Test
     void getGradeException() throws JSONException {
-        when(serverCommunication.getCourseWeights(any(String.class), any(String.class), any(String.class)))
-                .thenReturn("nothing to see here");
+        when(serverCommunication
+            .getCourseWeights(any(String.class), any(String.class), any(String.class)))
+            .thenReturn("nothing to see here");
 
-        assertThrows(JSONException.class,()->studentLogic.getGrade(grades, "CSE1", "Bearer token"));
+        assertThrows(JSONException.class,
+            () -> studentLogic.getGrade(grades, "CSE1", "Bearer token"));
     }
 
     @Test

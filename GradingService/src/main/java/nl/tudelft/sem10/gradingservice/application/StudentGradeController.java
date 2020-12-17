@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +20,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/student")
 @SuppressWarnings("unused")
 public class StudentGradeController {
-    public StudentGradeController() {};
+    private static final String headerName = "Authorization";
+    private final transient String userType = "STUDENT";
+    @Autowired
+    private GradeRepository gradeRepository; // NOPMD
+    @Autowired
+    private transient UserGradeService userService;
+    private transient ServerCommunication serverCommunication = new ServerCommunication();
 
-    private transient final String headerName = "Authorization";
+    public StudentGradeController() {
+    }
 
     public void setGradeRepository(
         GradeRepository gradeRepository) {
@@ -35,18 +41,9 @@ public class StudentGradeController {
     }
 
     public void setServerCommunication(
-            ServerCommunication serverCommunication) {
+        ServerCommunication serverCommunication) {
         this.serverCommunication = serverCommunication;
     }
-
-    @Autowired
-    private GradeRepository gradeRepository; // NOPMD
-    @Autowired
-    private transient UserGradeService userService;
-
-    private transient String userType = "STUDENT";
-    private transient ServerCommunication serverCommunication = new ServerCommunication();
-
 
     /**
      * Method to get mean grade of a student.
@@ -121,7 +118,7 @@ public class StudentGradeController {
             } else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -172,7 +169,7 @@ public class StudentGradeController {
             } else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

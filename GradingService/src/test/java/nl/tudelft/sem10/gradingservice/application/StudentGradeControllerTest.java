@@ -1,10 +1,9 @@
 package nl.tudelft.sem10.gradingservice.application;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +11,9 @@ import nl.tudelft.sem10.gradingservice.domain.Grade;
 import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
-import org.h2.engine.User;
-import org.json.HTTP;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,13 +23,10 @@ import org.springframework.http.ResponseEntity;
 @SpringBootTest
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class StudentGradeControllerTest {
-    private transient StudentGradeController studentGradeController;
-
-    private transient List<Grade> grades;
     private static final String NETID = "jdoe";
     private static final String NETID2 = "kreeves";
-
-
+    private transient StudentGradeController studentGradeController;
+    private transient List<Grade> grades;
     @Autowired
     @MockBean
     private transient GradeRepository gradeRepository;
@@ -65,7 +58,8 @@ class StudentGradeControllerTest {
         String token = "Bearer myToken";
 
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(true);
 
         when(userGradeService.getMean(NETID)).thenReturn(10.0f);
         when(userGradeService.getMean(NETID2)).thenReturn(5.8f);
@@ -84,7 +78,8 @@ class StudentGradeControllerTest {
         String token = "Bearer myToken";
 
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(false);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(false);
 
         when(userGradeService.getMean(NETID)).thenReturn(10.0f);
         when(userGradeService.getMean(NETID2)).thenReturn(5.8f);
@@ -108,7 +103,8 @@ class StudentGradeControllerTest {
     @Test
     void getGrade() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(true);
 
         when(userGradeService.getGrade(any(String.class), any(String.class), any(String.class)))
             .thenReturn(ResponseEntity.ok(10.0D));
@@ -122,10 +118,11 @@ class StudentGradeControllerTest {
     @Test
     void getGradeUnauthorized() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(false);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(false);
 
         ResponseEntity<Double> result = studentGradeController.getGrade("Bearer token", NETID,
-                "CSE1");
+            "CSE1");
         assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
     }
 
@@ -134,22 +131,24 @@ class StudentGradeControllerTest {
         when(serverCommunication.validate(any(String.class))).thenReturn(null);
 
         ResponseEntity<Double> result = studentGradeController.getGrade("Bearer token", NETID,
-                "CSE1");
+            "CSE1");
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 
     @Test
     void passedCourses() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(true);
 
         List<String> passed = new ArrayList<>();
         passed.add("CSE1");
 
         when(userGradeService.passedCourses(any(String.class), any(String.class)))
-                .thenReturn(ResponseEntity.ok(passed));
+            .thenReturn(ResponseEntity.ok(passed));
 
-        ResponseEntity<List<String>> result = studentGradeController.passedCourses("Bearer token", NETID);
+        ResponseEntity<List<String>> result =
+            studentGradeController.passedCourses("Bearer token", NETID);
 
         assertEquals(passed, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -158,9 +157,11 @@ class StudentGradeControllerTest {
     @Test
     void passedCoursesUnauthorized() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(false);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(false);
 
-        ResponseEntity<List<String>> result = studentGradeController.passedCourses("Bearer token", NETID);
+        ResponseEntity<List<String>> result =
+            studentGradeController.passedCourses("Bearer token", NETID);
 
         assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
     }
@@ -169,7 +170,8 @@ class StudentGradeControllerTest {
     void passedCoursesInvalid() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn(null);
 
-        ResponseEntity<List<String>> result = studentGradeController.passedCourses("Bearer token", NETID);
+        ResponseEntity<List<String>> result =
+            studentGradeController.passedCourses("Bearer token", NETID);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
@@ -177,15 +179,17 @@ class StudentGradeControllerTest {
     @Test
     void allGrades() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(true);
 
         List<String> allGrades = new ArrayList<>();
         allGrades.add("{test}");
 
         when(userGradeService.allGrades(any(String.class), any(String.class)))
-                .thenReturn(ResponseEntity.ok(allGrades));
+            .thenReturn(ResponseEntity.ok(allGrades));
 
-        ResponseEntity<List<String>> result = studentGradeController.allGrades("Bearer token", NETID);
+        ResponseEntity<List<String>> result =
+            studentGradeController.allGrades("Bearer token", NETID);
 
         assertEquals(allGrades, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -194,9 +198,11 @@ class StudentGradeControllerTest {
     @Test
     void allGradesUnauthorized() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(false);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(false);
 
-        ResponseEntity<List<String>> result = studentGradeController.allGrades("Bearer token", NETID);
+        ResponseEntity<List<String>> result =
+            studentGradeController.allGrades("Bearer token", NETID);
 
         assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
     }
@@ -205,7 +211,8 @@ class StudentGradeControllerTest {
     void allGradesInvalid() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn(null);
 
-        ResponseEntity<List<String>> result = studentGradeController.allGrades("Bearer token", NETID);
+        ResponseEntity<List<String>> result =
+            studentGradeController.allGrades("Bearer token", NETID);
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
@@ -213,9 +220,10 @@ class StudentGradeControllerTest {
     @Test
     void passingRate() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
-        when(serverCommunication.validateUser(any(String.class), any(String.class))).thenReturn(true);
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+            .thenReturn(true);
         when(userGradeService.passingRate(any(String.class), any(String.class)))
-                .thenReturn(ResponseEntity.ok(1.0));
+            .thenReturn(ResponseEntity.ok(1.0));
 
         ResponseEntity<Double> result = studentGradeController.passingRate("bearer token", "CSE1");
 

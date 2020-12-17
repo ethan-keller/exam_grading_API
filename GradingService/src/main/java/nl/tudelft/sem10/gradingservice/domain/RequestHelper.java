@@ -16,7 +16,7 @@ public class RequestHelper {
     /**
      * Basic constructor.
      */
-    public RequestHelper(){
+    public RequestHelper() {
     }
 
     /**
@@ -29,11 +29,11 @@ public class RequestHelper {
 
         String reqPath = domainOfCourseService + path;
         return HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", token)
-                .uri(URI.create(reqPath))
-                .build();
+            .newBuilder()
+            .GET()
+            .header("Authorization", token)
+            .uri(URI.create(reqPath))
+            .build();
     }
 
     /**
@@ -42,13 +42,13 @@ public class RequestHelper {
      * @param token token user sends
      * @return hhtprequest to send
      */
-    public  HttpRequest validateToken(String token) {
+    public HttpRequest validateToken(String token) {
         String reqPath = domainOfAuthenticationService;
         return HttpRequest
-                .newBuilder()
-                .GET()
-                .uri(URI.create(reqPath + "/validate/" + token))
-                .build();
+            .newBuilder()
+            .GET()
+            .uri(URI.create(reqPath + "/validate/" + token))
+            .build();
     }
 
     /**

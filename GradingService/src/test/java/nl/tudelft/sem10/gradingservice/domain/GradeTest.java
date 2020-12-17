@@ -1,12 +1,13 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("PMD")
 public class GradeTest {
@@ -19,7 +20,7 @@ public class GradeTest {
     private transient Grade test6;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         test = new Grade(12, 10.0f, "Silverhand", "CSE2077", "Samurai");
         test2 = new Grade(11, 10.0f, "Silverhand", "CSE2077", "Samurai");
         test3 = new Grade(12, 9.0f, "Silverhand", "CSE2077", "Samurai");
@@ -29,12 +30,12 @@ public class GradeTest {
     }
 
     @Test
-    void constructorTest(){
+    void constructorTest() {
         assertNotNull(test);
     }
 
     @Test
-    void defaultConstructorTest(){
+    void defaultConstructorTest() {
         Grade test = new Grade();
         assertNotNull(test);
         assertNull(test.getCourseCode());
@@ -45,7 +46,7 @@ public class GradeTest {
     }
 
     @Test
-    void equalsTest(){
+    void equalsTest() {
         assertTrue(test.equals(test));
         assertFalse(test.equals(null));
         assertFalse(test.equals("Im a string!"));
@@ -57,27 +58,27 @@ public class GradeTest {
     }
 
     @Test
-    void getIdTest(){
+    void getIdTest() {
         assertEquals(12, test.getId());
     }
 
     @Test
-    void getMarkTest(){
+    void getMarkTest() {
         assertEquals(10.0f, test.getMark());
     }
 
     @Test
-    void getNetidTest(){
+    void getNetidTest() {
         assertEquals("Silverhand", test.getNetid());
     }
 
     @Test
-    void getCourseCodeTest(){
+    void getCourseCodeTest() {
         assertEquals("CSE2077", test.getCourseCode());
     }
 
     @Test
-    void getGradeTypeTest(){
+    void getGradeTypeTest() {
         assertEquals("Samurai", test.getGradeType());
     }
 }

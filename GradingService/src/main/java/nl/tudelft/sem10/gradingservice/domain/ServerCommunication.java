@@ -7,11 +7,11 @@ import java.net.http.HttpClient;
  */
 public class ServerCommunication {
 
-    public ServerCommunication() {}
-
     private static final HttpClient client = HttpClient.newBuilder().build();
-
     private transient RequestHelper requestHelper = new RequestHelper();
+
+    public ServerCommunication() {
+    }
 
     public void setRequestHelper(RequestHelper requestHelper) {
         this.requestHelper = requestHelper;
@@ -27,8 +27,8 @@ public class ServerCommunication {
      */
     public String getCourseWeights(String courseCode, String categoryName, String token) {
         String str = requestHelper.sendRequest(
-                requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
-                        + "&categoryName=" + categoryName, token), client);
+            requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
+                + "&categoryName=" + categoryName, token), client);
         return str;
     }
 
@@ -42,7 +42,7 @@ public class ServerCommunication {
      */
     public String validate(String token) {
         String str = requestHelper.sendRequest(
-                requestHelper.validateToken(token), client);
+            requestHelper.validateToken(token), client);
         return str;
     }
 

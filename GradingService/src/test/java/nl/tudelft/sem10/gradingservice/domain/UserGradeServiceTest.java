@@ -1,11 +1,11 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atMostOnce;
@@ -20,7 +20,6 @@ import java.util.List;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
-import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class UserGradeServiceTest {
@@ -48,14 +46,12 @@ class UserGradeServiceTest {
     private static final transient List<Grade> GRADES_FOR_COURSE_2 =
         Arrays.asList(GRADE_2, GRADE_4);
     private static final transient List<String> STUDENT_COURSES = Arrays.asList(CSE_1, CSE_2);
-
+    private static final String token = "bearer token";
     @InjectMocks
     private transient UserGradeService userGradeService;
     @Mock
     private transient GradeRepository gradeRepository;
     private transient List<Grade> grades;
-    private static final String token = "bearer token";
-
     @Mock
     private transient ServerCommunication serverCommunication;
 
@@ -151,7 +147,7 @@ class UserGradeServiceTest {
         when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(
             GRADES_FOR_COURSE_2);
         when(studentLogic.getGrade(any(List.class), any(String.class), any(String.class)))
-                .thenReturn(10.0);
+            .thenReturn(10.0);
 
         ResponseEntity<List<String>> response = userGradeService.allGrades(netId, token);
 
@@ -170,13 +166,14 @@ class UserGradeServiceTest {
     // Disabled because it needs server communication
     @Test
     void passingRate() throws JSONException {
-        when(gradeRepository.getStudentsTakingCourse(any(String.class))).thenReturn(Collections.singletonList(netId));
+        when(gradeRepository.getStudentsTakingCourse(any(String.class)))
+            .thenReturn(Collections.singletonList(netId));
         when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
             GRADES_FOR_COURSE_1);
         when(studentLogic.getGrade(anyList(), anyString(), anyString()))
             .thenReturn((10.0D + 5.75D) / 2.0D);
 
-        ResponseEntity<Double> response = userGradeService.passingRate("CSE1", token);
+        ResponseEntity<Double> response = userGradeService.passingRate(CSE_1, token);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1.0D, response.getBody());
     }
@@ -185,7 +182,7 @@ class UserGradeServiceTest {
     void passingRateNoStudents() throws JSONException {
         when(gradeRepository.getStudentsTakingCourse(any(String.class))).thenReturn(null);
 
-        ResponseEntity<Double> response = userGradeService.passingRate("CSE1", token);
+        ResponseEntity<Double> response = userGradeService.passingRate(CSE_1, token);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -196,7 +193,7 @@ class UserGradeServiceTest {
         when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1)).thenReturn(
             Collections.emptyList());
 
-        ResponseEntity<Double> response = userGradeService.passingRate("CSE1", token);
+        ResponseEntity<Double> response = userGradeService.passingRate(CSE_1, token);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -252,7 +249,7 @@ class UserGradeServiceTest {
 
     @Test
     void insertGradeException() {
-        String json = "not valid blah blah blah";
+        String json = "not valid blah blah blah"; //NOPMD
 
         assertThrows(JSONException.class, () -> userGradeService.insertGrade(json));
         verify(gradeRepository, never()).insertGrade(10.0f, netId, CSE_1, "A");

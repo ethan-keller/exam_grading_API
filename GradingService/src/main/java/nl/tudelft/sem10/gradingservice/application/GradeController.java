@@ -5,27 +5,30 @@ import nl.tudelft.sem10.gradingservice.domain.Grade;
 import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
-import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/grade")
 @SuppressWarnings("unused")
 public class GradeController {
 
+    private static ServerCommunication serverCommunication = new ServerCommunication();
     @Autowired
     private GradeRepository gradeRepository; //NOPMD
     @Autowired
     private transient UserGradeService userService;
 
-    private static ServerCommunication serverCommunication = new ServerCommunication();
-
     public void setGradeRepository(
-            GradeRepository gradeRepository) {
+        GradeRepository gradeRepository) {
         this.gradeRepository = gradeRepository;
     }
 
@@ -34,8 +37,8 @@ public class GradeController {
     }
 
     public void setServerCommunication(
-            ServerCommunication serverCommunication) {
-        this.serverCommunication = serverCommunication;
+        ServerCommunication serverCommunication) {
+        GradeController.serverCommunication = serverCommunication;
     }
 
     /**
@@ -48,13 +51,13 @@ public class GradeController {
     @GetMapping("grade")
     @ResponseBody
     public ResponseEntity<List<Grade>> getAllGrades(@RequestHeader("Authorization")
-                                                            String token,
+                                                        String token,
                                                     @RequestParam(required = false)
-                                                            String netid,
+                                                        String netid,
                                                     @RequestParam(required = false)
-                                                                String courseCode,
+                                                        String courseCode,
                                                     @RequestParam(required = false)
-                                                                String gradeType) {
+                                                        String gradeType) {
         try {
             String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
@@ -62,7 +65,7 @@ public class GradeController {
             } else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
