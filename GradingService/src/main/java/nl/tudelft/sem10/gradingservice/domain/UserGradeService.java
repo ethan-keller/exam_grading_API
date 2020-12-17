@@ -18,8 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserGradeService {
 
     static final double passingGrade = 5.75;
-    private final transient StudentLogic studentLogic = new StudentLogic();
-    private final transient ServerCommunication serverCommunication = new ServerCommunication();
+    private transient StudentLogic studentLogic = new StudentLogic();
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
 
