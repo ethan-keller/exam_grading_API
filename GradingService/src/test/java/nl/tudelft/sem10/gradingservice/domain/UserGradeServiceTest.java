@@ -2,6 +2,8 @@ package nl.tudelft.sem10.gradingservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -10,6 +12,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -253,5 +256,103 @@ class UserGradeServiceTest {
         assertThrows(JSONException.class, () -> userGradeService.insertGrade(json));
         verify(gradeRepository, never()).insertGrade(10.0f, netId, CSE_1, "A");
     }
+
+    @Test
+    void getAllGradesNoInfo() {
+        when(gradeRepository.findAll()).thenReturn(grades);
+
+        ResponseEntity<List<Grade>> response = userGradeService.getAllGrades(null, null, null);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(grades, response.getBody());
+        verify(gradeRepository, times(1)).findAll();
+    }
+
+    @Test
+    void getAllGradesForNetId() {
+        when(gradeRepository.getGradesByNetId(netId)).thenReturn(grades);
+
+        ResponseEntity<List<Grade>> response = userGradeService.getAllGrades(netId, null, null);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(grades, response.getBody());
+        verify(gradeRepository, times(1)).getGradesByNetId(netId);
+    }
+
+    @Test
+    void getAllGradesForCourse() {
+        when(gradeRepository.getGradesByCourse(CSE_1)).thenReturn(GRADES_FOR_COURSE_1);
+
+        ResponseEntity<List<Grade>> response = userGradeService.getAllGrades(null, CSE_1, null);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        final List<Grade> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertTrue(responseBody.contains(GRADE_1));
+        assertTrue(responseBody.contains(GRADE_3));
+    }
+
+    @Test
+    void getAllGradesForCourseAndType() {
+        List<Grade> resultList = new ArrayList<>();
+        resultList.add(GRADE_1);
+        resultList.add(GRADE_4);
+        List<Grade> expected = new ArrayList<>(resultList);
+
+        when(gradeRepository.getGradesByCourseAndType(CSE_2, MIDTERM))
+            .thenReturn(resultList);
+
+        ResponseEntity<List<Grade>> response = userGradeService
+            .getAllGrades(null, CSE_2, MIDTERM);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        final List<Grade> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertTrue(responseBody.containsAll(expected));
+    }
+
+    @Test
+    void getAllGradesByNetIdAndCourse() {
+        List<Grade> resultList = new ArrayList<>(GRADES_FOR_COURSE_1);
+
+        when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_1))
+            .thenReturn(resultList);
+
+        ResponseEntity<List<Grade>> response = userGradeService
+            .getAllGrades(netId, CSE_1, null);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        final List<Grade> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertTrue(responseBody.containsAll(GRADES_FOR_COURSE_1));
+    }
+
+    @Test
+    void getAllGradesAllDetails() {
+        List<Grade> resultList = new ArrayList<>();
+        resultList.add(GRADE_1);
+
+        when(gradeRepository.getGradesByCourseAndTypeAndNetid(CSE_1, MIDTERM, netId))
+            .thenReturn(resultList);
+
+
+        final ResponseEntity<List<Grade>> response =
+            userGradeService.getAllGrades(netId, CSE_1, MIDTERM);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        final List<Grade> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertTrue(responseBody.contains(GRADE_1));
+    }
+
+    @Test
+    void getAllGradesNoGrades() {
+        when(gradeRepository.findAll()).thenReturn(Collections.emptyList());
+
+        final ResponseEntity<List<Grade>> response =
+            userGradeService.getAllGrades(null, null, null);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        final List<Grade> responseBody = response.getBody();
+        assertNull(responseBody);
+    }
+
 
 }
