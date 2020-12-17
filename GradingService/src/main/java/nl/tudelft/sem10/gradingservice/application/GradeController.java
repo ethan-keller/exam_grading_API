@@ -62,6 +62,12 @@ public class GradeController {
             String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 return userService.getAllGrades(netid, courseCode, gradeType);
+            } else if (str.contains("STUDENT")) {
+                if (serverCommunication.validateUser(token, netid)) {
+                    return userService.getAllGrades(netid, courseCode, gradeType);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
             } else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
