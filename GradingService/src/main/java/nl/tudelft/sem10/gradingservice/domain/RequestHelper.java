@@ -14,24 +14,26 @@ public class RequestHelper {
     private static final String domainOfAuthenticationService = "http://localhost:8080";
 
     /**
+     * Basic constructor.
+     */
+    public RequestHelper() {
+    }
+
+    /**
      * Method that builds a getRequest to course service given a path.
      *
      * @param path path of the endpoint
      * @return the httprequest that has to be sent
      */
-    public static HttpRequest getRequest(String path, String token) {
+    public HttpRequest getRequest(String path, String token) {
 
         String reqPath = domainOfCourseService + path;
-        //String userAndPass = username + ":" + password;
-        //String basicAuthPayload = "Basic "
-        // + Base64.getEncoder().encodeToString(userAndPass.getBytes());
-        //.header("Authorization", basicAuthPayload)
         return HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Authorization", token)
-                .uri(URI.create(reqPath))
-                .build();
+            .newBuilder()
+            .GET()
+            .header("Authorization", token)
+            .uri(URI.create(reqPath))
+            .build();
     }
 
     /**
@@ -40,12 +42,30 @@ public class RequestHelper {
      * @param token token user sends
      * @return hhtprequest to send
      */
-    public static HttpRequest validateToken(String token) {
+    public HttpRequest validateToken(String token) {
+        String reqPath = domainOfAuthenticationService;
+        return HttpRequest
+            .newBuilder()
+            .GET()
+            .uri(URI.create(reqPath + "/validate/" + token))
+            .build();
+    }
+
+    /**
+     * Method to build a get request to authentication service's validateNetIdToken endpoint.
+     *
+     * @param netId - the provided netId
+     * @param token - token of the user
+     *
+     * @return HttpRequest
+     */
+    public HttpRequest validateNetIdToken(String netId, String token) {
         String reqPath = domainOfAuthenticationService;
         return HttpRequest
                 .newBuilder()
                 .GET()
-                .uri(URI.create(reqPath + "/validate/" + token))
+                .header("Authorization", token)
+                .uri(URI.create(reqPath + "/validate/netId/" + netId))
                 .build();
     }
 
@@ -56,7 +76,7 @@ public class RequestHelper {
      * @param client  client sending the request
      * @return response of request
      */
-    public static String sendRequest(HttpRequest request, HttpClient client) {
+    public String sendRequest(HttpRequest request, HttpClient client) {
         try {
             HttpResponse<String> response;
             response = client.send(request, HttpResponse.BodyHandlers.ofString());

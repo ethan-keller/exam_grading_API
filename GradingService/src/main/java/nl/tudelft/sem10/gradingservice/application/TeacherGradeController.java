@@ -2,7 +2,6 @@ package nl.tudelft.sem10.gradingservice.application;
 
 import javassist.NotFoundException;
 import nl.tudelft.sem10.gradingservice.domain.ServerCommunication;
-import nl.tudelft.sem10.gradingservice.domain.StudentLogic;
 import nl.tudelft.sem10.gradingservice.domain.UserGradeService;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
@@ -10,22 +9,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.MissingRequestHeaderException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Controller containing all endpoints available to user of type TEACHER only
+ * Controller containing all endpoints available to user of type TEACHER only.
  */
 @SuppressWarnings("unused")
 @Controller
 @RequestMapping("/teacher")
 public class TeacherGradeController {
 
+    // For dependency injection
+    private static ServerCommunication serverCommunication = new ServerCommunication();
     @Autowired
     private GradeRepository gradeRepository; // NOPMD
     @Autowired
     private transient UserGradeService userService;
-    private transient StudentLogic studentLogic;
+
+    public void setGradeRepository(
+        GradeRepository gradeRepository) {
+        this.gradeRepository = gradeRepository;
+    }
+
+    public void setUserService(UserGradeService userService) {
+        this.userService = userService;
+    }
+
+    public void setServerCommunication(
+        ServerCommunication serverCommunication) {
+        TeacherGradeController.serverCommunication = serverCommunication;
+    }
 
     /**
      * Method that returns passing rates of a course if user requesting for it is a teacher.
@@ -38,16 +57,16 @@ public class TeacherGradeController {
     @GetMapping(path = "/passingRate")
     @ResponseBody
     public ResponseEntity<Double> passingRate(@RequestHeader("Authorization")
-                                                      String token, @RequestParam String course)
-            throws JSONException {
+                                                  String token, @RequestParam String course)
+        throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 return userService.passingRate(course, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -63,17 +82,17 @@ public class TeacherGradeController {
     @GetMapping(path = "/statistics")
     @ResponseBody
     public ResponseEntity<String> meanAndVariance(@RequestHeader("Authorization")
-                                                          String token,
+                                                      String token,
                                                   @RequestParam String course)
-            throws JSONException {
+        throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 return userService.meanAndVariance(course, token);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -91,21 +110,21 @@ public class TeacherGradeController {
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<String> updateGrade(@RequestHeader("Authorization")
-                                                      String token,
+                                                  String token,
                                               @RequestParam String netid,
                                               @RequestParam String courseCode,
                                               @RequestParam String gradeType,
                                               @RequestBody String jsonString) throws JSONException,
-            NotFoundException {
+        NotFoundException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 userService.updateGrade(netid, courseCode, gradeType, jsonString);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -121,20 +140,20 @@ public class TeacherGradeController {
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<String> deleteGrade(@RequestHeader("Authorization")
-                                                      String token,
+                                                  String token,
                                               @RequestParam String netid,
                                               @RequestParam String courseCode,
                                               @RequestParam String gradeType)
-            throws NotFoundException {
+        throws NotFoundException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 userService.deleteGrade(netid, courseCode, gradeType);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -149,17 +168,17 @@ public class TeacherGradeController {
     @ResponseBody
     @SuppressWarnings("PMD")
     public ResponseEntity<String> insertGrade(@RequestHeader("Authorization")
-                                                      String token,
+                                                  String token,
                                               @RequestBody String jsonString) throws JSONException {
         try {
-            String str = ServerCommunication.validate(token.substring(7));
+            String str = serverCommunication.validate(token.substring(7));
             if (str.contains("TEACHER")) {
                 userService.insertGrade(jsonString);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-        } catch (Exception MissingRequestHeaderException) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
