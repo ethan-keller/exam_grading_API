@@ -7,6 +7,7 @@ import java.util.List;
 import nl.tudelft.sem10.userservice.application.User;
 import nl.tudelft.sem10.userservice.domain.repositories.UserRepository;
 import nl.tudelft.sem10.userservice.domain.Utility;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,7 +104,7 @@ class UserControllerTest {
    * If the user doesn't exist, 404 Not Found code must be present in the ResponseEntity.
    */
   @Test
-  void userByNetId() {
+  void userByNetId() throws JSONException {
     when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
     ResponseEntity<String> response = userController.userByNetId(student1);
     String jsonString = response.getBody();
@@ -129,7 +130,7 @@ class UserControllerTest {
    *
    */
   @Test
-  void createUser() throws NoSuchAlgorithmException {
+  void createUser() throws NoSuchAlgorithmException, JSONException {
     when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.hash("pass"))).thenReturn("encryptedPassword");
     when(userRepository.getUserByNetId(anyString())).thenReturn(null);
     User newUser = new User("newUser","pass",0);
@@ -166,7 +167,7 @@ class UserControllerTest {
    * If user doesn't exist, Response Entity must contain status code 404.
    */
   @Test
-  void deleteUser() {
+  void deleteUser() throws JSONException{
     when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
     String  jsonStr = user1.toString();
     ResponseEntity<String> response = userController.deleteUser(jsonStr);
@@ -193,7 +194,7 @@ class UserControllerTest {
    * If the user doesn't exist, Response Entity must contain status code 404.
    */
   @Test
-  void changeDetails() throws NoSuchAlgorithmException {
+  void changeDetails() throws NoSuchAlgorithmException, JSONException {
     when(restTemplate.getForObject("http://localhost:8080/encode/{password}", String.class, Utility.hash("newPass"))).thenReturn("encryptedPassword");
     when(userRepository.getUserByNetId(anyString())).thenReturn(user1);
     User changedUser = new User("student1","newPass",0);
