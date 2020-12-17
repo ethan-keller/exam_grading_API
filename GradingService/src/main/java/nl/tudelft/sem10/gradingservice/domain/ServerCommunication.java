@@ -46,11 +46,17 @@ public class ServerCommunication {
         return str;
     }
 
-    /*
-    TODO: add real logic
+    /**
+     * Check if the provided netId and token matches.
+     *
+     * @param token - the token of the user
+     * @param netId - netId to execute the query on
+     *
+     * @return bool of type boolean
      */
     public boolean validateUser(String token, String netId) {
-        //Needs to add stuff here
-        return true;
+        boolean bool = Boolean.parseBoolean(requestHelper.sendRequest(
+                requestHelper.validateNetIdToken(netId, token), client));
+        return bool;
     }
 }

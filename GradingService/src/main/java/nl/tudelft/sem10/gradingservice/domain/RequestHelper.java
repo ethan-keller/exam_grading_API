@@ -52,6 +52,24 @@ public class RequestHelper {
     }
 
     /**
+     * Method to build a get request to authentication service's validateNetIdToken endpoint.
+     *
+     * @param netId - the provided netId
+     * @param token - token of the user
+     *
+     * @return HttpRequest
+     */
+    public HttpRequest validateNetIdToken(String netId, String token) {
+        String reqPath = domainOfAuthenticationService;
+        return HttpRequest
+                .newBuilder()
+                .GET()
+                .header("Authorization", token)
+                .uri(URI.create(reqPath + "/validate/netId/" + netId))
+                .build();
+    }
+
+    /**
      * Method that sends the request to the server.
      *
      * @param request request that needs to be sent
