@@ -299,7 +299,7 @@ class UserGradeServiceTest {
         List<Grade> resultList = new ArrayList<>();
         resultList.add(GRADE_1);
         resultList.add(GRADE_4);
-        List<Grade> expected = new ArrayList<>(resultList);
+
 
         when(gradeRepository.getGradesByCourseAndType(CSE_2, MIDTERM))
             .thenReturn(resultList);
@@ -309,6 +309,7 @@ class UserGradeServiceTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         final List<Grade> responseBody = response.getBody();
         assertNotNull(responseBody);
+        List<Grade> expected = new ArrayList<>(resultList);
         assertTrue(responseBody.containsAll(expected));
     }
 
@@ -406,7 +407,7 @@ class UserGradeServiceTest {
         when(gradeRepository.getGradesByCourseAndTypeAndNetid(CSE_1, MIDTERM, netId))
             .thenReturn(Collections.emptyList());
 
-        assertThrows(NotFoundException.class,() -> userGradeService.deleteGrade(netId, CSE_1,
+        assertThrows(NotFoundException.class, () -> userGradeService.deleteGrade(netId, CSE_1,
             MIDTERM));
 
         verify(gradeRepository, never()).deleteGrade(GRADE_1.getId());
