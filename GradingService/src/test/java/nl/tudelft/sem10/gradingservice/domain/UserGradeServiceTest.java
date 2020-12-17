@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atMostOnce;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import javassist.NotFoundException;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -353,6 +356,63 @@ class UserGradeServiceTest {
         final List<Grade> responseBody = response.getBody();
         assertNull(responseBody);
     }
+
+    @Test
+    void updateGrade() {
+        when(gradeRepository.findById(GRADE_4.getId()))
+            .thenReturn(Optional.of(GRADE_4));
+        when(gradeRepository.getGradesByCourseAndTypeAndNetid(CSE_2, MIDTERM, netId))
+            .thenReturn(Collections.singletonList(GRADE_4));
+
+        try {
+            userGradeService.updateGrade(netId, CSE_2, MIDTERM, "{\"mark\" : \"10.0\"}");
+        } catch (JSONException | NotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        verify(gradeRepository, times(1)).updateGrade(GRADE_4.getId(), 10.0f);
+    }
+
+    @Test
+    void updateGradeNotFound() {
+        when(gradeRepository
+            .getGradesByCourseAndTypeAndNetid(anyString(), anyString(), anyString()))
+            .thenReturn(Collections.emptyList());
+
+        assertThrows(NotFoundException.class, () -> userGradeService.updateGrade(NON_EXISTENT,
+            "CSE0", "FAKE", "INVALID"));
+
+        verify(gradeRepository, never()).updateGrade(any(Long.class), anyFloat());
+    }
+
+    @Test
+    void deleteGrade() {
+        when(gradeRepository.getGradesByCourseAndTypeAndNetid(CSE_1, MIDTERM, netId))
+            .thenReturn(Collections.singletonList(GRADE_1));
+
+
+        try {
+            userGradeService.deleteGrade(netId, CSE_1, MIDTERM);
+        } catch (NotFoundException e) {
+            fail();
+        }
+
+        verify(gradeRepository, times(1)).deleteGrade(GRADE_1.getId());
+    }
+
+    @Test
+    void deleteGradeNotFound() {
+        when(gradeRepository.getGradesByCourseAndTypeAndNetid(CSE_1, MIDTERM, netId))
+            .thenReturn(Collections.emptyList());
+
+        assertThrows(NotFoundException.class,() -> userGradeService.deleteGrade(netId, CSE_1,
+            MIDTERM));
+
+        verify(gradeRepository, never()).deleteGrade(GRADE_1.getId());
+    }
+
+
 
 
 }
