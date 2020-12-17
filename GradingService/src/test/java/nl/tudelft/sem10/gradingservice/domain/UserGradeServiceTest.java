@@ -94,12 +94,12 @@ class UserGradeServiceTest {
     @Test
     void getGrade() throws JSONException {
         when(gradeRepository.getGradesByNetIdAndCourse(any(String.class), any(String.class)))
-                .thenReturn(grades);
-        when(studentLogic.getGrade(any(List.class), any(String.class), any(String.class)))
-                .thenReturn(10.0);
+            .thenReturn(grades);
+        when(studentLogic.getGrade(anyList(), any(String.class), any(String.class)))
+            .thenReturn(10.0);
 
         ResponseEntity<Double> result = userGradeService.getGrade("Test",
-                "CSE1", token);
+            CSE_1, token);
 
         assertEquals(10.0, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -146,7 +146,7 @@ class UserGradeServiceTest {
             GRADES_FOR_COURSE_1);
         when(gradeRepository.getGradesByNetIdAndCourse(netId, CSE_2)).thenReturn(
             GRADES_FOR_COURSE_2);
-        when(studentLogic.getGrade(any(List.class), any(String.class), any(String.class)))
+        when(studentLogic.getGrade(anyList(), any(String.class), any(String.class)))
             .thenReturn(10.0);
 
         ResponseEntity<List<String>> response = userGradeService.allGrades(netId, token);
