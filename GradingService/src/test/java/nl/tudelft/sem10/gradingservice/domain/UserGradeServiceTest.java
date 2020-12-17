@@ -47,13 +47,12 @@ class UserGradeServiceTest {
         Arrays.asList(GRADE_2, GRADE_4);
     private static final transient List<String> STUDENT_COURSES = Arrays.asList(CSE_1, CSE_2);
     private static final String token = "bearer token";
+
     @InjectMocks
     private transient UserGradeService userGradeService;
     @Mock
     private transient GradeRepository gradeRepository;
     private transient List<Grade> grades;
-    @Mock
-    private transient ServerCommunication serverCommunication;
 
     @Mock
     private transient StudentLogic studentLogic;
