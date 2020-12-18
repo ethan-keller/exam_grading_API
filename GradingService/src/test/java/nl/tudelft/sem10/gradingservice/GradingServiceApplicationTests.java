@@ -1,8 +1,5 @@
 package nl.tudelft.sem10.gradingservice;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
 import org.junit.jupiter.api.Test;
@@ -14,6 +11,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,6 +39,11 @@ public class GradingServiceApplicationTests {
         mockMvc.perform(get("/grade")
             .contentType("application/json"))
             .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void main() {
+        GradingServiceApplication.main(new String[] {});
     }
 
     /*
