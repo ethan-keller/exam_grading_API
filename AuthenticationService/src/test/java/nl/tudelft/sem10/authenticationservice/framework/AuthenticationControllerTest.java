@@ -10,9 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
 import nl.tudelft.sem10.authenticationservice.application.User;
+import nl.tudelft.sem10.authenticationservice.application.UserDetailsServiceImpl;
 import nl.tudelft.sem10.authenticationservice.domain.JwtTokenUtil;
 import nl.tudelft.sem10.authenticationservice.domain.UserDetailsImpl;
-import nl.tudelft.sem10.authenticationservice.domain.UserDetailsServiceImpl;
 import nl.tudelft.sem10.authenticationservice.domain.Utility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

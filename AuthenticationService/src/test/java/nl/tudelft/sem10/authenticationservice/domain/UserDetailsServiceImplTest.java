@@ -8,12 +8,12 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 import nl.tudelft.sem10.authenticationservice.application.User;
+import nl.tudelft.sem10.authenticationservice.application.UserDetailsServiceImpl;
 import nl.tudelft.sem10.authenticationservice.framework.RestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * Test suite for the user details service.
