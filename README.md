@@ -11,6 +11,7 @@ Software written for CSE2115 Software Engineering methods.
 | 📸 | Name | Email |
 |---|---|---|
 | ![](https://secure.gravatar.com/avatar/c79751c9c0cfee31bd1413c41dae9c48?s=50&d=identicon) | Arjun Vilakathara | A.H.Vilakathara@student.tudelft.nl |
+| ![](https://secure.gravatar.com/avatar/4e833c0277007cd483152cf7b3fd053a?s=50&d=identicon) | Ethan Keller | E.Keller@student.tudelft.nl |
 | ![](https://secure.gravatar.com/avatar/3681e93a8bfcc597d587ddc00110167d?s=50&d=identicon)    | Adriaan Brands    | A.J.M.Brands@student.tudelft.nl |
 | ![](https://secure.gravatar.com/avatar/32771f3eb0f2aad9d9f0dbb94d3cf32a?s=50&d=identicon)    | Gideon Bot        | G.J.T.Bot@student.tudelft.nl |
 | ![](https://secure.gravatar.com/avatar/7026ce51a9906069d30c74d9a317547e?s=50&d=identicon)    | Stijn Coppens     | S.Coppens@student.tudelft.nl |
