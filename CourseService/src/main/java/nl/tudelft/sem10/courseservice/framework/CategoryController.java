@@ -129,7 +129,8 @@ public class CategoryController {
      * @return the response or null if the token is valid.
      */
     private <T> ResponseEntity<T> authResponse(String token) {
-        AuthService.UserType type = auth.getUser(token.substring(7));
+        AuthService.UserType type = auth
+            .getUser(token.replaceFirst("^Bearer ", ""));
         switch (type) {
             case TEACHER:
                 return null;

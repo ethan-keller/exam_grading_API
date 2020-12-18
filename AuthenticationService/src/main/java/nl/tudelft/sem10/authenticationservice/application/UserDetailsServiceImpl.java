@@ -1,6 +1,6 @@
-package nl.tudelft.sem10.authenticationservice.domain;
+package nl.tudelft.sem10.authenticationservice.application;
 
-import nl.tudelft.sem10.authenticationservice.application.User;
+import nl.tudelft.sem10.authenticationservice.domain.UserDetailsImpl;
 import nl.tudelft.sem10.authenticationservice.framework.RestService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,7 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = rest.getUserFromUserService(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("Could not find a user with netId: " + username);
+            System.out.println("Could not find a user with netId: " + username);
+            return null;
         }
         return new UserDetailsImpl(user);
     }

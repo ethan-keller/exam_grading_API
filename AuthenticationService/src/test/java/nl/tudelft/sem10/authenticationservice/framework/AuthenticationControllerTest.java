@@ -10,10 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
 import nl.tudelft.sem10.authenticationservice.application.User;
-import nl.tudelft.sem10.authenticationservice.domain.JwtRequest;
+import nl.tudelft.sem10.authenticationservice.application.UserDetailsServiceImpl;
 import nl.tudelft.sem10.authenticationservice.domain.JwtTokenUtil;
 import nl.tudelft.sem10.authenticationservice.domain.UserDetailsImpl;
-import nl.tudelft.sem10.authenticationservice.domain.UserDetailsServiceImpl;
+import nl.tudelft.sem10.authenticationservice.domain.Utility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,6 +38,8 @@ class AuthenticationControllerTest {
     private static final String JSON_TOKEN_PATH_EXPRESSION = "$.token";
     private static final User teacher = new User("aBrook", "pass345&", 1);
     private final transient User user = new User("jSnow", "pass123#", 0);
+    private final transient String bearerToken = "Bearer thisisatoken123";
+    private final transient String token = bearerToken.substring(7);
     private final transient UserDetailsImpl userDetails =
             Mockito.mock(UserDetailsImpl.class);
     private final transient UserDetailsServiceImpl service =
@@ -98,6 +100,44 @@ class AuthenticationControllerTest {
     }
 
     /**
+     * Incorrect password when requesting token.
+     *
+     * @throws Exception if http communication fails
+     */
+    @Test
+    void incorrectPassword() throws Exception {
+        when(userDetails.getPassword()).thenReturn("incorrectPass");
+        when(service.loadUserByUsername(user.getNetId())).thenReturn(userDetails);
+
+        mvc.perform(MockMvcRequestBuilders
+                .get(GET_TOKEN_ENDPOINT)
+                .content(asJsonString(user))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).doesNotExist());
+    }
+
+    /**
+     * Correct credentials when requesting token.
+     *
+     * @throws Exception if http communication fails
+     */
+    @Test
+    void correctCredentials() throws Exception {
+        when(userDetails.getPassword()).thenReturn(
+                passwordEncoder.encode(Utility.hash(user.getPassword())));
+        when(service.loadUserByUsername(user.getNetId())).thenReturn(userDetails);
+        when(tokenUtil.generateToken(userDetails)).thenReturn("token");
+
+        mvc.perform(MockMvcRequestBuilders
+                .get(GET_TOKEN_ENDPOINT)
+                .content(asJsonString(user))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).exists());
+    }
+
+    /**
      * Tests if encoding matches the password.
      */
     @Test
@@ -147,6 +187,45 @@ class AuthenticationControllerTest {
         when(rest.getUserFromUserService(teacher.getNetId())).thenReturn(teacher);
         assertEquals(ResponseEntity.ok(teacher.getRole().getName()),
                 controller.validateToken(anyString()));
+    }
+
+    /**
+     * No user found when validating token with netId.
+     */
+    @Test
+    void noUserFound() {
+        when(tokenUtil.getNetIdFromToken(token)).thenReturn(null);
+        assertEquals(ResponseEntity.ok(false),
+                controller.validateNetIdToken(user.getNetId(), bearerToken));
+    }
+
+    /**
+     * NetId in token and netId from user do not match.
+     */
+    @Test
+    void tokenFromOtherUser() {
+        when(tokenUtil.getNetIdFromToken(token)).thenReturn(teacher.getNetId());
+        assertEquals(ResponseEntity.ok(false),
+                controller.validateNetIdToken(user.getNetId(), bearerToken));
+    }
+
+    /**
+     * NetId in token and netId from user match.
+     */
+    @Test
+    void matchingNetIds() {
+        when(tokenUtil.getNetIdFromToken(token)).thenReturn(user.getNetId());
+        assertEquals(ResponseEntity.ok(true),
+                controller.validateNetIdToken(user.getNetId(), bearerToken));
+    }
+
+    /**
+     * Exception thrown when getting NetID.
+     */
+    @Test
+    void exceptionWhenValidating() {
+        assertEquals(ResponseEntity.ok(false),
+                controller.validateNetIdToken(user.getNetId(), bearerToken));
     }
 
     /**

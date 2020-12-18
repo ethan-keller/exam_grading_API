@@ -21,6 +21,7 @@ class RoleTest {
     void getName() {
         assertEquals("TEACHER", role2.getName());
         assertEquals("STUDENT", role1.getName());
+        assertEquals("UNKNOWN", new Role(null).getName());
     }
 
     /**

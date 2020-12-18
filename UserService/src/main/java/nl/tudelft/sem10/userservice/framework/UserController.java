@@ -1,8 +1,8 @@
 package nl.tudelft.sem10.userservice.framework;
 
 import java.util.List;
-import nl.tudelft.sem10.userservice.domain.Utility;
 import nl.tudelft.sem10.userservice.application.User;
+import nl.tudelft.sem10.userservice.domain.Utility;
 import nl.tudelft.sem10.userservice.domain.repositories.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,7 +80,12 @@ public class UserController {
     public ResponseEntity<String> userByNetId(@PathVariable String netId) {
         User u = userRepository.getUserByNetId(netId);
         if (u == null) {
-            return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+            if (netId.contains("type")) {
+                return new ResponseEntity<>("Please specify a type!\nStudent -> 0\nTeacher -> 1",
+                        HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+            }
         } else {
             return new ResponseEntity<>(u.toString(), HttpStatus.OK);
         }

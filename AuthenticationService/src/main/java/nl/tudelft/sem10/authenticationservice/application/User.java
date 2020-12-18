@@ -11,6 +11,8 @@ import java.util.Objects;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 3118960921901542232L;
+    private static final int student = 0;
+    private static final int teacher = 1;
     private final String netId;
     private final String password;
     private final Role role;
@@ -29,10 +31,13 @@ public class User implements Serializable {
                 @JsonProperty("type") int type) {
         this.netId = netId;
         this.password = password;
-        if (type == 0) {
+        if (type == student) {
             this.role = new Role(RoleType.STUDENT);
-        } else {
+        } else if (type == teacher) {
             this.role = new Role(RoleType.TEACHER);
+        } else {
+            // if not an existing role, set role with lowest permissions
+            this.role = new Role(RoleType.STUDENT);
         }
     }
 
@@ -70,9 +75,11 @@ public class User implements Serializable {
      */
     public int getRoleInteger() {
         if (getRole().getType() == RoleType.STUDENT) {
-            return 0;
+            return student;
+        } else if (getRole().getType() == RoleType.TEACHER) {
+            return teacher;
         } else {
-            return 1;
+            return -1;
         }
     }
 

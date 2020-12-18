@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Role implements Serializable {
 
     private static final long serialVersionUID = -5677307558797652498L;
-    private final RoleType type;
+    private RoleType type; //NOPMD
 
     /**
      * Constructor.
@@ -28,8 +28,10 @@ public class Role implements Serializable {
     public String getName() {
         if (type == RoleType.STUDENT) {
             return "STUDENT";
-        } else {
+        } else if (type == RoleType.TEACHER) {
             return "TEACHER";
+        } else {
+            return "UNKNOWN";
         }
     }
 
@@ -40,6 +42,15 @@ public class Role implements Serializable {
      */
     public RoleType getType() {
         return type;
+    }
+
+    /**
+     * Setter for the type attribute.
+     *
+     * @param type the new type
+     */
+    public void setType(RoleType type) {
+        this.type = type;
     }
 
     /**

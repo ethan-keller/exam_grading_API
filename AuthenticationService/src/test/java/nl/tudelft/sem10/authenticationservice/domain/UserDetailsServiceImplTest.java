@@ -1,17 +1,19 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 import nl.tudelft.sem10.authenticationservice.application.User;
+import nl.tudelft.sem10.authenticationservice.application.UserDetailsServiceImpl;
 import nl.tudelft.sem10.authenticationservice.framework.RestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * Test suite for the user details service.
@@ -51,8 +53,7 @@ class UserDetailsServiceImplTest {
     @Test
     void loadNullUsername() {
         when(rest.getUserFromUserService(null)).thenReturn(null);
-        assertThrows(UsernameNotFoundException.class,
-                () -> service.loadUserByUsername(user.getNetId()));
+        assertNull(service.loadUserByUsername(user.getNetId()));
     }
 
     /**
@@ -61,7 +62,6 @@ class UserDetailsServiceImplTest {
     @Test
     void loadNonExistingUsername() {
         when(rest.getUserFromUserService(user.getNetId())).thenReturn(null);
-        assertThrows(UsernameNotFoundException.class,
-                () -> service.loadUserByUsername(user.getNetId()));
+        assertNull(service.loadUserByUsername(user.getNetId()));
     }
 }

@@ -22,7 +22,7 @@ public class Utility {
         BigInteger sg = new BigInteger(1, messageDigest);
         String hashText = sg.toString(16);
 
-        while (hashText.length() < 32) {
+        while (hashText.length() < 128) {
             hashText = "0" + hashText;
         }
         return hashText;

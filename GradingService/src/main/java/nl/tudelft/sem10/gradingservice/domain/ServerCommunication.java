@@ -6,7 +6,16 @@ import java.net.http.HttpClient;
  * Simple class to streamline communication with other services.
  */
 public class ServerCommunication {
+
     private static final HttpClient client = HttpClient.newBuilder().build();
+    private transient RequestHelper requestHelper = new RequestHelper();
+
+    public ServerCommunication() {
+    }
+
+    public void setRequestHelper(RequestHelper requestHelper) {
+        this.requestHelper = requestHelper;
+    }
 
     /**
      * Communicates to the course microservice and finds
@@ -16,11 +25,10 @@ public class ServerCommunication {
      * @param categoryName the specific category whose weight is needed
      * @return JSON of the category and its weight
      */
-    public static String getCourseWeights(String courseCode, String categoryName, String token) {
-        String str = RequestHelper.sendRequest(
-                RequestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
+    public String getCourseWeights(String courseCode, String categoryName, String token) {
+        return requestHelper.sendRequest(
+                requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
                         + "&categoryName=" + categoryName, token), client);
-        return str;
     }
 
     /**
@@ -31,10 +39,21 @@ public class ServerCommunication {
      * @param token token user sends
      * @return type of user if applicable
      */
-    public static String validate(String token) {
-        String str = RequestHelper.sendRequest(
-                RequestHelper.validateToken(token), client);
-        return str;
+    public String validate(String token) {
+        return requestHelper.sendRequest(
+            requestHelper.validateToken(token), client);
     }
 
+    /**
+     * Check if the provided netId and token matches.
+     *
+     * @param token - the token of the user
+     * @param netId - netId to execute the query on
+     *
+     * @return bool of type boolean
+     */
+    public boolean validateUser(String token, String netId) {
+        return Boolean.parseBoolean(requestHelper.sendRequest(
+                requestHelper.validateNetIdToken(netId, "Bearer " + token), client));
+    }
 }

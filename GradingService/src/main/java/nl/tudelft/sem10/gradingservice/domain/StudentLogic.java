@@ -1,16 +1,19 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
 import java.util.List;
-import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class StudentLogic {
 
-    @Autowired
-    private GradeRepository gradeRepository; // NOPMD
+
+    // For testability
+    private transient ServerCommunication serverCommunication =
+        new ServerCommunication();
+
+    public StudentLogic() {
+    }
 
     /**
      * Logic to get the mean of a list of grades.
@@ -29,35 +32,6 @@ public class StudentLogic {
     }
 
     /**
-     * Method containing logic used to calculate grade.
-     *
-     * @param list       list of all grades a student had acquired for a course
-     * @param courseCode course code of the course
-     * @return double representing grade of course
-     * @throws JSONException exception if json is wrong
-     */
-    @SuppressWarnings("PMD")
-    public static double getGrade(List<Grade> list, String courseCode, String token)
-            throws JSONException {
-        double g = 0.0;
-        for (Grade grade : list) {
-            String str = ServerCommunication.getCourseWeights(courseCode,
-                    grade.getGradeType(), token);
-            if (str == null) {
-                return 0.0;
-            }
-            JSONObject obj = new JSONObject(str);
-            if (obj.has("weight")) {
-                double weight = obj.getDouble("weight");
-                g = g + (grade.getMark() * weight);
-            } else {
-                g = -1;
-            }
-        }
-        return g;
-    }
-
-    /**
      * Gets the variance given a list of grades and a mean of the grades.
      *
      * @param grades list of grades
@@ -70,6 +44,39 @@ public class StudentLogic {
             square += (a - mean) * (a - mean);
         }
         return square / grades.size();
+    }
+
+    public void setServerCommunication(ServerCommunication serverCommunication) {
+        this.serverCommunication = serverCommunication;
+    }
+
+    /**
+     * Method containing logic used to calculate grade.
+     *
+     * @param list       list of all grades a student had acquired for a course
+     * @param courseCode course code of the course
+     * @return double representing grade of course
+     * @throws JSONException exception if json is wrong
+     */
+    @SuppressWarnings("PMD")
+    public double getGrade(List<Grade> list, String courseCode, String token)
+        throws JSONException {
+        double g = 0.0;
+        for (Grade grade : list) {
+            String str = serverCommunication.getCourseWeights(courseCode,
+                grade.getGradeType(), token);
+            if (str == null) {
+                return 0.0;
+            }
+            JSONObject obj = new JSONObject(str);
+            if (obj.has("weight")) {
+                double weight = obj.getDouble("weight");
+                g = g + (grade.getMark() * weight);
+            } else {
+                g = -1;
+            }
+        }
+        return g;
     }
 
 }
