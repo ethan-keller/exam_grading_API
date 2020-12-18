@@ -27,7 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = rest.getUserFromUserService(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("Could not find a user with netId: " + username);
+            System.out.println("Could not find a user with netId: " + username);
+            return null;
         }
         return new UserDetailsImpl(user);
     }

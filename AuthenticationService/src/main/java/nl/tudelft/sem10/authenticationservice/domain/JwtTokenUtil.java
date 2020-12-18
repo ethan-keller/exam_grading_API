@@ -36,7 +36,12 @@ public class JwtTokenUtil implements Serializable {
      * @return user's netId
      */
     public String getNetIdFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+        try {
+            return getClaimFromToken(token, Claims::getSubject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -93,6 +98,9 @@ public class JwtTokenUtil implements Serializable {
      */
     public boolean validateToken(String token, UserDetails userDetails) {
         final String netId = getNetIdFromToken(token);
+        if (netId == null) {
+            return false;
+        }
         return netId.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
