@@ -50,9 +50,9 @@ DROP TABLE IF EXISTS `course`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `course` (
-  `course_name` int NOT NULL,
+  `course_name` varchar(255) NOT NULL,
   `course_code` varchar(255) NOT NULL,
-  PRIMARY KEY (`course_name`)
+  PRIMARY KEY (`course_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
