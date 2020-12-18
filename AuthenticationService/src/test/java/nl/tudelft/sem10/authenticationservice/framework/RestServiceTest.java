@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -71,5 +72,16 @@ class RestServiceTest {
         when(restTemplate.getForEntity(url, User.class)).thenReturn(response);
 
         assertEquals(user, rest.getUserFromUserService(user.getNetId()));
+    }
+
+    /**
+     * Exception handling.
+     */
+    @Test
+    void exceptionHandling() {
+        String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
+                + "/" + user.getNetId();
+        when(restTemplate.getForEntity(url, User.class)).thenThrow(RestClientException.class);
+        assertNull(rest.getUserFromUserService(user.getNetId()));
     }
 }

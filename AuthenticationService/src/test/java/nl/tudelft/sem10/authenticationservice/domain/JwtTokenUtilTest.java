@@ -2,6 +2,7 @@ package nl.tudelft.sem10.authenticationservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -109,5 +110,22 @@ class JwtTokenUtilTest {
         setClockField();
 
         assertFalse(utils.validateToken(token1, details1));
+    }
+
+    /**
+     * Exception handling when getting netId from token.
+     */
+    @Test
+    void exceptionHandlingGetNetIdFromToken() {
+        assertNull(utils.getNetIdFromToken("invalidToken"));
+    }
+
+    /**
+     * Exception handling when validating token.
+     */
+    @Test
+    void exceptionHandlingTokenValidation() {
+        assertFalse(utils.validateToken("invalidToken",
+                new UserDetailsImpl(new User("test", "test", 0))));
     }
 }
