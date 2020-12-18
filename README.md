@@ -11,6 +11,7 @@ Software written for CSE2115 Software Engineering methods.
 | 📸 | Name | Email |
 |---|---|---|
 | ![](https://eu.ui-avatars.com/api/?name=Arjun+Vilakathara&length=2&size=50&color=DDD&background=777&font-size=0.325) | Arjun Vilakathara | A.H.Vilakathara@student.tudelft.nl |
+| ![](https://secure.gravatar.com/avatar/3681e93a8bfcc597d587ddc00110167d?s=800&d=identicon)    | Adriaan Brands    | A.J.M.Brands@student.tudelft.nl |
 
 ### Running 
 Before running the following, either create a database using the schema provided in doc\requirements\DatabaseSchema.PNG or use thr provided .sql file in the same folder*. 
