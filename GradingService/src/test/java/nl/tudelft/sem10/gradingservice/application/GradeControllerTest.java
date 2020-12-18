@@ -1,10 +1,5 @@
 package nl.tudelft.sem10.gradingservice.application;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
@@ -18,6 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -87,5 +87,23 @@ class GradeControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
+    
+    @Test
+    void allGradesStudent() {
+        List<Grade> grades = new ArrayList<>();
+        grades.add(new Grade(12, 10.0f, "Silverhand", "CSE2077", "Samurai"));
 
+        when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
+        when(serverCommunication.validateUser(any(String.class), any(String.class)))
+                .thenReturn(true);
+        when(userGradeService.getAllGrades(any(String.class), any(String.class), any(String.class)))
+                .thenReturn(ResponseEntity.ok(grades));
+
+        ResponseEntity<List<Grade>> result =
+                gradeController.getAllGrades("Bearer token", "Silverhand",
+                        "CSE2077", "Samurai");
+
+        assertEquals(grades, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
 }
