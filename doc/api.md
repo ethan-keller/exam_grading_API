@@ -113,6 +113,62 @@ Returns the deleted course category or a status code `204 NO CONTENT` if no cate
     
 - **GET** */grade/grade*
     - Required headers: `Authorization: Bearer <some token>`
-    - Optional parameters in JSON body: netid, course code, grade type
+    - Optional parameters: netid, course code, grade type
+    - *returns*:  A list of grades based on the optional parameters
+
+
+- **GET** */student/mean*
+    - Required headers:
+        `Authorization: Bearer <some token>`
+    - Required parameters: netid
+    - *returns*: If token is of student and matched netId, returns mean of all the grades of the student.
+
+- **GET** */student/grade* 
+    - Required headers: 
+        `Authorization: Bearer <some token>`
+    - Required parameters: netId, courseCode 
+    - *returns*: final grade that the student received for that course.
+
+- **GET** */student/passed* 
+    - Required headers:
+        `Authorization: Bearer <some token>`
+    - Required parameters: netid
+    - *returns*: List of all courses student has passed
+
+- **GET** */student/allGrades*
+    -  Header: token
+    -  Parameters: netId
+    -  *returns*: All grades of a student along with the course it belongs to
+
+- **GET** */student/passingRate*
+    - Header: String token
+    - Parameters: String course
+    - *returns*: passing rate of the course as a double between 0.0-1.0
+
+- **GET** */teacher/passingRate*
+    - Same as the one for students
+
+- **GET** */teacher/statistics*
+    - Header: String token
+    - Parameters: String course 
+    - *returns*: mean and variance of final grades of all students of the course given.
+
+- **PUT** */teacher*
+    - Header: String token
+    - Parameters: String netId, String courseCode, String gradeType, String jsonString
+    - *Returns*: httpstatus OK if request is valid, forbidden if unauthorized and bad request if bad header.
+
+- **DELETE** */teacher*
+    - Header: String token
+    - Parameters: String netId, String courseCode, String gradeType
+    - *Returns*: httpstatus ok if request is valid, forbidden if unauthorized and bad request if bad header.
+
+- **POST** */teacher*
+    - Header: String token
+    - Parameters: JSON describing grade object
+    - *Returns*: httpstatus ok if request is valid, forbidden if unauthorized and bad request if bad header.
+ 
+
+
 
 
