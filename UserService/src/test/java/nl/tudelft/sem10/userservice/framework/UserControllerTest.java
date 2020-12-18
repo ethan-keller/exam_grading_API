@@ -266,5 +266,5 @@ class UserControllerTest {
         ResponseEntity<String> response = userController.userByNetId("type/");
         assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
-    
+
 }
