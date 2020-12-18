@@ -70,7 +70,8 @@ public class CategoryController {
      *         with the same course code and name already exists.
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
-    public ResponseEntity<Category> addCategory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public ResponseEntity<Category> addCategory(@RequestHeader(HttpHeaders.AUTHORIZATION)
+                                                        String authorization,
                                                 @RequestBody Category category) {
         // Auth
         ResponseEntity<Category> authRes = authResponse(authorization);
@@ -96,7 +97,8 @@ public class CategoryController {
      * @return the deleted course or a 204 error.
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
-    public ResponseEntity<Category> removeCategory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public ResponseEntity<Category> removeCategory(@RequestHeader(HttpHeaders.AUTHORIZATION)
+                                                           String authorization,
                                                    @RequestParam String courseCode,
                                                    @RequestParam String categoryName) {
         // Auth
