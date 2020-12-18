@@ -1,14 +1,15 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ServerCommunicationTest {
 
@@ -49,6 +50,12 @@ class ServerCommunicationTest {
 
     @Test
     void validateUser() {
-        //TODO: Finish once the authentication method is added
+        when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
+                .thenReturn("TRUE");
+        when(requestHelper.validateNetIdToken(any(String.class), any(String.class))).thenCallRealMethod();
+
+        Boolean bool = serverCommunication.validateUser("token", "netId");
+
+        assertTrue(bool);
     }
 }
