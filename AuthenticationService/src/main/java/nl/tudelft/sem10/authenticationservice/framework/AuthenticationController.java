@@ -96,6 +96,9 @@ public class AuthenticationController {
                                                      @RequestHeader("Authorization") String token) {
         try {
             String realNetId = jwtTokenUtil.getNetIdFromToken(token.substring(7));
+            if (realNetId == null) {
+                return ResponseEntity.ok(false);
+            }
             if (realNetId.equals(netId)) {
                 return ResponseEntity.ok(true);
             }
