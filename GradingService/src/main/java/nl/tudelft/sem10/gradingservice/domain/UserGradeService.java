@@ -199,6 +199,14 @@ public class UserGradeService {
         throws JSONException {
         JSONObject obj = new JSONObject(jsonString);
         float mark = (float) obj.getDouble("mark");
+        float minBound = 0.0f;
+        if (mark < minBound) {
+            mark = minBound;
+        }
+        float maxBound = 10.0f;
+        if (mark > maxBound) {
+            mark = maxBound;
+        }
         assert gradeRepository.findById(gradeId).isPresent();
         Grade currGrade = gradeRepository.findById(gradeId).get();
         if (currGrade.getMark() < mark) {
@@ -268,6 +276,14 @@ public class UserGradeService {
         String gradeType = obj.getString("grade_type");
         String netid = obj.getString("netid");
         float mark = (float) obj.getDouble("mark");
+        float minBound = 0.0f;
+        if (mark < minBound) {
+            mark = minBound;
+        }
+        float maxBound = 10.0f;
+        if (mark > maxBound) {
+            mark = maxBound;
+        }
         gradeRepository.insertGrade(mark, netid, courseCode, gradeType);
     }
 

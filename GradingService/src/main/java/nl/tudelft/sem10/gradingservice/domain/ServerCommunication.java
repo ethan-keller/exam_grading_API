@@ -26,10 +26,9 @@ public class ServerCommunication {
      * @return JSON of the category and its weight
      */
     public String getCourseWeights(String courseCode, String categoryName, String token) {
-        String str = requestHelper.sendRequest(
-            requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
-                + "&categoryName=" + categoryName, token), client);
-        return str;
+        return requestHelper.sendRequest(
+                requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
+                        + "&categoryName=" + categoryName, token), client);
     }
 
     /**
@@ -41,9 +40,8 @@ public class ServerCommunication {
      * @return type of user if applicable
      */
     public String validate(String token) {
-        String str = requestHelper.sendRequest(
+        return requestHelper.sendRequest(
             requestHelper.validateToken(token), client);
-        return str;
     }
 
     /**
@@ -55,8 +53,7 @@ public class ServerCommunication {
      * @return bool of type boolean
      */
     public boolean validateUser(String token, String netId) {
-        boolean bool = Boolean.parseBoolean(requestHelper.sendRequest(
-                requestHelper.validateNetIdToken(netId, token), client));
-        return bool;
+        return Boolean.parseBoolean(requestHelper.sendRequest(
+                requestHelper.validateNetIdToken(netId, "Bearer " + token), client));
     }
 }

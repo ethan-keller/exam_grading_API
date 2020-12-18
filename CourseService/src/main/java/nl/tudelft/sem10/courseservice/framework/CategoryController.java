@@ -38,7 +38,7 @@ public class CategoryController {
      */
     @GetMapping(path = "/categories", produces = RESPONSE_TYPE)
     public ResponseEntity<Iterable<Category>> getAllCategories() {
-        return new ResponseEntity<>(categoryService.get(), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.get());
     }
 
     /**
@@ -56,10 +56,10 @@ public class CategoryController {
 
         // The resource does not exist
         if (category == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 
     /**
@@ -71,8 +71,9 @@ public class CategoryController {
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
     public ResponseEntity<Category> addCategory(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                        String authorization,
-                                                @RequestBody Category category) {
+                                                            String authorization,
+                                                @RequestBody
+                                                        Category category) {
         // Auth
         ResponseEntity<Category> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -83,10 +84,10 @@ public class CategoryController {
 
         // The resource already exists
         if (result == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     /**
@@ -98,9 +99,11 @@ public class CategoryController {
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
     public ResponseEntity<Category> removeCategory(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                           String authorization,
-                                                   @RequestParam String courseCode,
-                                                   @RequestParam String categoryName) {
+                                                               String authorization,
+                                                   @RequestParam
+                                                           String courseCode,
+                                                   @RequestParam
+                                                               String categoryName) {
         // Auth
         ResponseEntity<Category> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -111,10 +114,10 @@ public class CategoryController {
 
         // The resource does not exist
         if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**
@@ -126,15 +129,17 @@ public class CategoryController {
      * @return the response or null if the token is valid.
      */
     private <T> ResponseEntity<T> authResponse(String token) {
-        AuthService.UserType type = auth.getUser(token);
+        AuthService.UserType type = auth
+            .getUser(token.replaceFirst("^Bearer ", ""));
         switch (type) {
             case TEACHER:
                 return null;
             case UNKNOWN:
-                // TODO: Return WWW-Authenticate header as required by RFC 7235
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer")
+                        .build();
             default:
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         }
     }

@@ -48,6 +48,9 @@ class UserTest {
     void getRoleInteger() {
         assertEquals(0, user1.getRoleInteger());
         assertEquals(1, user3.getRoleInteger());
+        User u = new User("netId", "pass", -1);
+        u.getRole().setType(null);
+        assertEquals(-1, u.getRoleInteger());
     }
 
     /**

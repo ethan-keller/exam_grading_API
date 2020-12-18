@@ -14,19 +14,22 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
  * Tests for all {@link CourseController} endpoints.
  * Note that these tests assume the implementation {@link CourseServiceImpl} is used.
+ * Since the controller wraps all {@link nl.tudelft.sem10.courseservice.application.CourseService}
+ * methods its implementation is also fully tested.
  */
 @SpringBootTest(classes = CourseServiceApplication.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CourseServiceApplicationTests {
     private final transient Course c0 = new Course("TEST_COURSE", "CSE9999");
-    private final transient String validToken = "MyTeacherToken";
+    private final transient String validToken = "Bearer MyTeacherToken";
 
     @Autowired
     private transient CourseController controller;
@@ -161,7 +164,7 @@ class CourseServiceApplicationTests {
     @Test
     @Order(8)
     public void testAddWrongUser() {
-        ResponseEntity<Course> response = controller.addCourse("MyNonTeacherToken", c0);
+        ResponseEntity<Course> response = controller.addCourse("Bearer MyNonTeacherToken", c0);
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
@@ -172,9 +175,11 @@ class CourseServiceApplicationTests {
     @Test
     @Order(9)
     public void testAddInvalidUser() {
-        ResponseEntity<Course> response = controller.addCourse("MyInvalidToken", c0);
+        ResponseEntity<Course> response = controller.addCourse("Bearer MyInvalidToken", c0);
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        Assertions.assertEquals("Bearer",
+                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 
     /**
@@ -183,7 +188,8 @@ class CourseServiceApplicationTests {
     @Test
     @Order(10)
     public void testRemoveWrongUser() {
-        ResponseEntity<Course> response = controller.removeCourse("MyNonTeacherToken", "CSE9999");
+        ResponseEntity<Course> response = controller.removeCourse("Bearer MyNonTeacherToken",
+                "CSE9999");
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
@@ -194,8 +200,11 @@ class CourseServiceApplicationTests {
     @Test
     @Order(11)
     public void testRemoveInvalidUser() {
-        ResponseEntity<Course> response = controller.removeCourse("MyInvalidToken", "CSE9999");
+        ResponseEntity<Course> response = controller.removeCourse("Bearer MyInvalidToken",
+                "CSE9999");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        Assertions.assertEquals("Bearer",
+                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 }

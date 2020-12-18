@@ -15,19 +15,22 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
  * Tests for all {@link CategoryController} endpoints.
  * Note that these tests assume the implementation {@link CategoryServiceImpl} is used.
+ * Since the controller wraps all {@link nl.tudelft.sem10.courseservice.application.CategoryService}
+ * methods its implementation is also fully tested.
  */
 @SpringBootTest(classes = CourseServiceApplication.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CategoryServiceApplicationTests {
     private final transient Category c0 = new Category("CSE9999", "MIDTERM", 0.5D);
-    private final transient String validToken = "MyTeacherToken";
+    private final transient String validToken = "Bearer MyTeacherToken";
 
     @Autowired
     private transient CategoryController controller;
@@ -169,7 +172,7 @@ class CategoryServiceApplicationTests {
     @Test
     @Order(8)
     public void testAddWrongUser() {
-        ResponseEntity<Category> response = controller.addCategory("MyNonTeacherToken", c0);
+        ResponseEntity<Category> response = controller.addCategory("Bearer MyNonTeacherToken", c0);
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
@@ -180,9 +183,11 @@ class CategoryServiceApplicationTests {
     @Test
     @Order(9)
     public void testAddInvalidUser() {
-        ResponseEntity<Category> response = controller.addCategory("MyInvalidToken", c0);
+        ResponseEntity<Category> response = controller.addCategory("Bearer MyInvalidToken", c0);
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        Assertions.assertEquals("Bearer",
+                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 
     /**
@@ -191,7 +196,7 @@ class CategoryServiceApplicationTests {
     @Test
     @Order(10)
     public void testRemoveWrongUser() {
-        ResponseEntity<Category> response = controller.removeCategory("MyNonTeacherToken",
+        ResponseEntity<Category> response = controller.removeCategory("Bearer MyNonTeacherToken",
                 "CSE9999",
                 "MIDTERM");
 
@@ -204,10 +209,12 @@ class CategoryServiceApplicationTests {
     @Test
     @Order(11)
     public void testRemoveInvalidUser() {
-        ResponseEntity<Category> response = controller.removeCategory("MyInvalidToken",
+        ResponseEntity<Category> response = controller.removeCategory("Bearer MyInvalidToken",
                 "CSE9999",
                 "MIDTERM");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        Assertions.assertEquals("Bearer",
+                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 }
