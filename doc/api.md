@@ -136,12 +136,12 @@ Returns the deleted course category or a status code `204 NO CONTENT` if no cate
     - *returns*: List of all courses student has passed
 
 - **GET** */student/allGrades*
-    -  Header: token
+    -  Header: `Authorization: Bearer <some token>`
     -  Parameters: netId
     -  *returns*: All grades of a student along with the course it belongs to
 
 - **GET** */student/passingRate*
-    - Header: String token
+    - Header: `Authorization: Bearer <some token>`
     - Parameters: String course
     - *returns*: passing rate of the course as a double between 0.0-1.0
 
@@ -149,22 +149,22 @@ Returns the deleted course category or a status code `204 NO CONTENT` if no cate
     - Same as the one for students
 
 - **GET** */teacher/statistics*
-    - Header: String token
+    - Header: `Authorization: Bearer <some token>`
     - Parameters: String course 
     - *returns*: mean and variance of final grades of all students of the course given.
 
 - **PUT** */teacher*
-    - Header: String token
+    - Header: `Authorization: Bearer <some token>`
     - Parameters: String netId, String courseCode, String gradeType, String jsonString
     - *Returns*: httpstatus OK if request is valid, forbidden if unauthorized and bad request if bad header.
 
 - **DELETE** */teacher*
-    - Header: String token
+    - Header: `Authorization: Bearer <some token>`
     - Parameters: String netId, String courseCode, String gradeType
     - *Returns*: httpstatus ok if request is valid, forbidden if unauthorized and bad request if bad header.
 
 - **POST** */teacher*
-    - Header: String token
+    - Header: `Authorization: Bearer <some token>`
     - Parameters: JSON describing grade object
     - *Returns*: httpstatus ok if request is valid, forbidden if unauthorized and bad request if bad header.
  
