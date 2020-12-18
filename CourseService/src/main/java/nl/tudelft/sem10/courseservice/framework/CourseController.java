@@ -66,7 +66,8 @@ public class CourseController {
      * @return the added course or a 409 error if a course with the same ID already exists.
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
-    public ResponseEntity<Course> addCourse(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public ResponseEntity<Course> addCourse(@RequestHeader(HttpHeaders.AUTHORIZATION)
+                                                    String authorization,
                                             @RequestBody Course course) {
         // Auth
         ResponseEntity<Course> authRes = authResponse(authorization);
@@ -91,7 +92,8 @@ public class CourseController {
      * @return the deleted course or a 204 error.
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
-    public ResponseEntity<Course> removeCourse(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public ResponseEntity<Course> removeCourse(@RequestHeader(HttpHeaders.AUTHORIZATION)
+                                                       String authorization,
                                                @RequestParam String courseCode) {
         // Auth
         ResponseEntity<Course> authRes = authResponse(authorization);

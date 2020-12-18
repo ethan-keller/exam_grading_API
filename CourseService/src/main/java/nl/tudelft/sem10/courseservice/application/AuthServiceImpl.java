@@ -17,7 +17,8 @@ public class AuthServiceImpl implements AuthService {
     // This needs to match the endpoint in the authentication microservice
     private static final String VALIDATE = "http://localhost:8080/validate/{token}";
 
-    private final transient RestTemplate template = new RestTemplateBuilder().setConnectTimeout(Duration.ofSeconds(10)).build();
+    private final transient RestTemplate template =
+        new RestTemplateBuilder().setConnectTimeout(Duration.ofSeconds(10)).build();
 
     @Override
     public UserType getUser(String token) {

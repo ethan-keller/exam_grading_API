@@ -11,7 +11,7 @@ class UserServiceApplicationTests {
     }
 
     @Test
-    void main(){
+    void main() {
         UserServiceApplication.main(new String[] {});
     }
 
