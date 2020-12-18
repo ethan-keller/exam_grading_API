@@ -87,7 +87,7 @@ class GradeControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
-    
+
     @Test
     void allGradesStudent() {
         List<Grade> grades = new ArrayList<>();
@@ -105,5 +105,16 @@ class GradeControllerTest {
 
         assertEquals(grades, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void allGradesForbidden() {
+        when(serverCommunication.validate(any(String.class))).thenReturn("NOT A VALID TYPE");
+
+        ResponseEntity<List<Grade>> result =
+                gradeController.getAllGrades("Bearer token", "Silverhand",
+                        "CSE2077", "Samurai");
+
+        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
     }
 }
