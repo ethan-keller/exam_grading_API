@@ -22,13 +22,13 @@ class ServerCommunicationTest {
     private static final String SENT = "SENT";
 
     @Mock
-    HttpRequest request;
+    private transient HttpRequest request;
 
     @Mock
-    HttpResponse<String> response;
+    private transient HttpResponse<String> response;
 
     @Mock
-    HttpClient client;
+    private transient HttpClient client;
 
     @BeforeEach
     void setUp() {
@@ -84,5 +84,27 @@ class ServerCommunicationTest {
 
         assertTrue(Boolean.parseBoolean(send));
     }
-    
+
+    @Test
+    void sendRequestTestEmptyBody() throws IOException, InterruptedException {
+        RequestHelper reqHelper = new RequestHelper();
+        when(response.body()).thenReturn("");
+        when(response.statusCode()).thenReturn(404);
+        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+
+        String send = reqHelper.sendRequest(request, client);
+
+        assertEquals(404, Integer.parseInt(send));
+    }
+
+    @Test
+    void sendRequestTestNullBody() throws IOException, InterruptedException {
+        RequestHelper reqHelper = new RequestHelper();
+        when(response.body()).thenReturn(null);
+        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+
+        String send = reqHelper.sendRequest(request, client);
+
+        assertEquals("Communication with server failed", send);
+    }
 }
