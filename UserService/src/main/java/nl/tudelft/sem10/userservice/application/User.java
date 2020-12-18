@@ -42,6 +42,7 @@ public class User {
 
     /**
      * Getter for the parameter NetId.
+     *
      * @return netId - the NetId of the user
      */
     public String getNetId() {
@@ -50,6 +51,7 @@ public class User {
 
     /**
      * Getter for the parameter password.
+     *
      * @return password - the password of the user
      */
     public String getPassword() {
@@ -58,9 +60,10 @@ public class User {
 
     /**
      * Getter for the parameter type.
+     *
      * @return type - the role of the user
-     * Student -> 0
-     * Teacher -> 1
+     *      Student -> 0
+     *      Teacher -> 1
      */
     public int getType() {
         return type;
@@ -68,6 +71,7 @@ public class User {
 
     /**
      *Setter for the parameter netId.
+     *
      * @param netId of type String - new netId of the user
      */
     public void setNetId(String netId) {
@@ -76,6 +80,7 @@ public class User {
 
     /**
      * Setter for the parameter password.
+     *
      * @param password of type String - new password of the user
      */
     public void setPassword(String password) {
@@ -83,10 +88,11 @@ public class User {
     }
 
     /**
-     * Setter for the parameter type
+     * Setter for the parameter type.
+     *
      * @param type of type int - new role of the user
-     * Student -> 0
-     * Teacher -> 1
+     *      Student -> 0
+     *      Teacher -> 1
      */
     public void setType(int type) {
         this.type = type;
@@ -94,6 +100,7 @@ public class User {
 
     /**
      * Method to convert a User object to a string in a human-readable format.
+     *
      * @return toStr - The String representation of the user
      */
     public String toString() {
@@ -104,6 +111,7 @@ public class User {
 
     /**
      * Overridden equals method to compare users.
+     *
      * @param o of type Object - The Object to compare
      * @return boolean - true if they're equal, false otherwise
      */
@@ -121,6 +129,7 @@ public class User {
 
     /**
      * Hash code representation of the user object.
+     *
      * @return int - the generated hash code
      */
     @Override
