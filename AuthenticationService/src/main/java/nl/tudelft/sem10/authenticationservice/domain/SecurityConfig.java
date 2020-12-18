@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
+import nl.tudelft.sem10.authenticationservice.application.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
