@@ -111,7 +111,7 @@ Returns the deleted course category or a status code `204 NO CONTENT` if no cate
 
 ### Grade Service (on port *8082*)
     
-- **GET** */grade/grade*
+- **GET** */grade*
     - Required headers: `Authorization: Bearer <some token>`
     - Optional parameters: netid, course code, grade type
     - *returns*:  A list of grades based on the optional parameters
