@@ -1,14 +1,5 @@
 package nl.tudelft.sem10.userservice.framework;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,6 +17,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 /**
  * The UserController class's test.
@@ -259,4 +255,16 @@ class UserControllerTest {
         var invalid = userController.userByType(2);
         assertTrue(invalid.isEmpty());
     }
+
+    /**
+     * Test to check if error handling works correctly.
+     */
+    @Test
+    void userByTypeBadRequest() {
+        when(userRepository.getUserByNetId(anyString())).thenReturn(null);
+
+        ResponseEntity<String> response = userController.userByNetId("type/");
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+
 }
