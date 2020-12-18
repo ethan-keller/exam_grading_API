@@ -1,7 +1,37 @@
-# CSE2115 - Project
+# Exam Grading
+
+Software to manage the grades of TU Delft students.
+
+## Project description 
+
+Software written for CSE2115 Software Engineering methods.
+
+## Group Members
+
+| 📸 | Name | Email |
+|---|---|---|
+| ![](https://eu.ui-avatars.com/api/?name=Arjun+Vilakathara&length=2&size=50&color=DDD&background=777&font-size=0.325) | Arjun Vilakathara | A.H.Vilakathara@student.tudelft.nl |
 
 ### Running 
-`gradle bootRun`
+Before running the following, either create a database using the schema provided in doc\requirements\DatabaseSchema.PNG or use thr provided .sql file in the same folder*. 
+1. Clone repository
+2. Run `UserService\src\main\java\nl\tudelft\sem10\userservice\UserServiceApplication.java` and wait for it to run.
+3. Run `AuthenticationService\src\main\java\nl\tudelft\sem10\authenticationservice\AuthenticationServiceApplication.java` and wait for it to run.
+4. Run `CourseService\src\main\java\nl\tudelft\sem10\courseservice\CourseServiceApplication.java` and wait for it to run.
+4. Run `D:\S\op5-sem10\GradingService\src\main\java\nl\tudelft\sem10\gradingservice\GradingServiceApplication.java` and wait for it to run.
+
+*The database created from the file may not work properly in some instances.
+
+## How to contribute
+
+If you wish to contribute to this repository, please first discuss this via email with the owners of this repository.
+Code of Conduct
+
+    •    Abusive language will not be tolerated.
+    •    You must not create conflicts with the current application.
+    •    You have to keep in mind that your code might not be approved.
+    
+Each contributor needs to abide to the code of conduct.
 
 ### Testing
 ```
@@ -28,7 +58,5 @@ gradle pmdMain
 gradle pmdTest
 ```
 
-### Notes
-- You should have a local .gitignore file to make sure that any OS-specific and IDE-specific files do not get pushed to the repo (e.g. .idea). These files do not belong in the .gitignore on the repo.
-- If you change the name of the repo to something other than template, you should also edit the build.gradle file.
-- You can add issue and merge request templates in the .gitlab folder on your repo. 
+## Licence 
+None needed!

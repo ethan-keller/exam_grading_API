@@ -81,7 +81,8 @@ public class UserController {
         User u = userRepository.getUserByNetId(netId);
         if (u == null) {
             if (netId.contains("type")) {
-                return new ResponseEntity<>("Please specify a type!\nStudent -> 0\nTeacher -> 1", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Please specify a type!\nStudent -> 0\nTeacher -> 1",
+                        HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
             }
