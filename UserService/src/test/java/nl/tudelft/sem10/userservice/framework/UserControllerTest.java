@@ -255,4 +255,16 @@ class UserControllerTest {
         var invalid = userController.userByType(2);
         assertTrue(invalid.isEmpty());
     }
+
+    /**
+     * Test to check if error handling works correctly.
+     */
+    @Test
+    void userByTypeBadRequest() {
+        when(userRepository.getUserByNetId(anyString())).thenReturn(null);
+
+        ResponseEntity<String> response = userController.userByNetId("type/");
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+    
 }
