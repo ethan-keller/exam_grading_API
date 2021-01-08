@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
  * Makes a validate request to the authentication service.
  * TODO: Tests
  */
-@Component
+@Component("AuthServiceImpl")
 public class AuthServiceImpl implements AuthService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
     private final transient RestTemplate template = new RestTemplateBuilder()
