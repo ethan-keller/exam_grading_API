@@ -121,6 +121,12 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    /**
+     * Get all weights for a given course.
+     *
+     * @param courseCode - String course code.
+     * @return all known category/weight pairs.
+     */
     @GetMapping(path = "/weights", produces = RESPONSE_TYPE)
     public ResponseEntity<Map<String, Double>> getWeights(@RequestParam String courseCode) {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.getWeights(courseCode));
