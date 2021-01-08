@@ -3,7 +3,9 @@ package nl.tudelft.sem10.gradingservice.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javassist.NotFoundException;
+import nl.tudelft.sem10.gradingservice.domain.utilities.Stats;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +37,7 @@ public class UserGradeService {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Grades not here!");
         }
-        return StudentLogic.getMean(list);
+        return Stats.mean(list.stream().map(Grade::getMark).collect(Collectors.toList()));
     }
 
     /**
@@ -149,8 +151,7 @@ public class UserGradeService {
         if (students == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Double> grades = new ArrayList<>(students.size());
-        double sum = 0.0;
+        List<Float> grades = new ArrayList<>(students.size());
         for (String netId : students) {
             List<Grade> list =
                 gradeRepository.getGradesByNetIdAndCourse(netId, course);
@@ -158,12 +159,11 @@ public class UserGradeService {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             double g = studentLogic.getGrade(list, course, token);
-            grades.add(g);
-            sum = sum + g;
+            grades.add((float) g);
         }
-        sum = sum / students.size();
-        double variance = StudentLogic.getVariance(grades, sum);
-        String json = "{\"mean\":\"" + sum + "\", \"variance\":\"" + variance + "\"}";
+        double mean = Stats.mean(grades);
+        double variance = Stats.variance(grades);
+        String json = "{\"mean\":\"" + mean + "\", \"variance\":\"" + variance + "\"}";
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
@@ -197,16 +197,7 @@ public class UserGradeService {
      */
     private void updateGrade(String jsonString, final long gradeId)
         throws JSONException {
-        JSONObject obj = new JSONObject(jsonString);
-        float mark = (float) obj.getDouble("mark");
-        float minBound = 0.0f;
-        if (mark < minBound) {
-            mark = minBound;
-        }
-        float maxBound = 10.0f;
-        if (mark > maxBound) {
-            mark = maxBound;
-        }
+        float mark = Utility.jsonStringClip(jsonString, "mark", 0.0f, 10.0f);
         assert gradeRepository.findById(gradeId).isPresent();
         Grade currGrade = gradeRepository.findById(gradeId).get();
         if (currGrade.getMark() < mark) {
@@ -275,15 +266,7 @@ public class UserGradeService {
         String courseCode = obj.getString("course_code");
         String gradeType = obj.getString("grade_type");
         String netid = obj.getString("netid");
-        float mark = (float) obj.getDouble("mark");
-        float minBound = 0.0f;
-        if (mark < minBound) {
-            mark = minBound;
-        }
-        float maxBound = 10.0f;
-        if (mark > maxBound) {
-            mark = maxBound;
-        }
+        float mark = Utility.jsonStringClip(jsonString, "mark", 0.0f, 10.0f);
         gradeRepository.insertGrade(mark, netid, courseCode, gradeType);
     }
 

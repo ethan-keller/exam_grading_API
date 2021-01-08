@@ -1,11 +1,13 @@
 package nl.tudelft.sem10.courseservice;
 
 import java.util.Iterator;
+import java.util.Map;
 import nl.tudelft.sem10.courseservice.application.CategoryServiceImpl;
 import nl.tudelft.sem10.courseservice.domain.model.Category;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryRepository;
 import nl.tudelft.sem10.courseservice.framework.CategoryController;
+import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -139,10 +141,30 @@ class CategoryServiceApplicationTests {
     }
 
     /**
-     * Test /category/remove/ response for an existing category.
+     * Test /category/weights/ response.
      */
     @Test
     @Order(6)
+    public void testWeights() {
+        ResponseEntity<Map<String, Double>> response = controller.getWeights(c0.getCourse());
+
+        Map<String, Double> map = response.getBody();
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Response has a body
+        Assertions.assertNotNull(map);
+
+        Map<String, Double> expected = Maps.newHashMap(c0.getName(), c0.getWeight());
+
+        Assertions.assertEquals(expected, map);
+    }
+
+    /**
+     * Test /category/remove/ response for an existing category.
+     */
+    @Test
+    @Order(7)
     public void testRemove() {
         // Note that this entity should exist, as we inserted it in a previous test
         ResponseEntity<Category> response = controller.removeCategory(validToken,
@@ -157,7 +179,7 @@ class CategoryServiceApplicationTests {
      * Test /category/remove/ response for a non existent category.
      */
     @Test
-    @Order(7)
+    @Order(8)
     public void testRemoveNonExisting() {
         ResponseEntity<Category> response = controller.removeCategory(validToken,
                 c0.getCourse(),
@@ -170,7 +192,7 @@ class CategoryServiceApplicationTests {
      * Test /category/add/ response for a non-teacher user.
      */
     @Test
-    @Order(8)
+    @Order(9)
     public void testAddWrongUser() {
         ResponseEntity<Category> response = controller.addCategory("Bearer MyNonTeacherToken", c0);
 
@@ -181,7 +203,7 @@ class CategoryServiceApplicationTests {
      * Test /category/add/ response for an unknown user.
      */
     @Test
-    @Order(9)
+    @Order(10)
     public void testAddInvalidUser() {
         ResponseEntity<Category> response = controller.addCategory("Bearer MyInvalidToken", c0);
 
@@ -194,7 +216,7 @@ class CategoryServiceApplicationTests {
      * Test /category/remove/ response for a non-teacher user.
      */
     @Test
-    @Order(10)
+    @Order(11)
     public void testRemoveWrongUser() {
         ResponseEntity<Category> response = controller.removeCategory("Bearer MyNonTeacherToken",
                 "CSE9999",
@@ -207,7 +229,7 @@ class CategoryServiceApplicationTests {
      * Test /category/remove/ response for an unknown user.
      */
     @Test
-    @Order(11)
+    @Order(12)
     public void testRemoveInvalidUser() {
         ResponseEntity<Category> response = controller.removeCategory("Bearer MyInvalidToken",
                 "CSE9999",
