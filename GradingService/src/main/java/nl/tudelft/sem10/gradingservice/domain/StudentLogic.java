@@ -1,6 +1,8 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,22 +63,24 @@ public class StudentLogic {
     @SuppressWarnings("PMD")
     public double getGrade(List<Grade> list, String courseCode, String token)
         throws JSONException {
-        double g = 0.0;
+
+        List<Double> grades = list.stream().map(x -> (double)x.getMark()).collect(Collectors.toList());
+        List<Double> weights = new ArrayList<>();
         for (Grade grade : list) {
             String str = serverCommunication.getCourseWeights(courseCode,
                 grade.getGradeType(), token);
             if (str == null) {
                 return 0.0;
             }
-            JSONObject obj = new JSONObject(str);
+            JSONObject obj = Utility.stringToJson(str);
             if (obj.has("weight")) {
                 double weight = obj.getDouble("weight");
-                g = g + (grade.getMark() * weight);
+                weights.add(weight);
             } else {
-                g = -1;
+                return -1;
             }
         }
-        return g;
+        return Utility.weightedAverage(grades, weights);
     }
 
 }

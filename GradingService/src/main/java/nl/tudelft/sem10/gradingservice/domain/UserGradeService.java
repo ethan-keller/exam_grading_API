@@ -3,6 +3,7 @@ package nl.tudelft.sem10.gradingservice.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
@@ -35,7 +36,7 @@ public class UserGradeService {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Grades not here!");
         }
-        return StudentLogic.getMean(list);
+        return Utility.mean(list.stream().map(x -> x.getMark()).collect(Collectors.toList()));
     }
 
     /**
@@ -149,8 +150,7 @@ public class UserGradeService {
         if (students == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Double> grades = new ArrayList<>(students.size());
-        double sum = 0.0;
+        List<Float> grades = new ArrayList<>(students.size());
         for (String netId : students) {
             List<Grade> list =
                 gradeRepository.getGradesByNetIdAndCourse(netId, course);
@@ -158,12 +158,11 @@ public class UserGradeService {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             double g = studentLogic.getGrade(list, course, token);
-            grades.add(g);
-            sum = sum + g;
+            grades.add((float) g);
         }
-        sum = sum / students.size();
-        double variance = StudentLogic.getVariance(grades, sum);
-        String json = "{\"mean\":\"" + sum + "\", \"variance\":\"" + variance + "\"}";
+        double mean = Utility.mean(grades);
+        double variance = Utility.variance(grades);
+        String json = "{\"mean\":\"" + mean + "\", \"variance\":\"" + variance + "\"}";
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
