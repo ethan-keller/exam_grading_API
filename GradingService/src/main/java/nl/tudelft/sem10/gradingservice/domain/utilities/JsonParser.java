@@ -1,6 +1,5 @@
 package nl.tudelft.sem10.gradingservice.domain.utilities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +13,7 @@ public class JsonParser {
      */
     public static String asJsonString(Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            return obj.toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
