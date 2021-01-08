@@ -1,10 +1,7 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class StudentLogic {
@@ -33,6 +30,9 @@ public class StudentLogic {
     public double getGrade(List<Grade> list, String courseCode, String token)
         throws JSONException {
         String jsonMap = serverCommunication.getCourseWeights(courseCode, token);
+        if (jsonMap == null) {
+            return -1.0;
+        }
         return Utility.jsonWeightedAverage(jsonMap, list);
     }
 }

@@ -26,6 +26,7 @@ public class Stats {
      * @param items - Collection of floats
      * @return - the variance of type Float
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public static float variance(Collection<Float> items) {
         float variance = 0.0f;
         float mean = mean(items);
@@ -46,6 +47,7 @@ public class Stats {
      * @param weights - Collection of Doubles
      * @return - the weighted average of type double
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public static double weightedAverage(Collection<Double> items, Collection<Double> weights) {
         if (items.size() != weights.size()) {
             return -1;
@@ -73,7 +75,7 @@ public class Stats {
      * @param items - Collection of Doubles
      * @return - the sum of type double
      */
-    public static double sum(Collection<Double> items) {
+    private static double sum(Collection<Double> items) {
         double sum = 0.0;
         for (Double item : items) {
             if (!item.isNaN()) {

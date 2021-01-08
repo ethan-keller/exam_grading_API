@@ -36,10 +36,12 @@ public class Utility {
      * @return weighted average
      * @throws JSONException if json parsing fails
      */
-    public static double jsonWeightedAverage(String jsonString, Collection<Grade> grades) throws JSONException {
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public static double jsonWeightedAverage(String jsonString, Collection<Grade> grades)
+            throws JSONException {
         Collection<Double> weights = new ArrayList<>();
-
-        JSONObject jsonObject = JsonParser.stringToJson(jsonString);
+        JSONObject jsonObject;
+        jsonObject = JsonParser.stringToJson(jsonString);
         for (Grade grade : grades) {
             if (jsonObject.has(grade.getGradeType())) {
                 weights.add(jsonObject.getDouble(grade.getGradeType()));

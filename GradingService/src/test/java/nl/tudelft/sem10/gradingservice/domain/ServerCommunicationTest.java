@@ -107,4 +107,15 @@ class ServerCommunicationTest {
 
         assertEquals("Communication with server failed", send);
     }
+
+    @Test
+    void courseWeightsTest() {
+        when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
+                .thenReturn(SENT);
+        when(requestHelper.getRequest(any(String.class), any(String.class))).thenCallRealMethod();
+
+        String str = serverCommunication.getCourseWeights("CSE1", "bearer myToken");
+
+        assertEquals(SENT, str);
+    }
 }

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import nl.tudelft.sem10.gradingservice.domain.utilities.JsonParser;
+import nl.tudelft.sem10.gradingservice.domain.utilities.Stats;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import nl.tudelft.sem10.gradingservice.domain.utilities.JsonParser;
-import nl.tudelft.sem10.gradingservice.domain.utilities.Stats;
 
 class UtilityTest {
 
@@ -65,11 +65,6 @@ class UtilityTest {
   }
 
   @Test
-  void sum() {
-    assertEquals(15, Stats.sum(itemsDouble));
-  }
-
-  @Test
   void jsonToString() throws JSONException {
     JSONObject obj = new JSONObject();
     obj.put(test, 1);
@@ -89,5 +84,12 @@ class UtilityTest {
     JSONObject obj = JsonParser.stringToJson(jsonString);
     assertTrue(obj.has(test));
     assertEquals(1, obj.get(test));
+  }
+
+  @Test
+  void clipIncorrect() {
+    float lowerBound = 2;
+    float result = Stats.clip(1.0f, lowerBound, 10.0f);
+    assertEquals(lowerBound, result);
   }
 }
