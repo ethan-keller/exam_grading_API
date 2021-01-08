@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.courseservice.framework;
 
+import java.util.Map;
 import nl.tudelft.sem10.courseservice.application.AuthService;
 import nl.tudelft.sem10.courseservice.application.CategoryService;
 import nl.tudelft.sem10.courseservice.domain.model.Category;
@@ -118,6 +119,11 @@ public class CategoryController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping(path = "/weights", produces = RESPONSE_TYPE)
+    public ResponseEntity<Map<String, Double>> getWeights(@RequestParam String courseCode) {
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getWeights(courseCode));
     }
 
     /**
