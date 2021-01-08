@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * A category service implementation using a {@link CategoryRepository}.
  */
-@Component
+@Component("CategoryServiceImpl")
 public class CategoryServiceImpl extends AbstractRepositoryService<Category, CategoryId>
         implements CategoryService {
     @Autowired

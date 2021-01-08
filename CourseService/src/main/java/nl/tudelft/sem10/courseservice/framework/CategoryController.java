@@ -6,6 +6,7 @@ import nl.tudelft.sem10.courseservice.application.CategoryService;
 import nl.tudelft.sem10.courseservice.domain.model.Category;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CategoryController {
     private static final String RESPONSE_TYPE = "application/json";
 
+    @Qualifier("getAuthService")
     @Autowired
     private AuthService auth; //NOPMD
 
+    @Qualifier("getCategoryService")
     @Autowired
     private CategoryService categoryService; //NOPMD
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * A course service implementation using a {@link CourseRepository}.
  */
-@Component
+@Component("CourseServiceImpl")
 public class CourseServiceImpl extends AbstractRepositoryService<Course, String>
         implements CourseService {
     @Autowired
