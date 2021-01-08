@@ -10,11 +10,11 @@ public class Utility {
 
     /* ***** MATH UTILITIES ****** */
 
-    public static double mean(Collection<Double> items) {
+    public static double mean(Collection<Float> items) {
         return Stats.mean(items);
     }
 
-    public static double variance(Collection<Double> items) {
+    public static double variance(Collection<Float> items) {
         return Stats.variance(items);
     }
 

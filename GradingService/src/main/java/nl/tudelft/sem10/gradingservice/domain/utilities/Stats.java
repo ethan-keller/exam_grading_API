@@ -11,9 +11,9 @@ public class Stats {
      * @param items a collection
      * @return mean of the items
      */
-    public static double mean(Collection<Double> items) {
-        double sum = 0.0;
-        for (Double item : items) {
+    public static float mean(Collection<Float> items) {
+        float sum = 0.0f;
+        for (float item : items) {
             sum += item;
         }
 
@@ -26,12 +26,11 @@ public class Stats {
      * @param items a
      * @return a
      */
-    public static double variance(Collection<Double> items) {
-        double mean = Stats.mean(items);
-        double variance = 0.0;
+    public static float variance(Collection<Float> items) {
+        float variance = 0.0f;
 
-        for (Double item : items) {
-            variance += (mean - item) * (mean - item);
+        for (float item : items) {
+            variance += Math.pow(Stats.mean(items) - item, 2);
         }
 
         return variance / items.size();
@@ -53,7 +52,7 @@ public class Stats {
         Iterator<Double> iterItems = items.iterator();
         Iterator<Double> iterWeights = weights.iterator();
 
-        while (iterItems.hasNext()) {
+        while (iterItems.hasNext() && iterWeights.hasNext()) {
             result += iterItems.next() * iterWeights.next();
         }
 
