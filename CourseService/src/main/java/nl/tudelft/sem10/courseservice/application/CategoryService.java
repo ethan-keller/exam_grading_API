@@ -1,9 +1,8 @@
 package nl.tudelft.sem10.courseservice.application;
 
+import java.util.Map;
 import nl.tudelft.sem10.courseservice.domain.model.Category;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
-
-import java.util.Map;
 
 /**
  * A category service.
