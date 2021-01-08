@@ -32,25 +32,7 @@ public class StudentLogic {
     @SuppressWarnings("PMD")
     public double getGrade(List<Grade> list, String courseCode, String token)
         throws JSONException {
-
-        List<Double> grades = list.stream().map(x -> (double) x.getMark())
-                .collect(Collectors.toList());
-        List<Double> weights = new ArrayList<>();
-        for (Grade grade : list) {
-            String str = serverCommunication.getCourseWeights(courseCode,
-                grade.getGradeType(), token);
-            if (str == null) {
-                return 0.0;
-            }
-            JSONObject obj = Utility.stringToJson(str);
-            if (obj.has("weight")) {
-                double weight = obj.getDouble("weight");
-                weights.add(weight);
-            } else {
-                return -1;
-            }
-        }
-        return Utility.weightedAverage(grades, weights);
+        String jsonMap = serverCommunication.getCourseWeights(courseCode, token);
+        return Utility.jsonWeightedAverage(jsonMap, list);
     }
-
 }

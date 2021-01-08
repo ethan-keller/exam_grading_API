@@ -8,10 +8,10 @@ public class JsonParser {
     /**
      * Transform object to JSON string.
      *
-     * @param obj object to transform
+     * @param obj JSON object to transform
      * @return JSON string
      */
-    public static String asJsonString(Object obj) {
+    public static String asJsonString(JSONObject obj) {
         try {
             return obj.toString();
         } catch (Exception e) {

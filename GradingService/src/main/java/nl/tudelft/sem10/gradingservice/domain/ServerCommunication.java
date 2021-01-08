@@ -19,7 +19,7 @@ public class ServerCommunication {
 
     /**
      * Communicates to the course microservice and finds
-     * the weights of grading categories of a course.
+     * the weight of a grading category of a course.
      *
      * @param courseCode   course code of the course
      * @param categoryName the specific category whose weight is needed
@@ -29,6 +29,20 @@ public class ServerCommunication {
         return requestHelper.sendRequest(
                 requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
                         + "&categoryName=" + categoryName, token), client);
+    }
+
+    /**
+     * Communicates to the course microservice and finds
+     * the weights of grading categories of a course.
+     *
+     * @param courseCode course code of the course
+     * @param token JSON security token
+     * @return JSON map of category names and respective weights
+     */
+    public String getCourseWeights(String courseCode, String token) {
+        return requestHelper.sendRequest(
+                requestHelper.getRequest("/teacher/category/weights?courseCode="
+                        + courseCode, token), client);
     }
 
     /**

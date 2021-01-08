@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import nl.tudelft.sem10.gradingservice.domain.utilities.JsonParser;
+import nl.tudelft.sem10.gradingservice.domain.utilities.Stats;
 
 class UtilityTest {
 
@@ -30,19 +32,19 @@ class UtilityTest {
 
   @Test
   void mean() {
-    assertEquals(5, Utility.mean(items));
+    assertEquals(5, Stats.mean(items));
   }
 
   @Test
   void variance() {
     items.add(1.0f);
-    assertEquals(15.5f, Utility.variance(items));
+    assertEquals(15.5f, Stats.variance(items));
     items.remove(1.0f);
   }
 
   @Test
   void varianceSingle() {
-    assertEquals(0.0f, Utility.variance(Collections.singletonList(10.0f)));
+    assertEquals(0.0f, Stats.variance(Collections.singletonList(10.0f)));
   }
 
   @Test
@@ -51,7 +53,7 @@ class UtilityTest {
     weights.add(0.5);
     weights.add(0.3);
     weights.add(0.2);
-    assertEquals(6.0, Utility.weightedAverage(itemsDouble, weights));
+    assertEquals(6.0, Stats.weightedAverage(itemsDouble, weights));
   }
 
   @Test
@@ -59,32 +61,32 @@ class UtilityTest {
     List<Double> weights = new ArrayList<>();
     weights.add(0.5);
     weights.add(0.3);
-    assertEquals(-1, Utility.weightedAverage(itemsDouble, weights));
+    assertEquals(-1, Stats.weightedAverage(itemsDouble, weights));
   }
 
   @Test
   void sum() {
-    assertEquals(15, Utility.sum(itemsDouble));
+    assertEquals(15, Stats.sum(itemsDouble));
   }
 
   @Test
   void jsonToString() throws JSONException {
     JSONObject obj = new JSONObject();
     obj.put(test, 1);
-    assertTrue(Utility.jsonToString(obj).contains("1"));
-    assertTrue(Utility.jsonToString(obj).contains(test));
+    assertTrue(JsonParser.asJsonString(obj).contains("1"));
+    assertTrue(JsonParser.asJsonString(obj).contains(test));
   }
 
   @Test
   void jsonToStringIncorrect() {
     assertThrows(RuntimeException.class,
-            () -> Utility.jsonToString(null));
+            () -> JsonParser.asJsonString(null));
   }
 
   @Test
   void stringToJson() throws JSONException {
     String jsonString = "{\"test\" : 1}";
-    JSONObject obj = Utility.stringToJson(jsonString);
+    JSONObject obj = JsonParser.stringToJson(jsonString);
     assertTrue(obj.has(test));
     assertEquals(1, obj.get(test));
   }

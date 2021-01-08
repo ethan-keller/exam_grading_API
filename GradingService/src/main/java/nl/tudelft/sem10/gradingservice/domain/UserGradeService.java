@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javassist.NotFoundException;
+import nl.tudelft.sem10.gradingservice.domain.utilities.Stats;
 import nl.tudelft.sem10.gradingservice.framework.repositories.GradeRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +37,7 @@ public class UserGradeService {
             throw new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Grades not here!");
         }
-        return Utility.mean(list.stream().map(x -> x.getMark()).collect(Collectors.toList()));
+        return Stats.mean(list.stream().map(Grade::getMark).collect(Collectors.toList()));
     }
 
     /**
@@ -160,8 +161,8 @@ public class UserGradeService {
             double g = studentLogic.getGrade(list, course, token);
             grades.add((float) g);
         }
-        double mean = Utility.mean(grades);
-        double variance = Utility.variance(grades);
+        double mean = Stats.mean(grades);
+        double variance = Stats.variance(grades);
         String json = "{\"mean\":\"" + mean + "\", \"variance\":\"" + variance + "\"}";
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
@@ -196,16 +197,7 @@ public class UserGradeService {
      */
     private void updateGrade(String jsonString, final long gradeId)
         throws JSONException {
-        JSONObject obj = new JSONObject(jsonString);
-        float mark = (float) obj.getDouble("mark");
-        float minBound = 0.0f;
-        if (mark < minBound) {
-            mark = minBound;
-        }
-        float maxBound = 10.0f;
-        if (mark > maxBound) {
-            mark = maxBound;
-        }
+        float mark = Utility.jsonStringClip(jsonString, "mark", 0.0f, 10.0f);
         assert gradeRepository.findById(gradeId).isPresent();
         Grade currGrade = gradeRepository.findById(gradeId).get();
         if (currGrade.getMark() < mark) {
@@ -274,15 +266,7 @@ public class UserGradeService {
         String courseCode = obj.getString("course_code");
         String gradeType = obj.getString("grade_type");
         String netid = obj.getString("netid");
-        float mark = (float) obj.getDouble("mark");
-        float minBound = 0.0f;
-        if (mark < minBound) {
-            mark = minBound;
-        }
-        float maxBound = 10.0f;
-        if (mark > maxBound) {
-            mark = maxBound;
-        }
+        float mark = Utility.jsonStringClip(jsonString, "mark", 0.0f, 10.0f);
         gradeRepository.insertGrade(mark, netid, courseCode, gradeType);
     }
 
