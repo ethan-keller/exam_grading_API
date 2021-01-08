@@ -20,6 +20,13 @@ public class JsonParser {
         }
     }
 
+    /**
+     * Method to convert a String into a JSONObject.
+     *
+     * @param jsonString - The String to convert
+     * @return JSONObject
+     * @throws JSONException - if the operation fails at some point
+     */
     public static JSONObject stringToJson(String jsonString) throws JSONException {
         return new JSONObject(jsonString);
     }
