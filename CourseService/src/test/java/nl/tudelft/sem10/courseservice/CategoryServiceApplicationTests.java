@@ -1,7 +1,10 @@
 package nl.tudelft.sem10.courseservice;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import nl.tudelft.sem10.courseservice.application.CategoryServiceImpl;
 import nl.tudelft.sem10.courseservice.domain.model.Category;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
@@ -15,6 +18,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +45,7 @@ class CategoryServiceApplicationTests {
      * Mock the repository so no database connection is required.
      * We assume the controller and its service are autowired correctly.
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     @BeforeAll
     public void setup() throws ReflectiveOperationException {
         Object service = Util.getField(CategoryController.class, "categoryService").get(controller);
@@ -50,17 +55,26 @@ class CategoryServiceApplicationTests {
             return;
         }
 
+        CategoryRepository mock = Util.repositoryMock(
+                CategoryRepository.class,
+                Category.class,
+                CategoryId.class,
+                category -> {
+                    return new CategoryId(category.getCourse(), category.getName());
+                });
+
+        // Get weights mock
+        Mockito.doAnswer(invocation -> {
+            return Collections.unmodifiableList(mock.findAll()
+                    .stream()
+                    .filter(category -> Objects.equals(category.getCourse(),
+                            invocation.getArgument(0, String.class)))
+                    .collect(Collectors.toList()));
+        }).when(mock).getWeights(Mockito.anyString());
+
         // Inject mock into controller
         // Yes this is really ugly but at least PMD will not complain
-        Util.setField(service,
-                "categoryRepository",
-                Util.repositoryMock(
-                        CategoryRepository.class,
-                        Category.class,
-                        CategoryId.class,
-                        category -> {
-                            return new CategoryId(category.getCourse(), category.getName());
-                        }));
+        Util.setField(service, "categoryRepository", mock);
 
         // Inject auth mock
         Util.setField(controller, "auth", Util.mockAuth());

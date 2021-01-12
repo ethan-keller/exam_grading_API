@@ -1,8 +1,7 @@
 package nl.tudelft.sem10.courseservice.application;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 import nl.tudelft.sem10.courseservice.domain.model.Category;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryRepository;
@@ -29,21 +28,9 @@ public class CategoryServiceImpl extends AbstractRepositoryService<Category, Cat
 
     @Override
     public Map<String, Double> getWeights(String course) {
-        Map<String, Double> map = new HashMap<>();
-
-        // This is not the cleanest solution
-        // TODO: Dedicated query to match by course code
-        Iterator<Category> iterator = get().iterator();
-        while (iterator.hasNext()) {
-            Category category = iterator.next();
-            if (category.getCourse().equals(course)) {
-
-                // This should always be unique
-                map.put(category.getName(), category.getWeight());
-            }
-        }
-
-        return map;
+        return categoryRepository.getWeights(course)
+                .stream()
+                .collect(Collectors.toMap(Category::getName, Category::getWeight));
     }
 
     @Override
