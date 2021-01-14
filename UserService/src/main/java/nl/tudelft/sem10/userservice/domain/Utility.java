@@ -59,6 +59,7 @@ public class Utility {
      * @param jsonString - of type String
      * @return String[] - an array of fields
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public static String[] jsonStringToFields(String jsonString) {
         JSONObject json = new JSONObject(jsonString);
         if (json.has("netId") && json.has("password") && json.has("type")) {

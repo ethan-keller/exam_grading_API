@@ -94,7 +94,8 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
         String[] fields = Utility.jsonStringToFields(jsonString);
-        if (fields.length == 3) {
+        int numOfFields = 3;
+        if (fields.length == numOfFields) {
             String netId = fields[0];
             User u = userRepository.getUserByNetId(netId);
             if (u != null) {
@@ -146,7 +147,8 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
         String[] fields = Utility.jsonStringToFields(jsonString);
-        if (fields.length == 3) {
+        int numOfFields = 3;
+        if (fields.length == numOfFields) {
             String netId = fields[0];
             User u = userRepository.getUserByNetId(netId);
             if (u == null) {
