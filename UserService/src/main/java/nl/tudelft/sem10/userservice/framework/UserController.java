@@ -93,16 +93,15 @@ public class UserController {
     @Modifying
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
-        JSONObject json = new JSONObject(jsonString);
-        if (json.has(netIdStr) && json.has("password") && json.has("type")) {
-            String netId = json.getString(netIdStr);
+        String[] fields = Utility.jsonStringToFields(jsonString);
+        if (fields.length == 3) {
+            String netId = fields[0];
             User u = userRepository.getUserByNetId(netId);
             if (u != null) {
                 return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
             }
-            String password = json.getString("password");
-            String encrypted = Utility.getEncryptedPassword(password, restTemplate);
-            int type = json.getInt("type");
+            String encrypted = Utility.getEncryptedPassword(fields[1], restTemplate);
+            int type = Integer.parseInt(fields[2]);
             userRepository.insertUser(netId, encrypted, type);
             User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
