@@ -1,10 +1,5 @@
 package nl.tudelft.sem10.gradingservice.application;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
@@ -19,6 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -167,16 +167,6 @@ class StudentGradeControllerTest {
     }
 
     @Test
-    void passedCoursesInvalid() throws JSONException {
-        when(serverCommunication.validate(any(String.class))).thenReturn(null);
-
-        ResponseEntity<List<String>> result =
-            studentGradeController.passedCourses("Bearer token", NETID);
-
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-    }
-
-    @Test
     void allGrades() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
         when(serverCommunication.validateUser(any(String.class), any(String.class)))
@@ -235,17 +225,9 @@ class StudentGradeControllerTest {
     void passingRateUnauthorized() throws JSONException {
         when(serverCommunication.validate(any(String.class))).thenReturn("NOTAVALIDUSER");
 
-        ResponseEntity<Double> result = studentGradeController.passingRate("bearer token", "CSE1");
+        ResponseEntity<Double> result = studentGradeController.passingRate("Bearer token", "CSE1");
 
         assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
     }
 
-    @Test
-    void passingRateInvalid() throws JSONException {
-        when(serverCommunication.validate(any(String.class))).thenReturn(null);
-
-        ResponseEntity<Double> result = studentGradeController.passingRate("bearer token", "CSE1");
-
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-    }
 }

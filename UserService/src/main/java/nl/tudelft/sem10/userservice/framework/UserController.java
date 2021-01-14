@@ -95,20 +95,20 @@ public class UserController {
     public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
         String[] fields = Utility.jsonStringToFields(jsonString);
         int numOfFields = 3;
-        if (fields.length == numOfFields) {
-            String netId = fields[0];
-            User u = userRepository.getUserByNetId(netId);
-            if (u != null) {
-                return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
-            }
-            String encrypted = Utility.getEncryptedPassword(fields[1], restTemplate);
-            int type = Integer.parseInt(fields[2]);
-            userRepository.insertUser(netId, encrypted, type);
-            User n = new User(netId, encrypted, type);
-            return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
-        } else {
+        if (fields.length != numOfFields) {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
+        String netId = fields[0];
+        User u = userRepository.getUserByNetId(netId);
+        if (u != null) {
+            return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
+        }
+        String encrypted = Utility.getEncryptedPassword(fields[1], restTemplate);
+        int type = Integer.parseInt(fields[2]);
+        userRepository.insertUser(netId, encrypted, type);
+        User n = new User(netId, encrypted, type);
+        return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
+
     }
 
     /**
@@ -148,20 +148,19 @@ public class UserController {
     public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
         String[] fields = Utility.jsonStringToFields(jsonString);
         int numOfFields = 3;
-        if (fields.length == numOfFields) {
-            String netId = fields[0];
-            User u = userRepository.getUserByNetId(netId);
-            if (u == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            String encrypted = Utility.getEncryptedPassword(fields[1], restTemplate);
-            int type = Integer.parseInt(fields[2]);
-            userRepository.updateUser(netId, encrypted, type);
-            User n = new User(netId, encrypted, type);
-            return new ResponseEntity<>(n.toString(), HttpStatus.OK);
-        } else {
+        if (fields.length != numOfFields) {
             return new ResponseEntity<>("Format not understood", HttpStatus.BAD_REQUEST);
         }
+        String netId = fields[0];
+        User u = userRepository.getUserByNetId(netId);
+        if (u == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        String encrypted = Utility.getEncryptedPassword(fields[1], restTemplate);
+        int type = Integer.parseInt(fields[2]);
+        userRepository.updateUser(netId, encrypted, type);
+        User n = new User(netId, encrypted, type);
+        return new ResponseEntity<>(n.toString(), HttpStatus.OK);
     }
 
     /**

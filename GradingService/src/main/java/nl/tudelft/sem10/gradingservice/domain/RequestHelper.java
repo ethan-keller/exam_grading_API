@@ -77,17 +77,17 @@ public class RequestHelper {
      * @return response of request
      */
     public String sendRequest(HttpRequest request, HttpClient client) {
+        HttpResponse<String> response;
         try {
-            HttpResponse<String> response;
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.body().isEmpty()) {
-                return Integer.toString(response.statusCode());
-            }
-            return response.body();
         } catch (Exception e) {
-            e.printStackTrace();
             return "Communication with server failed";
         }
+        String responseBody = response.body();
+        if (responseBody == null || responseBody.isEmpty()) {
+            return "" + response.statusCode();
+        }
+        return responseBody;
     }
 
 }

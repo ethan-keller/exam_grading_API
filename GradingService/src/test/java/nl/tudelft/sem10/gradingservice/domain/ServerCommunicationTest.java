@@ -105,7 +105,7 @@ class ServerCommunicationTest {
 
         String send = reqHelper.sendRequest(request, client);
 
-        assertEquals("Communication with server failed", send);
+        assertEquals("0", send);
     }
 
     @Test
