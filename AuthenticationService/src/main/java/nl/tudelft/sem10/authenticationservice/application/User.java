@@ -3,7 +3,6 @@ package nl.tudelft.sem10.authenticationservice.application;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * User entity class.
@@ -99,15 +98,5 @@ public class User implements Serializable {
         }
         User user = (User) o;
         return getNetId().equals(user.getNetId());
-    }
-
-    /**
-     * Hash code generator.
-     *
-     * @return the hash value of this User instance
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(getNetId(), getPassword(), getRole());
     }
 }

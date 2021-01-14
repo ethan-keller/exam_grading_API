@@ -1,9 +1,9 @@
 package nl.tudelft.sem10.authenticationservice.application;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
-import org.junit.jupiter.api.Test;
 
 /**
  * Test suite for the User class.
@@ -62,14 +62,5 @@ class UserTest {
         assertNotEquals(user2, user3);
         assertEquals(user2, user2);
         assertNotEquals(user1, new Object());
-    }
-
-    /**
-     * Test for hash code generator.
-     */
-    @Test
-    void testHashCode() {
-        assertEquals(user2.hashCode(), user4.hashCode());
-        assertNotEquals(user1.hashCode(), user3.hashCode());
     }
 }
