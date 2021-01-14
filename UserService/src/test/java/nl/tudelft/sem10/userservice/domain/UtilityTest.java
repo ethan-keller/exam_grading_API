@@ -1,9 +1,5 @@
 package nl.tudelft.sem10.userservice.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.client.RestTemplate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UtilityTest {
@@ -44,5 +44,24 @@ class UtilityTest {
 
         assertEquals("encryptedPassword", response);
 
+    }
+
+    @Test
+    void jsonFieldsTestExpected() {
+        String jsonString = "{\"netId\":\"test\", \"password\":\"pass\", \"type\":\"1\"}";
+        String[] fields = Utility.jsonStringToFields(jsonString);
+        String netId = fields[0];
+        String password = fields[1];
+        int type = Integer.parseInt(fields[2]);
+        assertEquals("test", netId);
+        assertEquals("pass", password);
+        assertEquals(1, type);
+    }
+
+    @Test
+    void jsonFieldsTestIncorrect() {
+        String jsonString = "{\"invalid\":\"test\"}";
+        String[] fields = Utility.jsonStringToFields(jsonString);
+        assertEquals(0, fields.length);
     }
 }

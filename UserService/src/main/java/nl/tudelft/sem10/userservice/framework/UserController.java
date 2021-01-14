@@ -11,16 +11,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 
 /**
  * Controller for userService module. Provides basic endpoints to interact with users database.
@@ -101,16 +93,16 @@ public class UserController {
     @Modifying
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody String jsonString) throws JSONException {
-        JSONObject json = new JSONObject(jsonString);
-        if (json.has(netIdStr) && json.has("password") && json.has("type")) {
-            String netId = json.getString(netIdStr);
+        String[] fields = Utility.jsonStringToFields(jsonString);
+        int numOfFields = 3;
+        if (fields.length == numOfFields) {
+            String netId = fields[0];
             User u = userRepository.getUserByNetId(netId);
             if (u != null) {
                 return new ResponseEntity<>("User already exists", HttpStatus.IM_USED);
             }
-            String password = json.getString("password");
-            String encrypted = Utility.getEncryptedPassword(password, restTemplate);
-            int type = json.getInt("type");
+            String encrypted = Utility.getEncryptedPassword(fields[1], restTemplate);
+            int type = Integer.parseInt(fields[2]);
             userRepository.insertUser(netId, encrypted, type);
             User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.CREATED);
@@ -154,16 +146,16 @@ public class UserController {
     @Modifying
     @ResponseBody
     public ResponseEntity<String> changeDetails(@RequestBody String jsonString) {
-        JSONObject json = new JSONObject(jsonString);
-        if (json.has(netIdStr) && json.has("password") && json.has("type")) {
-            String netId = json.getString(netIdStr);
+        String[] fields = Utility.jsonStringToFields(jsonString);
+        int numOfFields = 3;
+        if (fields.length == numOfFields) {
+            String netId = fields[0];
             User u = userRepository.getUserByNetId(netId);
             if (u == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            int type = json.getInt("type");
-            String password = json.getString("password");
-            String encrypted = Utility.getEncryptedPassword(password, restTemplate);
+            String encrypted = Utility.getEncryptedPassword(fields[1], restTemplate);
+            int type = Integer.parseInt(fields[2]);
             userRepository.updateUser(netId, encrypted, type);
             User n = new User(netId, encrypted, type);
             return new ResponseEntity<>(n.toString(), HttpStatus.OK);
