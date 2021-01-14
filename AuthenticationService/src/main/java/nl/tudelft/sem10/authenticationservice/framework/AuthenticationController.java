@@ -82,6 +82,7 @@ public class AuthenticationController {
      * @return A token if the user credentials match or <code>null</code> if they don't
      * @throws NoSuchAlgorithmException
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private String validateDetailsAndGetToken(JwtRequest request, UserDetailsImpl userDetails)
         throws NoSuchAlgorithmException {
         String token = null;

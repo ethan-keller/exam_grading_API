@@ -89,6 +89,7 @@ public class User implements Serializable {
      * @return true if netId's are equal, false otherwise
      */
     @Override
+    @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
     public boolean equals(Object o) {
         if (this == o) {
             return true;
