@@ -76,6 +76,7 @@ public class RequestHelper {
      * @param client  client sending the request
      * @return response of request
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public String sendRequest(HttpRequest request, HttpClient client) {
         HttpResponse<String> response;
         try {
