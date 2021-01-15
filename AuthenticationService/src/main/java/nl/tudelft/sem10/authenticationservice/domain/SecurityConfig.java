@@ -88,15 +88,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // disable CSRF
-        http = http.csrf().disable();
+        http = disableCsrf(http);
 
         // set session management to stateless
-        http = http
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
+        http = setStateless(http);
 
         // set permissions
+        setPermissions(http);
+
+        // add JWT token filter
+        addJwtFilter(http);
+    }
+
+    private HttpSecurity disableCsrf(HttpSecurity http) throws Exception {
+        return http.csrf().disable();
+    }
+
+    private HttpSecurity setStateless(HttpSecurity http) throws Exception {
+        return http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and();
+    }
+
+    private void setPermissions(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/encode/**")
                 .permitAll()
@@ -109,8 +123,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+    }
 
-        // add JWT token filter
+    private void addJwtFilter(HttpSecurity http) {
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
