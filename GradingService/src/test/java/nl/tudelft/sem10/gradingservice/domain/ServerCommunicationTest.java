@@ -45,7 +45,7 @@ class ServerCommunicationTest {
     void getCourseWeights() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
             .thenReturn(SENT);
-        when(requestHelper.getRequest(any(String.class), any(String.class))).thenCallRealMethod();
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
 
         String str = serverCommunication.getCourseWeights("CSE1", "Test", "bearer myToken");
 
@@ -56,7 +56,7 @@ class ServerCommunicationTest {
     void validate() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
             .thenReturn(SENT);
-        when(requestHelper.validateToken(any(String.class))).thenCallRealMethod();
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
 
         String str = serverCommunication.validate("token");
 
@@ -67,7 +67,7 @@ class ServerCommunicationTest {
     void validateUser() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
                 .thenReturn("TRUE");
-        when(requestHelper.validateNetIdToken(any(String.class), any(String.class))).thenCallRealMethod();
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
 
         Boolean bool = serverCommunication.validateUser("token", "netId");
 
@@ -105,14 +105,14 @@ class ServerCommunicationTest {
 
         String send = reqHelper.sendRequest(request, client);
 
-        assertEquals("Communication with server failed", send);
+        assertEquals("0", send);
     }
 
     @Test
     void courseWeightsTest() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
                 .thenReturn(SENT);
-        when(requestHelper.getRequest(any(String.class), any(String.class))).thenCallRealMethod();
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
 
         String str = serverCommunication.getCourseWeights("CSE1", "bearer myToken");
 

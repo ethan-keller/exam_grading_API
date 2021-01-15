@@ -110,16 +110,12 @@ public class StudentGradeController {
                                                           String token,
                                                       @RequestParam String netId)
         throws JSONException {
-        try {
-            String str = serverCommunication.validate(token.substring(7));
-            boolean correctUser = serverCommunication.validateUser(token.substring(7), netId);
-            if (str.contains(userType) && correctUser) {
-                return userService.passedCourses(netId, token);
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        String str = serverCommunication.validate(token.replaceFirst("^Bearer ", ""));
+        boolean correctUser = serverCommunication.validateUser(token.replaceFirst("^Bearer ", ""), netId);
+        if (str.contains(userType) && correctUser) {
+            return userService.passedCourses(netId, token);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
@@ -162,16 +158,11 @@ public class StudentGradeController {
     public ResponseEntity<Double> passingRate(@RequestHeader(headerName)
                                                   String token,
                                               @RequestParam String course) throws JSONException {
-        try {
-            String str = serverCommunication.validate(token.substring(7));
-            if (str.contains(userType)) {
-                return userService.passingRate(course, token);
-            } else {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        String str = serverCommunication.validate(token.replaceFirst("^Bearer ", ""));
+        if (str.contains(userType)) {
+            return userService.passingRate(course, token);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
-
 }

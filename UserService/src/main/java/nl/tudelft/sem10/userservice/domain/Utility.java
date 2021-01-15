@@ -3,6 +3,7 @@ package nl.tudelft.sem10.userservice.domain;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.json.JSONObject;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -50,6 +51,28 @@ public class Utility {
         String url = "http://localhost:8080/encode/{password}";
 
         return restTemplate.getForObject(url, String.class, hashed);
+    }
+
+    /**
+     * Method to turn a jsonString to an array of User fields.
+     *
+     * @param jsonString - of type String
+     * @return String[] - an array of fields
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    public static String[] jsonStringToFields(String jsonString) {
+        JSONObject json = new JSONObject(jsonString);
+        if (json.has("netId") && json.has("password") && json.has("type")) {
+            String[] ret = new String[3];
+            String netId = json.getString("netId");
+            int type = json.getInt("type");
+            String password = json.getString("password");
+            ret[0] = netId;
+            ret[1] = password;
+            ret[2] = String.valueOf(type);
+            return ret;
+        }
+        return new String[] {};
     }
 
 }

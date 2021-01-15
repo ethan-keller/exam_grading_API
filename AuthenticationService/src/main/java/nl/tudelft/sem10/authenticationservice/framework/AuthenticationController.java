@@ -45,12 +45,52 @@ public class AuthenticationController {
             throws NoSuchAlgorithmException {
         final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService
                 .loadUserByUsername(request.getNetId());
-        if (userDetails != null && passwordEncoder
-                .matches(Utility.hash(request.getPassword()), userDetails.getPassword())) {
-            final String token = jwtTokenUtil.generateToken(userDetails);
-            return ResponseEntity.ok(new JwtResponse(token));
+        ResponseEntity<JwtResponse>
+            response = getResponse(request, userDetails);
+        if (response != null) {
+            return response;
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * Gets an <code>OK</code> response containing a JWT response with a token if the user details
+     * match the ones stored in our database.
+     * If the credentials *don't* match, this returns <code>null</code>
+     *
+     * @param request the JwtRequest that arrived at the endpoint.
+     * @param userDetails The user's details.
+     * @return An <code>OK</code> response or <code>null</code> the credentials don't match
+     * @throws NoSuchAlgorithmException
+     */
+    private ResponseEntity<JwtResponse> getResponse(JwtRequest request,
+                                                                     UserDetailsImpl userDetails)
+        throws NoSuchAlgorithmException {
+        if (userDetails != null) {
+            final String token = validateDetailsAndGetToken(request, userDetails);
+            if (token != null) {
+                return ResponseEntity.ok(new JwtResponse(token));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a token if the user credentials match the ones stored in the database.
+     * @param request the JwtRequest that arrived at the endpoint.
+     * @param userDetails The user's details.
+     * @return A token if the user credentials match or <code>null</code> if they don't
+     * @throws NoSuchAlgorithmException
+     */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    private String validateDetailsAndGetToken(JwtRequest request, UserDetailsImpl userDetails)
+        throws NoSuchAlgorithmException {
+        String token = null;
+        if (passwordEncoder
+            .matches(Utility.hash(request.getPassword()), userDetails.getPassword())) {
+            token = jwtTokenUtil.generateToken(userDetails);
+        }
+        return token;
     }
 
     /**
