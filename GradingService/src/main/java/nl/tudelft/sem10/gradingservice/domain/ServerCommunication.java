@@ -9,6 +9,8 @@ public class ServerCommunication {
 
     private static final HttpClient client = HttpClient.newBuilder().build();
     private transient RequestHelper requestHelper = new RequestHelper();
+    private static final String domainCourse = "http://localhost:8081";
+    private static final String domainAuth = "http://localhost:8080";
 
     public ServerCommunication() {
     }
@@ -27,8 +29,9 @@ public class ServerCommunication {
      */
     public String getCourseWeights(String courseCode, String categoryName, String token) {
         return requestHelper.sendRequest(
-                requestHelper.getRequest("/teacher/category/get?courseCode=" + courseCode
-                        + "&categoryName=" + categoryName, token), client);
+                requestHelper.getRequest(domainCourse
+                        + "/teacher/category/get?courseCode=" + courseCode
+                        + "&categoryName=" + categoryName, token, ""), client);
     }
 
     /**
@@ -41,8 +44,9 @@ public class ServerCommunication {
      */
     public String getCourseWeights(String courseCode, String token) {
         return requestHelper.sendRequest(
-                requestHelper.getRequest("/teacher/category/weights?courseCode="
-                        + courseCode, token), client);
+                requestHelper.getRequest(domainCourse
+                        + "/teacher/category/weights?courseCode="
+                        + courseCode, token, ""), client);
     }
 
     /**
@@ -55,7 +59,8 @@ public class ServerCommunication {
      */
     public String validate(String token) {
         return requestHelper.sendRequest(
-            requestHelper.validateToken(token), client);
+            requestHelper.getRequest(domainAuth
+                    + "/validate/", token, token), client);
     }
 
     /**
@@ -68,6 +73,7 @@ public class ServerCommunication {
      */
     public boolean validateUser(String token, String netId) {
         return Boolean.parseBoolean(requestHelper.sendRequest(
-                requestHelper.validateNetIdToken(netId, "Bearer " + token), client));
+                requestHelper.getRequest(domainAuth
+                        + "/validate/netId/", "Bearer " + token, netId), client));
     }
 }
