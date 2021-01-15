@@ -27,20 +27,6 @@ public class GradeController {
     @Autowired
     private transient UserGradeService userService;
 
-    public void setGradeRepository(
-        GradeRepository gradeRepository) {
-        this.gradeRepository = gradeRepository;
-    }
-
-    public void setUserService(UserGradeService userService) {
-        this.userService = userService;
-    }
-
-    public void setServerCommunication(
-        ServerCommunication serverCommunication) {
-        GradeController.serverCommunication = serverCommunication;
-    }
-
     /**
      * Returns a list of all grade entities in the database.
      * Possibility of filtering on either netid, course, both or none.
