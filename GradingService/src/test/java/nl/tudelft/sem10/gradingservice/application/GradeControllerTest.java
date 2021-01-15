@@ -1,5 +1,6 @@
 package nl.tudelft.sem10.gradingservice.application;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import nl.tudelft.sem10.gradingservice.domain.Grade;
@@ -37,16 +38,16 @@ class GradeControllerTest {
     private transient ServerCommunication serverCommunication;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ReflectiveOperationException {
         this.grades = new ArrayList<>();
         this.gradeRepository = mock(GradeRepository.class);
         this.userGradeService = mock(UserGradeService.class);
         this.serverCommunication = mock(ServerCommunication.class);
 
         this.gradeController = new GradeController();
-        this.gradeController.setGradeRepository(gradeRepository);
-        this.gradeController.setServerCommunication(serverCommunication);
-        this.gradeController.setUserService(userGradeService);
+        setField(gradeController, "gradeRepository", gradeRepository);
+        setField(gradeController, "serverCommunication", serverCommunication);
+        setField(gradeController, "userService", userGradeService);
     }
 
     @Test
@@ -116,5 +117,36 @@ class GradeControllerTest {
                         "CSE2077", "Samurai");
 
         assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+    }
+
+    /**
+     * Get a field using reflection.
+     * The field will be accessible immediately.
+     *
+     * @param clazz - Class&lt;?&gt; Class to get a field from.
+     * @param fieldName - String Field name.
+     * @return the field.
+     * @throws ReflectiveOperationException If something goes wrong.
+     */
+    public static Field getField(Class<?> clazz,
+                                 String fieldName) throws ReflectiveOperationException {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field;
+    }
+
+    /**
+     * Set a field value using reflection.
+     *
+     * @param instance - Object Instance to set a field for.
+     * @param fieldName - String Field name.
+     * @param value - Object Value to set.
+     * @throws ReflectiveOperationException If something goes wrong.
+     */
+    public static void setField(Object instance,
+                                String fieldName,
+                                Object value) throws ReflectiveOperationException {
+        Field field = getField(instance.getClass(), fieldName);
+        field.set(instance, value);
     }
 }
