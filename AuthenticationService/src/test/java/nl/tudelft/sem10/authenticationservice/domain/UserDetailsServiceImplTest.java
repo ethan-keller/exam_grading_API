@@ -1,11 +1,16 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import nl.tudelft.sem10.authenticationservice.application.User;
 import nl.tudelft.sem10.authenticationservice.application.UserDetailsServiceImpl;
@@ -22,7 +27,7 @@ class UserDetailsServiceImplTest {
 
     private final transient UserDetailsService service = new UserDetailsServiceImpl();
     private final transient User user = new User("jSnow", "pass123#", 0);
-    private final transient RestService rest = Mockito.mock(RestService.class);
+    private final transient RestService rest = mock(RestService.class);
 
     /**
      * Sets up the tests by injecting mocked rest template.
@@ -61,7 +66,14 @@ class UserDetailsServiceImplTest {
      */
     @Test
     void loadNonExistingUsername() {
+        final PrintStream out = System.out;
+        PrintStream mock = mock(PrintStream.class);
+        System.setOut(mock);
+
         when(rest.getUserFromUserService(user.getNetId())).thenReturn(null);
         assertNull(service.loadUserByUsername(user.getNetId()));
+        verify(mock, times(1)).println(anyString());
+
+        System.setOut(out);
     }
 }
