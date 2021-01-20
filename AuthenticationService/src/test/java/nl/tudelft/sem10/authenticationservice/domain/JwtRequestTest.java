@@ -12,14 +12,16 @@ import org.junit.jupiter.api.Test;
 class JwtRequestTest {
 
     // transient for PMD
-    private transient JwtRequest jwtRequest;
+    private transient JwtRequest jwtRequestStudent;
+    private transient JwtRequest jwtRequestTeacher;
 
     /**
      * Define a JwtRequest.
      */
     @BeforeEach
     void setUp() {
-        jwtRequest = new JwtRequest("netId", "password123", 0);
+        jwtRequestStudent = new JwtRequest("netId_s", "password123", 0);
+        jwtRequestTeacher = new JwtRequest("netId_t", "password123", 1);
     }
 
     /**
@@ -36,7 +38,8 @@ class JwtRequestTest {
      */
     @Test
     void getNetId() {
-        assertEquals("netId", jwtRequest.getNetId());
+        assertEquals("netId_s", jwtRequestStudent.getNetId());
+        assertEquals("netId_t", jwtRequestTeacher.getNetId());
     }
 
     /**
@@ -44,7 +47,8 @@ class JwtRequestTest {
      */
     @Test
     void getPassword() {
-        assertEquals("password123", jwtRequest.getPassword());
+        assertEquals("password123", jwtRequestStudent.getPassword());
+        assertEquals("password123", jwtRequestTeacher.getPassword());
     }
 
     /**
@@ -52,6 +56,7 @@ class JwtRequestTest {
      */
     @Test
     void getType() {
-        assertEquals(0, jwtRequest.getType());
+        assertEquals(0, jwtRequestStudent.getType());
+        assertEquals(1, jwtRequestTeacher.getType());
     }
 }
