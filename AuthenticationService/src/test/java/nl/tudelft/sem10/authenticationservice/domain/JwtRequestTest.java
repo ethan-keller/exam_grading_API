@@ -20,8 +20,8 @@ class JwtRequestTest {
      */
     @BeforeEach
     void setUp() {
-        jwtRequestStudent = new JwtRequest("netId_s", "password123", 0);
-        jwtRequestTeacher = new JwtRequest("netId_t", "password123", 1);
+        jwtRequestStudent = new JwtRequest("netId_s", "password123_s", 0);
+        jwtRequestTeacher = new JwtRequest("netId_t", "password123_t", 1);
     }
 
     /**
@@ -47,8 +47,8 @@ class JwtRequestTest {
      */
     @Test
     void getPassword() {
-        assertEquals("password123", jwtRequestStudent.getPassword());
-        assertEquals("password123", jwtRequestTeacher.getPassword());
+        assertEquals("password123_s", jwtRequestStudent.getPassword());
+        assertEquals("password123_t", jwtRequestTeacher.getPassword());
     }
 
     /**

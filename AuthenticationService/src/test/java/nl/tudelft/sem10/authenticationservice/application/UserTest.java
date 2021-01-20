@@ -1,9 +1,9 @@
 package nl.tudelft.sem10.authenticationservice.application;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test suite for the User class.
