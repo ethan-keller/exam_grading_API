@@ -1,38 +1,29 @@
 package nl.tudelft.sem10.courseservice.application;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import nl.tudelft.sem10.courseservice.CourseServiceApplication;
 import nl.tudelft.sem10.courseservice.domain.model.Category;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryId;
 import nl.tudelft.sem10.courseservice.domain.repository.CategoryRepository;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 @SpringBootTest(classes = CourseServiceApplication.class)
 class AbstractRepositoryServiceTest {
     @MockBean
-    CategoryRepository categoryRepository;
+    private transient CategoryRepository categoryRepository;
 
     @Autowired
     @Qualifier("getCategoryService")
-    CategoryService categoryService;
+    private transient CategoryService categoryService;
 
     @Test
     void testGet() {

@@ -1,15 +1,5 @@
 package nl.tudelft.sem10.authenticationservice.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import nl.tudelft.sem10.authenticationservice.application.User;
@@ -17,8 +7,12 @@ import nl.tudelft.sem10.authenticationservice.application.UserDetailsServiceImpl
 import nl.tudelft.sem10.authenticationservice.framework.RestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 /**
  * Test suite for the user details service.
@@ -68,12 +62,21 @@ class UserDetailsServiceImplTest {
     void loadNonExistingUsername() {
         final PrintStream out = System.out;
         PrintStream mock = mock(PrintStream.class);
-        System.setOut(mock);
+        try {
+            System.setOut(mock);
 
-        when(rest.getUserFromUserService(user.getNetId())).thenReturn(null);
-        assertNull(service.loadUserByUsername(user.getNetId()));
-        verify(mock, times(1)).println(anyString());
+            when(rest.getUserFromUserService(user.getNetId())).thenReturn(null);
+            assertNull(service.loadUserByUsername(user.getNetId()));
+            verify(mock, times(1)).println(anyString());
 
-        System.setOut(out);
+            System.setOut(out);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            out.close();
+            mock.close();
+        }
     }
 }
