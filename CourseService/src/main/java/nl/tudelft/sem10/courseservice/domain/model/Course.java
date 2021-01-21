@@ -89,17 +89,17 @@ public class Course {
         }
         Course course = (Course) o;
         return Objects.equals(code, course.code)
-                && Objects.equals(name, course.name);
+            && Objects.equals(name, course.name);
     }
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("Course[code=")
-                .append(code)
-                .append(", name=")
-                .append(name)
-                .append("]")
-                .toString();
+            .append("Course[code=")
+            .append(code)
+            .append(", name=")
+            .append(name)
+            .append("]")
+            .toString();
     }
 }

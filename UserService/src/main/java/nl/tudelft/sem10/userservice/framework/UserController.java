@@ -11,7 +11,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -23,19 +30,17 @@ import org.springframework.web.client.RestTemplate;
 public class UserController {
 
 
+    // To adhere to the lovely PMD rules
+    private final transient String netIdStr = "netId";
     @Autowired
     private transient UserRepository userRepository;
-
     @Autowired
     private transient RestTemplate restTemplate;
-
-    // To adhere to the lovely PMD rules
-    private final transient  String netIdStr = "netId";
 
     /**
      * Setter for the userRepository, mainly used for testing purposes.
      *
-     * @param userRepository  of type UserRepository
+     * @param userRepository of type UserRepository
      */
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -44,7 +49,7 @@ public class UserController {
     /**
      * Setter for the restTemplate, mainly used for testing purposes.
      *
-     * @param restTemplate  of type RestTemplate
+     * @param restTemplate of type RestTemplate
      */
     public void setRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -74,7 +79,7 @@ public class UserController {
         if (u == null) {
             if (netId.contains("type")) {
                 return new ResponseEntity<>("Please specify a type!\nStudent -> 0\nTeacher -> 1",
-                        HttpStatus.BAD_REQUEST);
+                    HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
             }

@@ -26,7 +26,6 @@ public interface UserRepository extends JpaRepository<User, String> {
      * Returns the user with a matching netId.
      *
      * @param netId of type String to be searched
-     *
      * @return User
      */
     @Query(value = "SELECT * FROM user WHERE netid = ?1", nativeQuery = true)
@@ -35,7 +34,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     /**
      * Returns the user with a matching netId and password.
      *
-     * @param netId of type String to be searched
+     * @param netId    of type String to be searched
      * @param password of type String to be searched
      * @return User
      */
@@ -54,27 +53,27 @@ public interface UserRepository extends JpaRepository<User, String> {
     /**
      * Add a new user to the database.
      *
-     * @param netId of type String - to be inserted
+     * @param netId    of type String - to be inserted
      * @param password of type String - to be inserted
-     * @param type of type int - to be inserted
+     * @param type     of type int - to be inserted
      */
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO user (netid, password, type) "
-            + "VALUES (?1, ?2, ?3)", nativeQuery = true)
+        + "VALUES (?1, ?2, ?3)", nativeQuery = true)
     void insertUser(String netId, String password, int type);
 
     /**
      * Modify an existing user.
      *
-     * @param netId of type String - to search for, can't be updated at the moment
+     * @param netId    of type String - to search for, can't be updated at the moment
      * @param password of type String - to be updated
-     * @param type of type int - to be updated
+     * @param type     of type int - to be updated
      */
     @Modifying
     @Transactional
     @Query(value = "UPDATE user SET password = ?2, "
-            + "type = ?3 WHERE netid = ?1", nativeQuery = true)
+        + "type = ?3 WHERE netid = ?1", nativeQuery = true)
     void updateUser(String netId, String password, int type);
 
     /**

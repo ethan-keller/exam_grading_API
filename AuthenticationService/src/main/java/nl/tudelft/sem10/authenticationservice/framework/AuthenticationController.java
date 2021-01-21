@@ -42,11 +42,11 @@ public class AuthenticationController {
      */
     @GetMapping("/getToken")
     public ResponseEntity<JwtResponse> getToken(@RequestBody JwtRequest request)
-            throws NoSuchAlgorithmException {
+        throws NoSuchAlgorithmException {
         final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService
-                .loadUserByUsername(request.getNetId());
+            .loadUserByUsername(request.getNetId());
         ResponseEntity<JwtResponse>
-                response = getResponse(request, userDetails);
+            response = getResponse(request, userDetails);
         if (response != null) {
             return response;
         }
@@ -65,7 +65,7 @@ public class AuthenticationController {
      */
     private ResponseEntity<JwtResponse> getResponse(JwtRequest request,
                                                     UserDetailsImpl userDetails)
-            throws NoSuchAlgorithmException {
+        throws NoSuchAlgorithmException {
         if (userDetails != null) {
             final String token = validateDetailsAndGetToken(request, userDetails);
             if (token != null) {
@@ -85,10 +85,10 @@ public class AuthenticationController {
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private String validateDetailsAndGetToken(JwtRequest request, UserDetailsImpl userDetails)
-            throws NoSuchAlgorithmException {
+        throws NoSuchAlgorithmException {
         String token = null;
         if (passwordEncoder
-                .matches(Utility.hash(request.getPassword()), userDetails.getPassword())) {
+            .matches(Utility.hash(request.getPassword()), userDetails.getPassword())) {
             token = jwtTokenUtil.generateToken(userDetails);
         }
         return token;
@@ -135,7 +135,7 @@ public class AuthenticationController {
     @GetMapping("/validate/netId/{netId}")
     public ResponseEntity<Boolean> validateNetIdToken(@PathVariable String netId,
                                                       @RequestHeader("Authorization")
-                                                              String token) {
+                                                          String token) {
         String realNetId = jwtTokenUtil.getNetIdFromToken(token.substring(7));
         if (realNetId == null) {
             return ResponseEntity.ok(false);

@@ -111,7 +111,8 @@ public class StudentGradeController {
                                                       @RequestParam String netId)
         throws JSONException {
         String str = serverCommunication.validate(token.replaceFirst("^Bearer ", ""));
-        boolean correctUser = serverCommunication.validateUser(token.replaceFirst("^Bearer ", ""), netId);
+        boolean correctUser =
+            serverCommunication.validateUser(token.replaceFirst("^Bearer ", ""), netId);
         if (str.contains(userType) && correctUser) {
             return userService.passedCourses(netId, token);
         } else {

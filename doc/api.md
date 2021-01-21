@@ -19,11 +19,11 @@ If the token is not valid you get rejected, else you get access
 ### Authentication service (on port *8080*)
 
 - **GET** */getToken*
-    gets a token after validation user credentials
+  gets a token after validation user credentials
     - body: `{
-    "netid": "somenetid",
-    "password": "somehashedpassword"
-    }`
+      "netid": "somenetid",
+      "password": "somehashedpassword"
+      }`
     - *returns* String representation of token
 
 - **GET** */encode/{hashedPassword}*
@@ -42,13 +42,13 @@ If the token is not valid you get rejected, else you get access
 ### User service (on port *8083*)
 
 - **GET** */user*
-    - required parameter: None 
+    - required parameter: None
     - *returns* a List of Users where each entry is a User object.'
 
 - **GET** */user/{netId}*
     - *returns* a User object
 
--  **POST** */user* 
+- **POST** */user*
     - body: `[{"netId":"student1","password":"password","type":0}]`
     - *returns*: status code `201 CREATED` if the creation was successful.
     - If the user already exists, *return* status code `226 IM USED`
@@ -58,7 +58,7 @@ If the token is not valid you get rejected, else you get access
     - body: `[{"netId":"student1","password":"password","type":0}]` or just `[{"netId":"student1"}]`
     - *returns* status code `200 OK` if the deletion was successful
     - *returns* status code `404 NOT FOUND` if the user doesn't exist
-     - *returns* status code `400 BAD REQUEST` if the JSON body was wrong.
+    - *returns* status code `400 BAD REQUEST` if the JSON body was wrong.
 
 - **PUT** */user*
     - body: `[{"netId":"student1","password":"password","type":0}]`
@@ -72,8 +72,9 @@ If the token is not valid you get rejected, else you get access
 ### Course Service (on port *8081*)
 
 #### Routes through */teacher*
-(Requests requiring the teacher role will return a status code `401 UNAUTHORIZED` if the token is invalid and a status code `403 FORBIDDEN` if the user is not a teacher)
 
+(Requests requiring the teacher role will return a status code `401 UNAUTHORIZED` if the token is invalid and a status
+code `403 FORBIDDEN` if the user is not a teacher)
 
 - **GET** */course/courses*
     - *returns* all known courses as JSON array.
@@ -102,15 +103,16 @@ If the token is not valid you get rejected, else you get access
 - **POST** */category/add*
     - Required header: Authorization (String token)
     - Required body: Category object (String course, String category, double weight)
-    -  *returns* the created category or a status code `409 CONFLICT` if a category with the same course and name already exists
+    - *returns* the created category or a status code `409 CONFLICT` if a category with the same course and name already
+      exists
 
 - **DELETE** */category/remove*
     - Required header: Authorization (String token)
-    -  Required parameters: courseCode, categoryName
-Returns the deleted course category or a status code `204 NO CONTENT` if no category with the given course and name exists
+    - Required parameters: courseCode, categoryName Returns the deleted course category or a status
+      code `204 NO CONTENT` if no category with the given course and name exists
 
 ### Grade Service (on port *8082*)
-    
+
 - **GET** */grade*
     - Required headers: `Authorization: Bearer <some token>`
     - Optional parameters: netid, course code, grade type
@@ -119,26 +121,26 @@ Returns the deleted course category or a status code `204 NO CONTENT` if no cate
 
 - **GET** */student/mean*
     - Required headers:
-        `Authorization: Bearer <some token>`
+      `Authorization: Bearer <some token>`
     - Required parameters: netid
     - *returns*: If token is of student and matched netId, returns mean of all the grades of the student.
 
-- **GET** */student/grade* 
-    - Required headers: 
-        `Authorization: Bearer <some token>`
-    - Required parameters: netId, courseCode 
+- **GET** */student/grade*
+    - Required headers:
+      `Authorization: Bearer <some token>`
+    - Required parameters: netId, courseCode
     - *returns*: final grade that the student received for that course.
 
-- **GET** */student/passed* 
+- **GET** */student/passed*
     - Required headers:
-        `Authorization: Bearer <some token>`
+      `Authorization: Bearer <some token>`
     - Required parameters: netid
     - *returns*: List of all courses student has passed
 
 - **GET** */student/allGrades*
-    -  Header: `Authorization: Bearer <some token>`
-    -  Parameters: netId
-    -  *returns*: All grades of a student along with the course it belongs to
+    - Header: `Authorization: Bearer <some token>`
+    - Parameters: netId
+    - *returns*: All grades of a student along with the course it belongs to
 
 - **GET** */student/passingRate*
     - Header: `Authorization: Bearer <some token>`
@@ -150,7 +152,7 @@ Returns the deleted course category or a status code `204 NO CONTENT` if no cate
 
 - **GET** */teacher/statistics*
     - Header: `Authorization: Bearer <some token>`
-    - Parameters: String course 
+    - Parameters: String course
     - *returns*: mean and variance of final grades of all students of the course given.
 
 - **PUT** */teacher*

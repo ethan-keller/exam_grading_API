@@ -8,9 +8,9 @@ import java.net.http.HttpClient;
 public class ServerCommunication {
 
     private static final HttpClient client = HttpClient.newBuilder().build();
-    private transient RequestHelper requestHelper = new RequestHelper();
     private static final String domainCourse = "http://localhost:8081";
     private static final String domainAuth = "http://localhost:8080";
+    private transient RequestHelper requestHelper = new RequestHelper();
 
     public ServerCommunication() {
     }
@@ -29,9 +29,9 @@ public class ServerCommunication {
      */
     public String getCourseWeights(String courseCode, String categoryName, String token) {
         return requestHelper.sendRequest(
-                requestHelper.getRequest(domainCourse
-                        + "/teacher/category/get?courseCode=" + courseCode
-                        + "&categoryName=" + categoryName, token, ""), client);
+            requestHelper.getRequest(domainCourse
+                + "/teacher/category/get?courseCode=" + courseCode
+                + "&categoryName=" + categoryName, token, ""), client);
     }
 
     /**
@@ -39,14 +39,14 @@ public class ServerCommunication {
      * the weights of grading categories of a course.
      *
      * @param courseCode course code of the course
-     * @param token JSON security token
+     * @param token      JSON security token
      * @return JSON map of category names and respective weights
      */
     public String getCourseWeights(String courseCode, String token) {
         return requestHelper.sendRequest(
-                requestHelper.getRequest(domainCourse
-                        + "/teacher/category/weights?courseCode="
-                        + courseCode, token, ""), client);
+            requestHelper.getRequest(domainCourse
+                + "/teacher/category/weights?courseCode="
+                + courseCode, token, ""), client);
     }
 
     /**
@@ -60,7 +60,7 @@ public class ServerCommunication {
     public String validate(String token) {
         return requestHelper.sendRequest(
             requestHelper.getRequest(domainAuth
-                    + "/validate/", token, token), client);
+                + "/validate/", token, token), client);
     }
 
     /**
@@ -68,12 +68,11 @@ public class ServerCommunication {
      *
      * @param token - the token of the user
      * @param netId - netId to execute the query on
-     *
      * @return bool of type boolean
      */
     public boolean validateUser(String token, String netId) {
         return Boolean.parseBoolean(requestHelper.sendRequest(
-                requestHelper.getRequest(domainAuth
-                        + "/validate/netId/", "Bearer " + token, netId), client));
+            requestHelper.getRequest(domainAuth
+                + "/validate/netId/", "Bearer " + token, netId), client));
     }
 }

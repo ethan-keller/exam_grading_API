@@ -23,11 +23,10 @@ public class JwtTokenUtil implements Serializable {
      */
     private static final long JWT_VALIDITY = 24 * 60 * 60;
     private static final long serialVersionUID = -1433881298817633516L;
-
+    private final transient Clock clock = Clock.systemDefaultZone();
     // transient for PMD
     @Value("${jwt.secret}")
     private transient String secret;
-    private final transient Clock clock = Clock.systemDefaultZone();
 
     /**
      * Get the user's netId from the token.
@@ -123,9 +122,9 @@ public class JwtTokenUtil implements Serializable {
     private String internalGenerateToken(String netId) {
         final long millis = clock.millis();
         return Jwts.builder().setClaims(new HashMap<>()).setSubject(netId)
-                .setIssuedAt(new Date(millis))
-                .setExpiration(new Date(millis + 1000 * JWT_VALIDITY))
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+            .setIssuedAt(new Date(millis))
+            .setExpiration(new Date(millis + 1000 * JWT_VALIDITY))
+            .signWith(SignatureAlgorithm.HS512, secret)
+            .compact();
     }
 }

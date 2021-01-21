@@ -1,7 +1,5 @@
 package nl.tudelft.sem10.courseservice.application;
 
-import nl.tudelft.sem10.courseservice.domain.model.Course;
-
 /**
  * A service for interacting with data.
  *

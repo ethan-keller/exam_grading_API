@@ -38,7 +38,7 @@ public class Category {
      * Create a category object with given course code, name and weight.
      *
      * @param course - String Course code
-     * @param name - String Category name.
+     * @param name   - String Category name.
      * @param weight - double Category weight.
      */
     public Category(String course, String name, double weight) {
@@ -113,20 +113,20 @@ public class Category {
         }
         Category other = (Category) object;
         return Objects.equals(course, other.course)
-                && Objects.equals(name, other.name)
-                && Objects.equals(weight, other.weight);
+            && Objects.equals(name, other.name)
+            && Objects.equals(weight, other.weight);
     }
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("Category[course=")
-                .append(course)
-                .append(", name=")
-                .append(name)
-                .append(", weight=")
-                .append(weight)
-                .append("]")
-                .toString();
+            .append("Category[course=")
+            .append(course)
+            .append(", name=")
+            .append(name)
+            .append(", weight=")
+            .append(weight)
+            .append("]")
+            .toString();
     }
 }

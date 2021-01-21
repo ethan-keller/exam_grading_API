@@ -30,7 +30,7 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Objects
-                .requireNonNull(environment.getProperty("jdbc.driverClassName")));
+            .requireNonNull(environment.getProperty("jdbc.driverClassName")));
         dataSource.setUrl(environment.getProperty("jdbc.url"));
         dataSource.setUsername(environment.getProperty("jdbc.user"));
         dataSource.setPassword(environment.getProperty("jdbc.pass"));

@@ -21,9 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 class JwtTokenUtilTest {
 
     private final transient UserDetails details1 =
-            new UserDetailsImpl(new User("jSnow", "pass123!", 0));
+        new UserDetailsImpl(new User("jSnow", "pass123!", 0));
     private final transient UserDetails details2 =
-            new UserDetailsImpl(new User("aBeller", "pass456@", 1));
+        new UserDetailsImpl(new User("aBeller", "pass456@", 1));
     private final transient long validity = 24 * 60 * 60;
     private transient JwtTokenUtil utils;
     private transient String token1;
@@ -126,6 +126,6 @@ class JwtTokenUtilTest {
     @Test
     void exceptionHandlingTokenValidation() {
         assertFalse(utils.validateToken("invalidToken",
-                new UserDetailsImpl(new User("test", "test", 0))));
+            new UserDetailsImpl(new User("test", "test", 0))));
     }
 }

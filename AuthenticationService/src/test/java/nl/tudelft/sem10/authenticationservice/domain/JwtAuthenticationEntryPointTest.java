@@ -34,7 +34,7 @@ class JwtAuthenticationEntryPointTest {
     private final transient HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
     private final transient HttpServletResponse resp = Mockito.mock(HttpServletResponse.class);
     private final transient AccountExpiredException exception =
-            new AccountExpiredException("testing purposes");
+        new AccountExpiredException("testing purposes");
 
     /**
      * Before each test the output streams are customized.
@@ -65,10 +65,10 @@ class JwtAuthenticationEntryPointTest {
             entry.commence(req, resp, exception);
             // verify that error has been sent
             verify(resp, Mockito.times(1))
-                    .sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                .sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             // check console output
             assertEquals("HTTP Status 401 - " + exception.getMessage()
-                    + System.getProperty("line.separator"), outContent.toString());
+                + System.getProperty("line.separator"), outContent.toString());
         } catch (Exception e) {
             // if exception => fail
             e.printStackTrace();

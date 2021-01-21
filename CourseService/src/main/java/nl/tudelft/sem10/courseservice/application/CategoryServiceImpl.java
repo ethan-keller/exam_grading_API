@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("CategoryServiceImpl")
 public class CategoryServiceImpl extends AbstractRepositoryService<Category, CategoryId>
-        implements CategoryService {
+    implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository; //NOPMD
 
@@ -29,8 +29,8 @@ public class CategoryServiceImpl extends AbstractRepositoryService<Category, Cat
     @Override
     public Map<String, Double> getWeights(String course) {
         return categoryRepository.getWeights(course)
-                .stream()
-                .collect(Collectors.toMap(Category::getName, Category::getWeight));
+            .stream()
+            .collect(Collectors.toMap(Category::getName, Category::getWeight));
     }
 
     @Override

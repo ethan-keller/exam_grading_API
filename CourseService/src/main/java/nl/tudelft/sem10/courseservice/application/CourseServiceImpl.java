@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("CourseServiceImpl")
 public class CourseServiceImpl extends AbstractRepositoryService<Course, String>
-        implements CourseService {
+    implements CourseService {
     @Autowired
     private CourseRepository courseRepository; //NOPMD
 

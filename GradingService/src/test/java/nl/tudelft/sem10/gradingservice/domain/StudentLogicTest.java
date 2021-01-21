@@ -1,16 +1,16 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.json.JSONException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class StudentLogicTest {
 
@@ -40,10 +40,10 @@ class StudentLogicTest {
     void getGrade() throws JSONException {
         when(serverCommunication
             .getCourseWeights(any(String.class), any(String.class)))
-            .thenReturn("{\n" +
-                    "\"category1\":\"0.5\",\n" +
-                    "\"category2\":\"0.5\"\n" +
-                    "}");
+            .thenReturn("{\n"
+                + "\"category1\":\"0.5\",\n"
+                + "\"category2\":\"0.5\"\n"
+                + "}");
         double result = studentLogic.getGrade(grades, cse1, bearer);
 
         assertEquals(5.0, result);
@@ -72,11 +72,11 @@ class StudentLogicTest {
     @Test
     void getGradeException1() throws JSONException {
         when(serverCommunication
-                .getCourseWeights(any(String.class), any(String.class)))
-                .thenReturn("{\n" +
-                        "\"non-existing\":\"0.5\",\n" +
-                        "\"non-existing1\":\"0.5\"\n" +
-                        "}");
+            .getCourseWeights(any(String.class), any(String.class)))
+            .thenReturn("{\n"
+                + "\"non-existing\":\"0.5\",\n"
+                + "\"non-existing1\":\"0.5\"\n"
+                + "}");
         double result = studentLogic.getGrade(grades, cse1, bearer);
         assertEquals(Double.NaN, result);
     }

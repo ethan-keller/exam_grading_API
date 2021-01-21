@@ -1,5 +1,11 @@
 package nl.tudelft.sem10.gradingservice.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -8,19 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 class ServerCommunicationTest {
 
-    private transient ServerCommunication serverCommunication;
-
-    private transient RequestHelper requestHelper;
     private static final String SENT = "SENT";
-
+    private transient ServerCommunication serverCommunication;
+    private transient RequestHelper requestHelper;
     @Mock
     private transient HttpRequest request;
 
@@ -45,7 +43,8 @@ class ServerCommunicationTest {
     void getCourseWeights() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
             .thenReturn(SENT);
-        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class)))
+            .thenCallRealMethod();
 
         String str = serverCommunication.getCourseWeights("CSE1", "Test", "bearer myToken");
 
@@ -56,7 +55,8 @@ class ServerCommunicationTest {
     void validate() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
             .thenReturn(SENT);
-        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class)))
+            .thenCallRealMethod();
 
         String str = serverCommunication.validate("token");
 
@@ -66,8 +66,9 @@ class ServerCommunicationTest {
     @Test
     void validateUser() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
-                .thenReturn("TRUE");
-        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
+            .thenReturn("TRUE");
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class)))
+            .thenCallRealMethod();
 
         Boolean bool = serverCommunication.validateUser("token", "netId");
 
@@ -78,7 +79,8 @@ class ServerCommunicationTest {
     void sendRequestTestExpected() throws IOException, InterruptedException {
         RequestHelper reqHelper = new RequestHelper();
         when(response.body()).thenReturn("TRUE");
-        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
+            .thenReturn(response);
 
         String send = reqHelper.sendRequest(request, client);
 
@@ -90,7 +92,8 @@ class ServerCommunicationTest {
         RequestHelper reqHelper = new RequestHelper();
         when(response.body()).thenReturn("");
         when(response.statusCode()).thenReturn(404);
-        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
+            .thenReturn(response);
 
         String send = reqHelper.sendRequest(request, client);
 
@@ -101,7 +104,8 @@ class ServerCommunicationTest {
     void sendRequestTestNullBody() throws IOException, InterruptedException {
         RequestHelper reqHelper = new RequestHelper();
         when(response.body()).thenReturn(null);
-        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(client.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
+            .thenReturn(response);
 
         String send = reqHelper.sendRequest(request, client);
 
@@ -111,8 +115,9 @@ class ServerCommunicationTest {
     @Test
     void courseWeightsTest() {
         when(requestHelper.sendRequest(any(HttpRequest.class), any(HttpClient.class)))
-                .thenReturn(SENT);
-        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class))).thenCallRealMethod();
+            .thenReturn(SENT);
+        when(requestHelper.getRequest(any(String.class), any(String.class), any(String.class)))
+            .thenCallRealMethod();
 
         String str = serverCommunication.getCourseWeights("CSE1", "bearer myToken");
 

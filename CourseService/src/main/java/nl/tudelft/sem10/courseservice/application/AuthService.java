@@ -8,6 +8,14 @@ import java.util.Locale;
 @FunctionalInterface
 public interface AuthService {
     /**
+     * Get a user type for a given token.
+     *
+     * @param token - String Authorization token.
+     * @return the user type.
+     */
+    public UserType getUser(String token);
+
+    /**
      * User types.
      */
     // Note that no STUDENT type exists as the course application does not need it
@@ -43,12 +51,4 @@ public interface AuthService {
             }
         }
     }
-
-    /**
-     * Get a user type for a given token.
-     *
-     * @param token - String Authorization token.
-     * @return the user type.
-     */
-    public UserType getUser(String token);
 }

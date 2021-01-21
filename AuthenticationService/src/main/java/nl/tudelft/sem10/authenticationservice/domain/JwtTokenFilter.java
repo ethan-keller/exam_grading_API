@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final transient SecurityContext securityContext =
-            SecurityContextHolder.getContext();
+        SecurityContextHolder.getContext();
 
     // use of transient for PMD
     @Autowired
@@ -115,9 +115,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                                         final HttpServletRequest request) {
         // create authentication token with user details and authorities (role)
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities());
+            userDetails,
+            null,
+            userDetails.getAuthorities());
         // set details from http request
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // set authentication

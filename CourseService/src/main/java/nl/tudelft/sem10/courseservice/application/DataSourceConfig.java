@@ -30,7 +30,7 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Objects
-                .requireNonNull(environment.getProperty("jdbc.driverClassName")));
+            .requireNonNull(environment.getProperty("jdbc.driverClassName")));
         dataSource.setUrl(environment.getProperty("jdbc.url"));
         dataSource.setUsername(environment.getProperty("jdbc.user"));
         dataSource.setPassword(environment.getProperty("jdbc.pass"));
@@ -56,7 +56,7 @@ public class DataSourceConfig {
     @Bean
     public AuthService getAuthService() {
         return beans.getBean(environment.getRequiredProperty("authservice.impl"),
-                AuthService.class);
+            AuthService.class);
     }
 
     /**
@@ -67,7 +67,7 @@ public class DataSourceConfig {
     @Bean
     public CourseService getCourseService() {
         return beans.getBean(environment.getRequiredProperty("courseservice.impl"),
-                CourseService.class);
+            CourseService.class);
     }
 
     /**
@@ -78,6 +78,6 @@ public class DataSourceConfig {
     @Bean
     public CategoryService getCategoryService() {
         return beans.getBean(environment.getRequiredProperty("categoryservice.impl"),
-                CategoryService.class);
+            CategoryService.class);
     }
 }

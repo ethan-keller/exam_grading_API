@@ -22,7 +22,7 @@ public class Utility {
      * @throws JSONException if json parsing fails
      */
     public static float jsonStringClip(String jsonString, String field, float lb, float ub)
-            throws JSONException {
+        throws JSONException {
         JSONObject jsonObject = JsonParser.stringToJson(jsonString);
         float item = (float) jsonObject.getDouble(field);
         return Stats.clip(item, lb, ub);
@@ -38,7 +38,7 @@ public class Utility {
      */
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public static double jsonWeightedAverage(String jsonString, Collection<Grade> grades)
-            throws JSONException {
+        throws JSONException {
         Collection<Double> weights = new ArrayList<>();
         JSONObject jsonObject;
         jsonObject = JsonParser.stringToJson(jsonString);
@@ -51,7 +51,7 @@ public class Utility {
         }
 
         List<Double> items = grades.stream().map(x -> (double) x.getMark())
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
 
         return Stats.weightedAverage(items, weights);
     }

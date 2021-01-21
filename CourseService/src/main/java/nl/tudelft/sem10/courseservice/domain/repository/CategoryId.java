@@ -23,7 +23,7 @@ public class CategoryId implements Serializable {
      * Create a category ID object with given course code and name.
      *
      * @param course - String Course code
-     * @param name - String Category name.
+     * @param name   - String Category name.
      */
     public CategoryId(String course, String name) {
         this.course = course;
@@ -42,17 +42,17 @@ public class CategoryId implements Serializable {
         }
         CategoryId other = (CategoryId) object;
         return Objects.equals(course, other.course)
-                && Objects.equals(name, other.name);
+            && Objects.equals(name, other.name);
     }
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("CategoryID[course=")
-                .append(course)
-                .append(", name=")
-                .append(name)
-                .append("]")
-                .toString();
+            .append("CategoryID[course=")
+            .append(course)
+            .append(", name=")
+            .append(name)
+            .append("]")
+            .toString();
     }
 }
