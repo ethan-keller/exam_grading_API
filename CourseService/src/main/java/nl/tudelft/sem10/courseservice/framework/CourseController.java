@@ -69,9 +69,9 @@ public class CourseController {
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> addCourse(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                        String authorization,
+                                                String authorization,
                                             @RequestBody
-                                                    Course course) {
+                                                Course course) {
         // Auth
         ResponseEntity<Course> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -96,9 +96,9 @@ public class CourseController {
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
     public ResponseEntity<Course> removeCourse(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                           String authorization,
+                                                   String authorization,
                                                @RequestParam
-                                                       String courseCode) {
+                                                   String courseCode) {
         // Auth
         ResponseEntity<Course> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -120,7 +120,7 @@ public class CourseController {
      * Note that this method only accepts {@link AuthService.UserType#TEACHER} users.
      *
      * @param token - String authorization token.
-     * @param <T> - Entity type.
+     * @param <T>   - Entity type.
      * @return the response or null if the token is valid.
      */
     private <T> ResponseEntity<T> authResponse(String token) {
@@ -130,8 +130,8 @@ public class CourseController {
                 return null;
             case UNKNOWN:
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer")
-                        .build();
+                    .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer")
+                    .build();
             default:
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 

@@ -50,12 +50,12 @@ class CourseServiceApplicationTests {
         // Inject mock into controller
         // Yes this is really ugly but at least PMD will not complain
         Util.setField(service,
-                "courseRepository",
-                Util.repositoryMock(
-                        CourseRepository.class,
-                        Course.class,
-                        String.class,
-                        Course::getCode));
+            "courseRepository",
+            Util.repositoryMock(
+                CourseRepository.class,
+                Course.class,
+                String.class,
+                Course::getCode));
 
         // Inject auth mock
         Util.setField(controller, "auth", Util.mockAuth());
@@ -179,7 +179,7 @@ class CourseServiceApplicationTests {
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         Assertions.assertEquals("Bearer",
-                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
+            response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 
     /**
@@ -189,7 +189,7 @@ class CourseServiceApplicationTests {
     @Order(10)
     public void testRemoveWrongUser() {
         ResponseEntity<Course> response = controller.removeCourse("Bearer MyNonTeacherToken",
-                "CSE9999");
+            "CSE9999");
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
@@ -201,10 +201,10 @@ class CourseServiceApplicationTests {
     @Order(11)
     public void testRemoveInvalidUser() {
         ResponseEntity<Course> response = controller.removeCourse("Bearer MyInvalidToken",
-                "CSE9999");
+            "CSE9999");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         Assertions.assertEquals("Bearer",
-                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
+            response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 }

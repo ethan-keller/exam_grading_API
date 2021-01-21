@@ -48,7 +48,7 @@ public class CategoryController {
     /**
      * Get a course category from the repository by course and name.
      *
-     * @param courseCode - String Course code.
+     * @param courseCode   - String Course code.
      * @param categoryName - String Category name.
      * @return the category or a 404 error if no such category exists.
      */
@@ -71,13 +71,13 @@ public class CategoryController {
      *
      * @param category - Category Course category to add.
      * @return the added category or a 409 error if a category
-     *         with the same course code and name already exists.
+     *     with the same course code and name already exists.
      */
     @PostMapping(path = "/add", produces = RESPONSE_TYPE)
     public ResponseEntity<Category> addCategory(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                            String authorization,
+                                                    String authorization,
                                                 @RequestBody
-                                                        Category category) {
+                                                    Category category) {
         // Auth
         ResponseEntity<Category> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -97,17 +97,17 @@ public class CategoryController {
     /**
      * Remove a course category from the repository.
      *
-     * @param courseCode - String Course code.
+     * @param courseCode   - String Course code.
      * @param categoryName - String Category name.
      * @return the deleted course or a 204 error.
      */
     @DeleteMapping(path = "/remove", produces = RESPONSE_TYPE)
     public ResponseEntity<Category> removeCategory(@RequestHeader(HttpHeaders.AUTHORIZATION)
-                                                               String authorization,
+                                                       String authorization,
                                                    @RequestParam
-                                                           String courseCode,
+                                                       String courseCode,
                                                    @RequestParam
-                                                               String categoryName) {
+                                                       String categoryName) {
         // Auth
         ResponseEntity<Category> authRes = authResponse(authorization);
         if (authRes != null) {
@@ -140,7 +140,7 @@ public class CategoryController {
      * Note that this method only accepts {@link AuthService.UserType#TEACHER} users.
      *
      * @param token - String authorization token.
-     * @param <T> - Entity type.
+     * @param <T>   - Entity type.
      * @return the response or null if the token is valid.
      */
     private <T> ResponseEntity<T> authResponse(String token) {
@@ -151,8 +151,8 @@ public class CategoryController {
                 return null;
             case UNKNOWN:
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer")
-                        .build();
+                    .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer")
+                    .build();
             default:
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 

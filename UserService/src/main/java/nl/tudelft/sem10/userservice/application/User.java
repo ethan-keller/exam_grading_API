@@ -50,32 +50,21 @@ public class User {
     }
 
     /**
+     * Setter for the parameter netId.
+     *
+     * @param netId of type String - new netId of the user
+     */
+    public void setNetId(String netId) {
+        this.netId = netId;
+    }
+
+    /**
      * Getter for the parameter password.
      *
      * @return password - the password of the user
      */
     public String getPassword() {
         return password;
-    }
-
-    /**
-     * Getter for the parameter type.
-     *
-     * @return type - the role of the user
-     *      Student -> 0
-     *      Teacher -> 1
-     */
-    public int getType() {
-        return type;
-    }
-
-    /**
-     *Setter for the parameter netId.
-     *
-     * @param netId of type String - new netId of the user
-     */
-    public void setNetId(String netId) {
-        this.netId = netId;
     }
 
     /**
@@ -88,11 +77,22 @@ public class User {
     }
 
     /**
+     * Getter for the parameter type.
+     *
+     * @return type - the role of the user
+     *     Student -> 0
+     *     Teacher -> 1
+     */
+    public int getType() {
+        return type;
+    }
+
+    /**
      * Setter for the parameter type.
      *
      * @param type of type int - new role of the user
-     *      Student -> 0
-     *      Teacher -> 1
+     *             Student -> 0
+     *             Teacher -> 1
      */
     public void setType(int type) {
         this.type = type;
@@ -105,7 +105,7 @@ public class User {
      */
     public String toString() {
         String toStr = "{\"netId\":\"" + netId + "\", \"password\":\""
-                + password + "\", \"type\":\"" + type + "\"}";
+            + password + "\", \"type\":\"" + type + "\"}";
         return toStr;
     }
 

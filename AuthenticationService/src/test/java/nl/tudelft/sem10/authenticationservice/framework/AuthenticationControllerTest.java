@@ -41,13 +41,13 @@ class AuthenticationControllerTest {
     private final transient String bearerToken = "Bearer thisisatoken123";
     private final transient String token = bearerToken.substring(7);
     private final transient UserDetailsImpl userDetails =
-            Mockito.mock(UserDetailsImpl.class);
+        Mockito.mock(UserDetailsImpl.class);
     private final transient UserDetailsServiceImpl service =
-            Mockito.mock(UserDetailsServiceImpl.class);
+        Mockito.mock(UserDetailsServiceImpl.class);
     private final transient JwtTokenUtil tokenUtil =
-            Mockito.mock(JwtTokenUtil.class);
+        Mockito.mock(JwtTokenUtil.class);
     private final transient RestService rest =
-            Mockito.mock(RestService.class);
+        Mockito.mock(RestService.class);
     @Autowired
     private transient MockMvc mvc;
     @Autowired
@@ -92,11 +92,11 @@ class AuthenticationControllerTest {
         when(service.loadUserByUsername(user.getNetId())).thenReturn(null);
 
         mvc.perform(MockMvcRequestBuilders
-                .get(GET_TOKEN_ENDPOINT)
-                .content(asJsonString(user))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).doesNotExist());
+            .get(GET_TOKEN_ENDPOINT)
+            .content(asJsonString(user))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).doesNotExist());
     }
 
     /**
@@ -110,11 +110,11 @@ class AuthenticationControllerTest {
         when(service.loadUserByUsername(user.getNetId())).thenReturn(userDetails);
 
         mvc.perform(MockMvcRequestBuilders
-                .get(GET_TOKEN_ENDPOINT)
-                .content(asJsonString(user))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).doesNotExist());
+            .get(GET_TOKEN_ENDPOINT)
+            .content(asJsonString(user))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).doesNotExist());
     }
 
     /**
@@ -125,16 +125,16 @@ class AuthenticationControllerTest {
     @Test
     void correctCredentials() throws Exception {
         when(userDetails.getPassword()).thenReturn(
-                passwordEncoder.encode(Utility.hash(user.getPassword())));
+            passwordEncoder.encode(Utility.hash(user.getPassword())));
         when(service.loadUserByUsername(user.getNetId())).thenReturn(userDetails);
         when(tokenUtil.generateToken(userDetails)).thenReturn("token");
 
         mvc.perform(MockMvcRequestBuilders
-                .get(GET_TOKEN_ENDPOINT)
-                .content(asJsonString(user))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).exists());
+            .get(GET_TOKEN_ENDPOINT)
+            .content(asJsonString(user))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath(JSON_TOKEN_PATH_EXPRESSION).exists());
     }
 
     /**
@@ -153,7 +153,7 @@ class AuthenticationControllerTest {
     void nullNetId() {
         when(tokenUtil.getNetIdFromToken(anyString())).thenReturn(null);
         assertEquals(new ResponseEntity<>(HttpStatus.NOT_FOUND),
-                controller.validateToken(anyString()));
+            controller.validateToken(anyString()));
     }
 
     /**
@@ -164,7 +164,7 @@ class AuthenticationControllerTest {
         when(tokenUtil.getNetIdFromToken(anyString())).thenReturn(user.getNetId());
         when(rest.getUserFromUserService(user.getNetId())).thenReturn(null);
         assertEquals(new ResponseEntity<>(HttpStatus.NOT_FOUND),
-                controller.validateToken(anyString()));
+            controller.validateToken(anyString()));
     }
 
     /**
@@ -175,7 +175,7 @@ class AuthenticationControllerTest {
         when(tokenUtil.getNetIdFromToken(anyString())).thenReturn(user.getNetId());
         when(rest.getUserFromUserService(user.getNetId())).thenReturn(user);
         assertEquals(ResponseEntity.ok(user.getRole().getName()),
-                controller.validateToken(anyString()));
+            controller.validateToken(anyString()));
     }
 
     /**
@@ -186,7 +186,7 @@ class AuthenticationControllerTest {
         when(tokenUtil.getNetIdFromToken(anyString())).thenReturn(teacher.getNetId());
         when(rest.getUserFromUserService(teacher.getNetId())).thenReturn(teacher);
         assertEquals(ResponseEntity.ok(teacher.getRole().getName()),
-                controller.validateToken(anyString()));
+            controller.validateToken(anyString()));
     }
 
     /**
@@ -196,7 +196,7 @@ class AuthenticationControllerTest {
     void noUserFound() {
         when(tokenUtil.getNetIdFromToken(token)).thenReturn(null);
         assertEquals(ResponseEntity.ok(false),
-                controller.validateNetIdToken(user.getNetId(), bearerToken));
+            controller.validateNetIdToken(user.getNetId(), bearerToken));
     }
 
     /**
@@ -206,7 +206,7 @@ class AuthenticationControllerTest {
     void tokenFromOtherUser() {
         when(tokenUtil.getNetIdFromToken(token)).thenReturn(teacher.getNetId());
         assertEquals(ResponseEntity.ok(false),
-                controller.validateNetIdToken(user.getNetId(), bearerToken));
+            controller.validateNetIdToken(user.getNetId(), bearerToken));
     }
 
     /**
@@ -216,7 +216,7 @@ class AuthenticationControllerTest {
     void matchingNetIds() {
         when(tokenUtil.getNetIdFromToken(token)).thenReturn(user.getNetId());
         assertEquals(ResponseEntity.ok(true),
-                controller.validateNetIdToken(user.getNetId(), bearerToken));
+            controller.validateNetIdToken(user.getNetId(), bearerToken));
     }
 
     /**
@@ -225,7 +225,7 @@ class AuthenticationControllerTest {
     @Test
     void exceptionWhenValidating() {
         assertEquals(ResponseEntity.ok(false),
-                controller.validateNetIdToken(user.getNetId(), bearerToken));
+            controller.validateNetIdToken(user.getNetId(), bearerToken));
     }
 
     /**

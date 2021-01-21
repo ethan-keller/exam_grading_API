@@ -14,9 +14,9 @@ public class Stats {
      */
     public static float mean(Collection<Float> items) {
         float sum = (float) sum(items.stream()
-                .filter(x -> !x.isNaN())
-                .map(x -> (double) x)
-                .collect(Collectors.toList()));
+            .filter(x -> !x.isNaN())
+            .map(x -> (double) x)
+            .collect(Collectors.toList()));
         return sum / items.stream().filter(x -> !x.isNaN()).count();
     }
 

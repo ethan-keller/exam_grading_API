@@ -38,7 +38,7 @@ class UserDetailsImplTest {
     @Test
     void getStudentAuthorities() {
         SimpleGrantedAuthority role =
-                new SimpleGrantedAuthority(new Role(RoleType.STUDENT).getName());
+            new SimpleGrantedAuthority(new Role(RoleType.STUDENT).getName());
         assertTrue(userDetails1.getAuthorities().contains(role));
         assertEquals(1, userDetails1.getAuthorities().size());
     }
@@ -49,7 +49,7 @@ class UserDetailsImplTest {
     @Test
     void getTeacherAuthorities() {
         SimpleGrantedAuthority role =
-                new SimpleGrantedAuthority(new Role(RoleType.TEACHER).getName());
+            new SimpleGrantedAuthority(new Role(RoleType.TEACHER).getName());
         assertTrue(userDetails2.getAuthorities().contains(role));
         assertEquals(1, userDetails2.getAuthorities().size());
     }

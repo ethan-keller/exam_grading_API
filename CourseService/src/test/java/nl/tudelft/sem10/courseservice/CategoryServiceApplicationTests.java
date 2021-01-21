@@ -56,20 +56,20 @@ class CategoryServiceApplicationTests {
         }
 
         CategoryRepository mock = Util.repositoryMock(
-                CategoryRepository.class,
-                Category.class,
-                CategoryId.class,
-                category -> {
-                    return new CategoryId(category.getCourse(), category.getName());
-                });
+            CategoryRepository.class,
+            Category.class,
+            CategoryId.class,
+            category -> {
+                return new CategoryId(category.getCourse(), category.getName());
+            });
 
         // Get weights mock
         Mockito.doAnswer(invocation -> {
             return Collections.unmodifiableList(mock.findAll()
-                    .stream()
-                    .filter(category -> Objects.equals(category.getCourse(),
-                            invocation.getArgument(0, String.class)))
-                    .collect(Collectors.toList()));
+                .stream()
+                .filter(category -> Objects.equals(category.getCourse(),
+                    invocation.getArgument(0, String.class)))
+                .collect(Collectors.toList()));
         }).when(mock).getWeights(Mockito.anyString());
 
         // Inject mock into controller
@@ -182,8 +182,8 @@ class CategoryServiceApplicationTests {
     public void testRemove() {
         // Note that this entity should exist, as we inserted it in a previous test
         ResponseEntity<Category> response = controller.removeCategory(validToken,
-                c0.getCourse(),
-                c0.getName());
+            c0.getCourse(),
+            c0.getName());
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(c0, response.getBody());
@@ -196,8 +196,8 @@ class CategoryServiceApplicationTests {
     @Order(8)
     public void testRemoveNonExisting() {
         ResponseEntity<Category> response = controller.removeCategory(validToken,
-                c0.getCourse(),
-                c0.getName());
+            c0.getCourse(),
+            c0.getName());
 
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
@@ -223,7 +223,7 @@ class CategoryServiceApplicationTests {
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         Assertions.assertEquals("Bearer",
-                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
+            response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 
     /**
@@ -233,8 +233,8 @@ class CategoryServiceApplicationTests {
     @Order(11)
     public void testRemoveWrongUser() {
         ResponseEntity<Category> response = controller.removeCategory("Bearer MyNonTeacherToken",
-                "CSE9999",
-                "MIDTERM");
+            "CSE9999",
+            "MIDTERM");
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
@@ -246,11 +246,11 @@ class CategoryServiceApplicationTests {
     @Order(12)
     public void testRemoveInvalidUser() {
         ResponseEntity<Category> response = controller.removeCategory("Bearer MyInvalidToken",
-                "CSE9999",
-                "MIDTERM");
+            "CSE9999",
+            "MIDTERM");
 
         Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         Assertions.assertEquals("Bearer",
-                response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
+            response.getHeaders().getFirst(HttpHeaders.WWW_AUTHENTICATE));
     }
 }

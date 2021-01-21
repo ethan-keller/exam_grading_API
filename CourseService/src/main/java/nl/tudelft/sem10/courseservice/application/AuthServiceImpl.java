@@ -21,8 +21,8 @@ import org.springframework.web.client.RestTemplate;
 public class AuthServiceImpl implements AuthService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
     private final transient RestTemplate template = new RestTemplateBuilder()
-            .setConnectTimeout(Duration.ofSeconds(10))
-            .build();
+        .setConnectTimeout(Duration.ofSeconds(10))
+        .build();
 
     @Autowired
     @Qualifier("validateUrl")
@@ -37,9 +37,9 @@ public class AuthServiceImpl implements AuthService {
             // Unexpected status code (includes 404 - user not found)
             if (response.getStatusCode() != HttpStatus.OK) {
                 LOGGER.warn("Validate request returned "
-                        + response.getStatusCode()
-                        + ", expected "
-                        + HttpStatus.OK);
+                    + response.getStatusCode()
+                    + ", expected "
+                    + HttpStatus.OK);
                 return UserType.UNKNOWN;
             }
 

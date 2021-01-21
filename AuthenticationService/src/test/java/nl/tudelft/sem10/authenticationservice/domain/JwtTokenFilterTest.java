@@ -75,9 +75,9 @@ class JwtTokenFilterTest {
      */
     @Test
     void invalidHeader() throws ServletException,
-            IOException,
-            NoSuchFieldException,
-            IllegalAccessException {
+        IOException,
+        NoSuchFieldException,
+        IllegalAccessException {
         final SecurityContext securityContext = getMockedSecurityContext();
 
         // cannot get header -> null
@@ -103,9 +103,9 @@ class JwtTokenFilterTest {
      */
     @Test
     void expiredToken() throws ServletException,
-            IOException,
-            NoSuchFieldException,
-            IllegalAccessException {
+        IOException,
+        NoSuchFieldException,
+        IllegalAccessException {
         // setup
         final SecurityContext securityContext = getMockedSecurityContext();
         String token = "invalid_token123";
@@ -130,9 +130,9 @@ class JwtTokenFilterTest {
      */
     @Test
     void illegalArgumentsTokens() throws ServletException,
-            IOException,
-            NoSuchFieldException,
-            IllegalAccessException {
+        IOException,
+        NoSuchFieldException,
+        IllegalAccessException {
         // setup
         final SecurityContext securityContext = getMockedSecurityContext();
         String token = "invalid_token123";
@@ -157,9 +157,9 @@ class JwtTokenFilterTest {
      */
     @Test
     void alreadyAuthenticated() throws NoSuchFieldException,
-            IllegalAccessException,
-            ServletException,
-            IOException {
+        IllegalAccessException,
+        ServletException,
+        IOException {
 
         // set up
         String token = "valid_token123";
@@ -186,9 +186,9 @@ class JwtTokenFilterTest {
      */
     @Test
     void invalidatedToken() throws NoSuchFieldException,
-            IllegalAccessException,
-            IOException,
-            ServletException {
+        IllegalAccessException,
+        IOException,
+        ServletException {
         // set up
         String token = "token123";
         String netId = "jSnow";
@@ -220,9 +220,9 @@ class JwtTokenFilterTest {
      */
     @Test
     void validatedToken() throws NoSuchFieldException,
-            IllegalAccessException,
-            ServletException,
-            IOException {
+        IllegalAccessException,
+        ServletException,
+        IOException {
         // set up
         String token = "token123";
         String netId = "jSnow";
@@ -240,12 +240,12 @@ class JwtTokenFilterTest {
 
         // check if authentication has been set
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities());
+            userDetails,
+            null,
+            userDetails.getAuthorities());
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
         verify(securityContext, times(1))
-                .setAuthentication(authToken);
+            .setAuthentication(authToken);
         verify(filterChain, times(1)).doFilter(req, res);
     }
 
@@ -257,7 +257,7 @@ class JwtTokenFilterTest {
      * @throws IllegalAccessException if access modifiers block access
      */
     private SecurityContext getMockedSecurityContext()
-            throws NoSuchFieldException, IllegalAccessException {
+        throws NoSuchFieldException, IllegalAccessException {
         // mock the security context of Spring Security
         final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 

@@ -1,5 +1,10 @@
 package nl.tudelft.sem10.gradingservice.application;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -36,6 +36,37 @@ class GradeControllerTest {
     private transient UserGradeService userGradeService;
 
     private transient ServerCommunication serverCommunication;
+
+    /**
+     * Get a field using reflection.
+     * The field will be accessible immediately.
+     *
+     * @param clazz     - Class&lt;?&gt; Class to get a field from.
+     * @param fieldName - String Field name.
+     * @return the field.
+     * @throws ReflectiveOperationException If something goes wrong.
+     */
+    public static Field getField(Class<?> clazz,
+                                 String fieldName) throws ReflectiveOperationException {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field;
+    }
+
+    /**
+     * Set a field value using reflection.
+     *
+     * @param instance  - Object Instance to set a field for.
+     * @param fieldName - String Field name.
+     * @param value     - Object Value to set.
+     * @throws ReflectiveOperationException If something goes wrong.
+     */
+    public static void setField(Object instance,
+                                String fieldName,
+                                Object value) throws ReflectiveOperationException {
+        Field field = getField(instance.getClass(), fieldName);
+        field.set(instance, value);
+    }
 
     @BeforeEach
     void setUp() throws ReflectiveOperationException {
@@ -96,13 +127,13 @@ class GradeControllerTest {
 
         when(serverCommunication.validate(any(String.class))).thenReturn("STUDENT");
         when(serverCommunication.validateUser(any(String.class), any(String.class)))
-                .thenReturn(true);
+            .thenReturn(true);
         when(userGradeService.getAllGrades(any(String.class), any(String.class), any(String.class)))
-                .thenReturn(ResponseEntity.ok(grades));
+            .thenReturn(ResponseEntity.ok(grades));
 
         ResponseEntity<List<Grade>> result =
-                gradeController.getAllGrades("Bearer token", "Silverhand",
-                        "CSE2077", "Samurai");
+            gradeController.getAllGrades("Bearer token", "Silverhand",
+                "CSE2077", "Samurai");
 
         assertEquals(grades, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
@@ -113,40 +144,9 @@ class GradeControllerTest {
         when(serverCommunication.validate(any(String.class))).thenReturn("NOT A VALID TYPE");
 
         ResponseEntity<List<Grade>> result =
-                gradeController.getAllGrades("Bearer token", "Silverhand",
-                        "CSE2077", "Samurai");
+            gradeController.getAllGrades("Bearer token", "Silverhand",
+                "CSE2077", "Samurai");
 
         assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
-    }
-
-    /**
-     * Get a field using reflection.
-     * The field will be accessible immediately.
-     *
-     * @param clazz - Class&lt;?&gt; Class to get a field from.
-     * @param fieldName - String Field name.
-     * @return the field.
-     * @throws ReflectiveOperationException If something goes wrong.
-     */
-    public static Field getField(Class<?> clazz,
-                                 String fieldName) throws ReflectiveOperationException {
-        Field field = clazz.getDeclaredField(fieldName);
-        field.setAccessible(true);
-        return field;
-    }
-
-    /**
-     * Set a field value using reflection.
-     *
-     * @param instance - Object Instance to set a field for.
-     * @param fieldName - String Field name.
-     * @param value - Object Value to set.
-     * @throws ReflectiveOperationException If something goes wrong.
-     */
-    public static void setField(Object instance,
-                                String fieldName,
-                                Object value) throws ReflectiveOperationException {
-        Field field = getField(instance.getClass(), fieldName);
-        field.set(instance, value);
     }
 }

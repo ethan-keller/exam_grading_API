@@ -136,7 +136,7 @@ public class CategoryEntityTest {
     @Test
     public void testToString() {
         Assertions.assertEquals(
-                "Category[course=CSE9999, name=MIDTERM, weight=0.5]",
-                c0.toString());
+            "Category[course=CSE9999, name=MIDTERM, weight=0.5]",
+            c0.toString());
     }
 }

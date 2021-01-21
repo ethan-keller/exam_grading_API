@@ -52,7 +52,7 @@ class RestServiceTest {
     @Test
     void validNetIdBadCommunication() {
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
-                + "/" + user.getNetId();
+            + "/" + user.getNetId();
 
         ResponseEntity<User> response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.getForEntity(url, User.class)).thenReturn(response);
@@ -66,7 +66,7 @@ class RestServiceTest {
     @Test
     void validNetIdGoodCommunication() {
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
-                + "/" + user.getNetId();
+            + "/" + user.getNetId();
 
         ResponseEntity<User> response = new ResponseEntity<>(user, HttpStatus.OK);
         when(restTemplate.getForEntity(url, User.class)).thenReturn(response);
@@ -80,7 +80,7 @@ class RestServiceTest {
     @Test
     void exceptionHandling() {
         String url = "http://localhost:" + USER_SERVICE_PORT + GET_USER_ENDPOINT
-                + "/" + user.getNetId();
+            + "/" + user.getNetId();
         when(restTemplate.getForEntity(url, User.class)).thenThrow(RestClientException.class);
         assertNull(rest.getUserFromUserService(user.getNetId()));
     }

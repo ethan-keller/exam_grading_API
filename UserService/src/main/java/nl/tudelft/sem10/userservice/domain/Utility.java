@@ -17,7 +17,6 @@ public class Utility {
      *
      * @param input of type String - the String to hash
      * @return hashText of type String - hashed representation of the string.
-     *
      * @throws NoSuchAlgorithmException - no such algorithm
      */
     public static String hash(String input) throws NoSuchAlgorithmException {
@@ -35,7 +34,7 @@ public class Utility {
     /**
      * Sends the plain text password to Authentication service and receives the encrypted password.
      *
-     * @param password of type String - the plain text password
+     * @param password     of type String - the plain text password
      * @param restTemplate of type RestTemplate the rest API
      * @return String - encrypted
      */

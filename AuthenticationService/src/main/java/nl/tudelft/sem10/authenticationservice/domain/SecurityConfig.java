@@ -106,23 +106,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private HttpSecurity setStateless(HttpSecurity http) throws Exception {
         return http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and();
     }
 
     private void setPermissions(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/encode/**")
-                .permitAll()
-                .antMatchers("/validate/**")
-                .permitAll()
-                .antMatchers("/getToken")
-                .permitAll()
-                .antMatchers("/student").hasAnyAuthority("STUDENT")
-                .antMatchers("/teacher").hasAnyAuthority("TEACHER")
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+            .antMatchers("/encode/**")
+            .permitAll()
+            .antMatchers("/validate/**")
+            .permitAll()
+            .antMatchers("/getToken")
+            .permitAll()
+            .antMatchers("/student").hasAnyAuthority("STUDENT")
+            .antMatchers("/teacher").hasAnyAuthority("TEACHER")
+            .anyRequest().authenticated()
+            .and()
+            .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 
     private void addJwtFilter(HttpSecurity http) {

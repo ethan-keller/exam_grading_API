@@ -22,9 +22,9 @@ public class Util {
     /**
      * Create a mocked authentication service.
      * This gives:
-     *  - {@link AuthService.UserType#TEACHER} type for "MyTeacherToken"
-     *  - {@link AuthService.UserType#OTHER} type for "MyNonTeacherToken"
-     *  - {@link AuthService.UserType#UNKNOWN} type for any other token
+     * - {@link AuthService.UserType#TEACHER} type for "MyTeacherToken"
+     * - {@link AuthService.UserType#OTHER} type for "MyNonTeacherToken"
+     * - {@link AuthService.UserType#UNKNOWN} type for any other token
      *
      * @return the mocked service.
      */
@@ -49,19 +49,19 @@ public class Util {
     /**
      * Create a mocked JpaRepository.
      * This mocks:
-     *  - #findAll()
-     *  - #findById(V)
-     *  - #existsById(V)
-     *  - #save(U)
-     *  - #deleteById(V)
+     * - #findAll()
+     * - #findById(V)
+     * - #existsById(V)
+     * - #save(U)
+     * - #deleteById(V)
      *
-     * @param clazz - Class Repository type.
-     * @param type - Class Repository content type.
+     * @param clazz      - Class Repository type.
+     * @param type       - Class Repository content type.
      * @param identifier - Class Repository content identifier type.
-     * @param idMapper - Mapping function to get an identifier from a type instance.
-     * @param <T> - Repository type.
-     * @param <U> - Content type.
-     * @param <V> - Identifier type.
+     * @param idMapper   - Mapping function to get an identifier from a type instance.
+     * @param <T>        - Repository type.
+     * @param <U>        - Content type.
+     * @param <V>        - Identifier type.
      * @return the mocked repository.
      */
     public static <T extends JpaRepository<U, V>, U, V> T repositoryMock(Class<T> clazz,
@@ -109,7 +109,7 @@ public class Util {
      * Get a field using reflection.
      * The field will be accessible immediately.
      *
-     * @param clazz - Class&lt;?&gt; Class to get a field from.
+     * @param clazz     - Class&lt;?&gt; Class to get a field from.
      * @param fieldName - String Field name.
      * @return the field.
      * @throws ReflectiveOperationException If something goes wrong.
@@ -124,9 +124,9 @@ public class Util {
     /**
      * Set a field value using reflection.
      *
-     * @param instance - Object Instance to set a field for.
+     * @param instance  - Object Instance to set a field for.
      * @param fieldName - String Field name.
-     * @param value - Object Value to set.
+     * @param value     - Object Value to set.
      * @throws ReflectiveOperationException If something goes wrong.
      */
     public static void setField(Object instance,
